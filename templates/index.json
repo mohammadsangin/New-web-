@@ -1,5 +1,6 @@
 {
   "sections": {
+    "homepage-proof": { "type": "homepage-proof" },
     "hero": { "type": "hero" },
     "featured-collections": { "type": "featured-collections" },
     "threed-experience": { "type": "threed-experience" },
@@ -11,6 +12,7 @@
     "contact-cta": { "type": "contact-cta" }
   },
   "order": [
+    "homepage-proof",
     "hero",
     "featured-collections",
     "threed-experience",

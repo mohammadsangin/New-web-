@@ -1,0 +1,56 @@
+{% comment %}
+  Temporary diagnostic section. Renders a banner at the very top of the home
+  page so you can confirm Shopify is loading templates/index.json. Remove this
+  section (or its block in templates/index.json) once you've verified.
+{% endcomment %}
+
+<section
+  style="
+    position: relative;
+    z-index: 50;
+    margin-top: 110px;
+    padding: 28px 24px;
+    background: linear-gradient(135deg, hsl(38 80% 60%), hsl(28 70% 45%));
+    color: hsl(18 15% 7%);
+    text-align: center;
+  "
+  data-homepage-proof
+>
+  <p
+    style="
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(28px, 4vw, 56px);
+      line-height: 1;
+      letter-spacing: -0.025em;
+      margin: 0;
+    "
+  >
+    KYMRA HOMEPAGE TEMPLATE LOADED
+  </p>
+  <p
+    style="
+      margin-top: 10px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.78;
+    "
+  >
+    templates/index.json is rendering · Theme ID 191064113485 · Branch shopify-theme
+  </p>
+</section>
+
+{% schema %}
+{
+  "name": "Homepage proof",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Diagnostic banner. Confirms index.json is loaded. Remove this section after you've verified."
+    }
+  ],
+  "presets": [{ "name": "Homepage proof" }]
+}
+{% endschema %}
