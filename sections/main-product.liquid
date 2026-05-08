@@ -1,0 +1,219 @@
+<section class="pdp">
+  <div class="container">
+    <nav class="pdp__breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}" style="color: inherit;">Home</a>
+      {% render 'icon', icon: 'chevron-right', size: 12 %}
+      <a href="{{ routes.collections_url }}" style="color: inherit;">Collections</a>
+      {%- if collection -%}
+        {% render 'icon', icon: 'chevron-right', size: 12 %}
+        <a href="{{ collection.url }}" style="color: inherit;">{{ collection.title }}</a>
+      {%- endif -%}
+      {% render 'icon', icon: 'chevron-right', size: 12 %}
+      <span style="color: var(--color-cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ product.title }}</span>
+    </nav>
+
+    <div class="pdp__grid">
+      {% comment %} Gallery {% endcomment %}
+      <div class="pdp__gallery" data-gallery>
+        <div class="pdp__gallery-main border-glow" data-gallery-main>
+          {%- if product.featured_image != blank -%}
+            <img
+              src="{{ product.featured_image | image_url: width: 1400 }}"
+              alt="{{ product.featured_image.alt | escape }}"
+              width="{{ product.featured_image.width }}"
+              height="{{ product.featured_image.height }}"
+              loading="eager"
+            >
+          {%- else -%}
+            <img
+              src="{{ 'product-ring-chandelier.png' | asset_url }}"
+              alt="{{ product.title }}"
+              width="1122"
+              height="1402"
+            >
+          {%- endif -%}
+        </div>
+        {%- if product.images.size > 1 -%}
+          <div class="pdp__gallery-thumbs">
+            {%- for image in product.images limit: 4 -%}
+              <button
+                type="button"
+                class="pdp__thumb {% if forloop.first %}is-active{% endif %}"
+                data-gallery-thumb
+                data-src="{{ image | image_url: width: 1400 }}"
+                data-alt="{{ image.alt | escape }}"
+                aria-label="View image {{ forloop.index }}"
+              >
+                <img
+                  src="{{ image | image_url: width: 200 }}"
+                  alt=""
+                  width="{{ image.width }}"
+                  height="{{ image.height }}"
+                  loading="lazy"
+                >
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {% comment %} Purchase panel {% endcomment %}
+      <div class="pdp__panel">
+        <div>
+          {%- if product.metafields.kymra.status.value != blank -%}
+            <span class="product-card__badge product-card__badge--champagne">{{ product.metafields.kymra.status.value }}</span>
+          {%- endif -%}
+          <p class="eyebrow" style="margin-top: 12px;">{{ product.type | default: product.vendor }}</p>
+          <h1 class="pdp__title">{{ product.title }}</h1>
+          {%- if product.description != blank -%}
+            <p style="margin-top: 24px; max-width: 56ch; font-size: 16px; line-height: 1.7; color: var(--color-cream-muted);">
+              {{ product.description | strip_html | truncatewords: 60 }}
+            </p>
+          {%- endif -%}
+        </div>
+
+        <div class="pdp__price-row">
+          <div class="pdp__price" data-variant-price>{{ product.price | money }}</div>
+          <div class="pdp__compare" data-variant-compare {% if product.compare_at_price <= product.price %}style="display:none;"{% endif %}>
+            {{ product.compare_at_price | money }}
+          </div>
+        </div>
+
+        <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" data-product-form>
+          <input type="hidden" name="form_type" value="product">
+          <input type="hidden" name="utf8" value="✓">
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-selected-variant>
+
+          {%- if product.options_with_values.size > 0 and product.has_only_default_variant == false -%}
+            <div data-variant-options data-product='{{ product | json | escape }}'>
+              {%- for option in product.options_with_values -%}
+                <div class="variant-group" data-option-index="{{ forloop.index0 }}" style="margin-bottom: 20px;">
+                  <div class="variant-group__head">
+                    <span class="eyebrow">{{ option.name }}</span>
+                  </div>
+                  <div class="variant-pill-row">
+                    {%- for value in option.values -%}
+                      <button
+                        type="button"
+                        class="variant-pill {% if value == option.selected_value %}is-active{% endif %}"
+                        data-value="{{ value | escape }}"
+                      >
+                        {{ value }}
+                      </button>
+                    {%- endfor -%}
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          <div class="pdp__qty-row">
+            <span class="eyebrow">Quantity</span>
+            <div class="qty" data-qty-control>
+              <button type="button" class="qty__btn" data-qty-down aria-label="Decrease">{% render 'icon', icon: 'minus', size: 14 %}</button>
+              <input type="number" class="qty__value" name="quantity" value="1" min="1" max="99" style="width:40px;border:0;background:transparent;text-align:center;color:var(--color-cream);">
+              <button type="button" class="qty__btn" data-qty-up aria-label="Increase">{% render 'icon', icon: 'plus', size: 14 %}</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 8px;">
+            <button
+              type="submit"
+              class="btn btn--primary btn--xl"
+              data-add-to-cart
+              {% if product.selected_or_first_available_variant.available == false %}disabled{% endif %}
+            >
+              {% render 'icon', icon: 'shopping-bag', size: 16 %}
+              {%- if product.selected_or_first_available_variant.available -%}
+                Add to cart · <span data-variant-price>{{ product.price | money }}</span>
+              {%- else -%}
+                Sold out
+              {%- endif -%}
+            </button>
+            <a class="btn btn--glass btn--lg" href="/pages/contact">
+              Ask about this product
+              {% render 'icon', icon: 'arrow-up-right', size: 16 %}
+            </a>
+          </div>
+        </form>
+
+        <div class="pdp__assurance-grid">
+          <div class="pdp__assurance">
+            {% render 'icon', icon: 'truck', size: 16 %}
+            <div>
+              <strong>Fast UK delivery</strong>
+              <span>Most orders ship in 3–7 working days.</span>
+            </div>
+          </div>
+          <div class="pdp__assurance">
+            {% render 'icon', icon: 'check', size: 16 %}
+            <div>
+              <strong>28-day returns</strong>
+              <span>On standard finishes, unused.</span>
+            </div>
+          </div>
+        </div>
+
+        {% comment %} Accordion details {% endcomment %}
+        <div class="accordion" data-accordion="single" style="margin-top: 8px;">
+          <div class="accordion__item" aria-expanded="true">
+            <button type="button" class="accordion__trigger" data-accordion-trigger>
+              <span>Description</span>
+              {% render 'icon', icon: 'plus', size: 18 %}
+            </button>
+            <div class="accordion__panel">
+              <div class="accordion__body">{{ product.description }}</div>
+            </div>
+          </div>
+          <div class="accordion__item" aria-expanded="false">
+            <button type="button" class="accordion__trigger" data-accordion-trigger>
+              <span>Delivery & returns</span>
+              {% render 'icon', icon: 'plus', size: 18 %}
+            </button>
+            <div class="accordion__panel">
+              <div class="accordion__body">
+                Most orders ship in 3–7 working days within the UK. Larger or hand-finished pieces 7–14 working days. Standard returns accepted within 28 days, unused and in original packaging.
+              </div>
+            </div>
+          </div>
+          <div class="accordion__item" aria-expanded="false">
+            <button type="button" class="accordion__trigger" data-accordion-trigger>
+              <span>Need product advice?</span>
+              {% render 'icon', icon: 'plus', size: 18 %}
+            </button>
+            <div class="accordion__panel">
+              <div class="accordion__body">
+                Tell us about the room and finishes — we'll come back within a working day with two or three considered options.
+                <a href="/pages/contact" style="color: var(--color-champagne); text-decoration: underline; text-underline-offset: 4px; margin-left: 4px;">Get in touch →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% comment %} Related products {% endcomment %}
+  {%- if section.settings.show_related and recommendations.products.size > 0 -%}
+    <div class="container section-pad">
+      <div class="section-header">
+        <p class="eyebrow section-header__eyebrow">Specified together</p>
+        <h2 class="section-header__title italic-em">Pairs <em>beautifully</em> with</h2>
+      </div>
+      <div class="product-grid" style="margin-top: 56px;">
+        {%- for related in recommendations.products limit: 4 -%}
+          {% render 'product-card', product: related %}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": [
+    { "type": "checkbox", "id": "show_related", "label": "Show related products", "default": true }
+  ]
+}
+{% endschema %}

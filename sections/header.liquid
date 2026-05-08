@@ -1,0 +1,289 @@
+{%- liquid
+  assign current_url = request.path
+-%}
+
+<div class="header-veil" aria-hidden="true"></div>
+<header class="site-header" data-site-header>
+  <nav class="site-nav" aria-label="Main">
+    <a class="brand" href="{{ routes.root_url }}" aria-label="{{ shop.name }} home">
+      <span class="brand__dot-wrap">
+        <span class="brand__dot"></span>
+      </span>
+      <span>
+        <span class="brand__name">{{ section.settings.brand_name | default: shop.name | split: ' ' | first }}</span>
+        <span class="brand__tag">{{ section.settings.brand_tagline }}</span>
+      </span>
+    </a>
+
+    <ul class="nav-list" role="menubar">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign href = block.settings.link | default: '#'
+          assign is_active = false
+          if href != '#' and href != '/' and current_url contains href
+            assign is_active = true
+          elsif href == '/' and current_url == '/'
+            assign is_active = true
+          endif
+        -%}
+
+        {%- case block.type -%}
+          {%- when 'link' -%}
+            <li class="nav-item" role="none">
+              <a
+                href="{{ href }}"
+                class="nav-link {% if is_active %}is-active{% endif %}"
+                role="menuitem"
+              >
+                {{ block.settings.label }}
+              </a>
+            </li>
+
+          {%- when 'dropdown' -%}
+            <li class="nav-item" data-nav-item data-dropdown role="none" {{ block.shopify_attributes }}>
+              <button
+                class="nav-link {% if is_active %}is-active{% endif %}"
+                aria-haspopup="true"
+                aria-expanded="false"
+                role="menuitem"
+                type="button"
+              >
+                {{ block.settings.label }}
+                <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="nav-dropdown" role="menu">
+                <div class="nav-dropdown__panel">
+                  {%- if block.settings.link != blank -%}
+                    <a href="{{ block.settings.link }}" class="nav-dropdown__head">
+                      All {{ block.settings.label }}
+                      {% render 'icon', icon: 'arrow-up-right', size: 12 %}
+                    </a>
+                  {%- endif -%}
+                  <ul style="display:flex;flex-direction:column;gap:2px;">
+                    {%- for i in (1..7) -%}
+                      {%- assign label_key = 'item_' | append: i | append: '_label' -%}
+                      {%- assign link_key = 'item_' | append: i | append: '_link' -%}
+                      {%- assign label = block.settings[label_key] -%}
+                      {%- assign link = block.settings[link_key] -%}
+                      {%- if label != blank -%}
+                        <li role="none">
+                          <a class="nav-dropdown__link" href="{{ link | default: '#' }}" role="menuitem">
+                            <span>{{ label }}</span>
+                            <svg class="nav-dropdown__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                          </a>
+                        </li>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              </div>
+            </li>
+        {%- endcase -%}
+      {%- endfor -%}
+    </ul>
+
+    <div class="nav-actions">
+      <button type="button" class="icon-button" data-open-search aria-label="Open search">
+        {% render 'icon', icon: 'search' %}
+      </button>
+      <button type="button" class="cart-button" data-open-cart aria-label="Open cart">
+        {% render 'icon', icon: 'shopping-bag' %}
+        <span class="cart-button__label">Cart</span>
+        <span class="cart-count" data-cart-count>{{ cart.item_count }}</span>
+      </button>
+      <button type="button" class="icon-button menu-button" data-open-mobile-menu aria-label="Open menu">
+        {% render 'icon', icon: 'menu', size: 18 %}
+      </button>
+    </div>
+  </nav>
+</header>
+
+{% comment %} Mobile menu {% endcomment %}
+<div class="mobile-menu" data-mobile-menu role="dialog" aria-label="Menu">
+  <div class="mobile-menu__overlay" data-close-mobile-menu></div>
+  <aside class="mobile-menu__panel">
+    <header class="mobile-menu__header">
+      <div>
+        <p class="mobile-menu__title">{{ shop.name }}</p>
+        <p style="margin-top: 4px; font-size: 12px; color: var(--color-cream-faint);">Premium decorative lighting</p>
+      </div>
+      <button type="button" class="drawer__close" data-close-mobile-menu aria-label="Close menu">
+        {% render 'icon', icon: 'close', size: 14 %}
+      </button>
+    </header>
+    <div class="mobile-menu__body">
+      <ul style="display: flex; flex-direction: column; gap: 4px;">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'link' -%}
+              <li class="mobile-nav__item">
+                <a class="mobile-nav__row" href="{{ block.settings.link }}">
+                  <span>{{ block.settings.label }}</span>
+                  {% render 'icon', icon: 'arrow-up-right', size: 16 %}
+                </a>
+              </li>
+            {%- when 'dropdown' -%}
+              <li class="mobile-nav__item">
+                <button type="button" class="mobile-nav__row" data-mobile-toggle aria-expanded="false">
+                  <span>{{ block.settings.label }}</span>
+                  {% render 'icon', icon: 'chevron-down', size: 16 %}
+                </button>
+                <ul class="mobile-nav__sub">
+                  {%- if block.settings.link != blank -%}
+                    <li>
+                      <a class="mobile-nav__sub-link" style="color: var(--color-champagne); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;" href="{{ block.settings.link }}">
+                        All {{ block.settings.label }}
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- for i in (1..7) -%}
+                    {%- assign label_key = 'item_' | append: i | append: '_label' -%}
+                    {%- assign link_key = 'item_' | append: i | append: '_link' -%}
+                    {%- assign label = block.settings[label_key] -%}
+                    {%- assign link = block.settings[link_key] -%}
+                    {%- if label != blank -%}
+                      <li>
+                        <a class="mobile-nav__sub-link" href="{{ link }}">
+                          <span>{{ label }}</span>
+                          {% render 'icon', icon: 'arrow-up-right', size: 12 %}
+                        </a>
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              </li>
+          {%- endcase -%}
+        {%- endfor -%}
+      </ul>
+
+      <div style="margin-top: 32px; padding-top: 32px; border-top: 1px solid hsla(42, 32%, 92%, 0.08);">
+        <a class="btn btn--primary btn--lg" style="width: 100%;" href="{{ routes.collections_url }}">
+          Explore lighting
+          {% render 'icon', icon: 'arrow-up-right', size: 14 %}
+        </a>
+        <p style="margin-top: 16px; font-size: 12px; color: var(--color-cream-faint);">
+          Need help choosing? Speak to {{ shop.name | split: ' ' | first }} at
+          <a href="mailto:{{ shop.email }}" style="color: var(--color-champagne); text-decoration: underline; text-underline-offset: 4px;">{{ shop.email }}</a>
+        </p>
+      </div>
+    </div>
+  </aside>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "tag": "div",
+  "class": "section-header-wrap",
+  "settings": [
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name",
+      "default": "Kymra"
+    },
+    {
+      "type": "text",
+      "id": "brand_tagline",
+      "label": "Brand tagline",
+      "default": "Lighting"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Link",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Featured" },
+        { "type": "url", "id": "link", "label": "URL" }
+      ]
+    },
+    {
+      "type": "dropdown",
+      "name": "Dropdown",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Indoor" },
+        { "type": "url", "id": "link", "label": "Top-level link (optional)" },
+        { "type": "header", "content": "Items" },
+        { "type": "text", "id": "item_1_label", "label": "Item 1 label" },
+        { "type": "url", "id": "item_1_link", "label": "Item 1 link" },
+        { "type": "text", "id": "item_2_label", "label": "Item 2 label" },
+        { "type": "url", "id": "item_2_link", "label": "Item 2 link" },
+        { "type": "text", "id": "item_3_label", "label": "Item 3 label" },
+        { "type": "url", "id": "item_3_link", "label": "Item 3 link" },
+        { "type": "text", "id": "item_4_label", "label": "Item 4 label" },
+        { "type": "url", "id": "item_4_link", "label": "Item 4 link" },
+        { "type": "text", "id": "item_5_label", "label": "Item 5 label" },
+        { "type": "url", "id": "item_5_link", "label": "Item 5 link" },
+        { "type": "text", "id": "item_6_label", "label": "Item 6 label" },
+        { "type": "url", "id": "item_6_link", "label": "Item 6 link" },
+        { "type": "text", "id": "item_7_label", "label": "Item 7 label" },
+        { "type": "url", "id": "item_7_link", "label": "Item 7 link" }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      { "type": "link", "settings": { "label": "Featured", "link": "/collections/all" } },
+      { "type": "link", "settings": { "label": "Brands", "link": "/pages/brands" } },
+      {
+        "type": "dropdown",
+        "settings": {
+          "label": "Indoor",
+          "link": "/collections/indoor",
+          "item_1_label": "Chandeliers",
+          "item_1_link": "/collections/chandeliers",
+          "item_2_label": "Pendant Lights",
+          "item_2_link": "/collections/pendant-lights",
+          "item_3_label": "Ceiling Lights",
+          "item_3_link": "/collections/ceiling-lights",
+          "item_4_label": "Wall Lights",
+          "item_4_link": "/collections/wall-lights",
+          "item_5_label": "Table Lamps",
+          "item_5_link": "/collections/table-lamps",
+          "item_6_label": "Floor Lamps",
+          "item_6_link": "/collections/floor-lamps",
+          "item_7_label": "Bathroom Lights",
+          "item_7_link": "/collections/bathroom-lights"
+        }
+      },
+      {
+        "type": "dropdown",
+        "settings": {
+          "label": "Outdoor",
+          "link": "/collections/outdoor",
+          "item_1_label": "Outdoor Wall",
+          "item_1_link": "/collections/outdoor-wall",
+          "item_2_label": "Outdoor Ceiling & Pendants",
+          "item_2_link": "/collections/outdoor-ceiling",
+          "item_3_label": "Landscape",
+          "item_3_link": "/collections/landscape",
+          "item_4_label": "Deck & Step",
+          "item_4_link": "/collections/deck-step",
+          "item_5_label": "Outdoor Security",
+          "item_5_link": "/collections/outdoor-security"
+        }
+      },
+      {
+        "type": "dropdown",
+        "settings": {
+          "label": "Price",
+          "item_1_label": "Under £500",
+          "item_1_link": "/collections/all?filter.v.price.lte=500",
+          "item_2_label": "£500 – £1000",
+          "item_2_link": "/collections/all?filter.v.price.gte=500&filter.v.price.lte=1000",
+          "item_3_label": "£1000 – £2000",
+          "item_3_link": "/collections/all?filter.v.price.gte=1000&filter.v.price.lte=2000",
+          "item_4_label": "£2000 – £3000",
+          "item_4_link": "/collections/all?filter.v.price.gte=2000&filter.v.price.lte=3000",
+          "item_5_label": "Over £3000",
+          "item_5_link": "/collections/all?filter.v.price.gte=3000"
+        }
+      },
+      { "type": "link", "settings": { "label": "Reviews", "link": "/pages/reviews" } },
+      { "type": "link", "settings": { "label": "About Us", "link": "/pages/about" } },
+      { "type": "link", "settings": { "label": "Contact Us", "link": "/pages/contact" } }
+    ]
+  }
+}
+{% endschema %}

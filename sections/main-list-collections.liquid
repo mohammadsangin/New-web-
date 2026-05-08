@@ -1,0 +1,30 @@
+<section class="page-hero">
+  <div class="page-hero__glow" aria-hidden="true"></div>
+  <div class="container">
+    <p class="eyebrow section-header__eyebrow reveal">All collections</p>
+    <h1 class="page-hero__title italic-em reveal reveal--blur">{{ section.settings.title | default: 'Lighting collections' }}</h1>
+    {%- if section.settings.description != blank -%}
+      <p class="page-hero__desc reveal">{{ section.settings.description }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+<section class="container" style="padding-bottom: 80px;">
+  <div class="collections-grid" style="margin-top: 32px;">
+    {%- for collection in collections -%}
+      {%- unless collection.handle == 'frontpage' -%}
+        {% render 'collection-card', collection: collection %}
+      {%- endunless -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "List collections",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Lighting collections for every kind of atmosphere." },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "Explore chandeliers, pendants, wall lights, lamps, outdoor lighting, and refined switches." }
+  ]
+}
+{% endschema %}

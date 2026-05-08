@@ -1,0 +1,24 @@
+{
+  "sections": {
+    "hero": { "type": "hero" },
+    "featured-collections": { "type": "featured-collections" },
+    "threed-experience": { "type": "threed-experience" },
+    "signature-products": { "type": "signature-products" },
+    "philosophy": { "type": "philosophy" },
+    "inspiration": { "type": "inspiration" },
+    "testimonials": { "type": "testimonials" },
+    "home-faq": { "type": "home-faq" },
+    "contact-cta": { "type": "contact-cta" }
+  },
+  "order": [
+    "hero",
+    "featured-collections",
+    "threed-experience",
+    "signature-products",
+    "philosophy",
+    "inspiration",
+    "testimonials",
+    "home-faq",
+    "contact-cta"
+  ]
+}

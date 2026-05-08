@@ -1,0 +1,66 @@
+<section class="section-pad">
+  <div class="container">
+    <div style="display: grid; grid-template-columns: 1fr; gap: 48px;" class="reveal">
+      <div>
+        <p class="eyebrow section-header__eyebrow">{{ section.settings.eyebrow }}</p>
+        <h2 class="section-header__title italic-em" style="margin-top: 18px;">{{ section.settings.title }}</h2>
+        {%- if section.settings.cta_link != blank -%}
+          <a href="{{ section.settings.cta_link }}" class="btn btn--glass btn--md" style="margin-top: 32px;">
+            {{ section.settings.cta_label | default: 'Read full FAQ' }}
+            {% render 'icon', icon: 'arrow-up-right', size: 14 %}
+          </a>
+        {%- endif -%}
+      </div>
+      <div>
+        <div class="accordion" data-accordion="single">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'qa' -%}
+              <div class="accordion__item" aria-expanded="false" {{ block.shopify_attributes }}>
+                <button type="button" class="accordion__trigger" data-accordion-trigger>
+                  <span>{{ block.settings.question }}</span>
+                  {% render 'icon', icon: 'plus', size: 18 %}
+                </button>
+                <div class="accordion__panel">
+                  <div class="accordion__body">{{ block.settings.answer }}</div>
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Home FAQ",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Common questions" },
+    { "type": "richtext", "id": "title", "label": "Title", "default": "<p>Things people ask <em>before specifying</em>.</p>" },
+    { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Read full FAQ" },
+    { "type": "url", "id": "cta_link", "label": "CTA link" }
+  ],
+  "blocks": [
+    {
+      "type": "qa",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question" },
+        { "type": "richtext", "id": "answer", "label": "Answer" }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      { "type": "qa", "settings": { "question": "Can you help me choose the right light?", "answer": "<p>Yes. Share a few photos of the room, the existing finishes, and a rough idea of the budget — we'll come back within a working day with two or three considered options that suit the space.</p>" } },
+      { "type": "qa", "settings": { "question": "How long does delivery take?", "answer": "<p>Most in-stock products ship in 3–7 working days within the UK. Larger or hand-finished pieces take 7–14 working days.</p>" } },
+      { "type": "qa", "settings": { "question": "Are bulbs included?", "answer": "<p>Integrated LED fittings ship complete. Fittings designed around visible filament bulbs are sold without bulbs so you can choose the correct decorative bulb for the room.</p>" } },
+      { "type": "qa", "settings": { "question": "Can I return a light if it does not suit my room?", "answer": "<p>Yes. Standard products may be returned within 28 days, unused and in original packaging.</p>" } },
+      { "type": "qa", "settings": { "question": "Do you sell switches and sockets?", "answer": "<p>Yes. The Atelier range is solid aged brass, designed to coordinate with our brass lighting.</p>" } },
+      { "type": "qa", "settings": { "question": "Can I contact you before ordering?", "answer": "<p>Always. Most considered specifications start with a short conversation — use the Contact page and we'll come back within a working day.</p>" } }
+    ]
+  },
+  "presets": [{ "name": "Home FAQ" }]
+}
+{% endschema %}

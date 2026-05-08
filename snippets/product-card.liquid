@@ -1,0 +1,104 @@
+{%- comment -%}
+  Premium product card.
+  Accepts: product (object), priority (boolean optional)
+{%- endcomment -%}
+
+{%- liquid
+  assign image = product.featured_image
+  assign first_variant = product.selected_or_first_available_variant
+  assign on_sale = false
+  if product.compare_at_price and product.compare_at_price > product.price
+    assign on_sale = true
+  endif
+  assign badge = product.metafields.kymra.status.value
+  assign badge_class = 'product-card__badge--cream'
+  if badge contains 'Best' or badge contains 'Limited'
+    assign badge_class = 'product-card__badge--champagne'
+  elsif badge contains 'New'
+    assign badge_class = 'product-card__badge--bronze'
+  endif
+-%}
+
+<article class="product-card reveal" data-product-card>
+  <a class="product-card__media" href="{{ product.url }}">
+    {%- if image != blank -%}
+      <img
+        class="product-card__image"
+        src="{{ image | image_url: width: 800 }}"
+        srcset="{{ image | image_url: width: 400 }} 400w, {{ image | image_url: width: 600 }} 600w, {{ image | image_url: width: 900 }} 900w"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        alt="{{ image.alt | default: product.title | escape }}"
+        loading="{% if priority %}eager{% else %}lazy{% endif %}"
+        width="{{ image.width }}"
+        height="{{ image.height }}"
+      >
+    {%- else -%}
+      <div class="product-card__image" style="background: linear-gradient(135deg, hsla(38,55%,68%,0.18), hsla(22,48%,42%,0.32));"></div>
+    {%- endif -%}
+
+    <div class="product-card__badges">
+      {%- if badge != blank -%}
+        <span class="product-card__badge {{ badge_class }}">{{ badge }}</span>
+      {%- elsif on_sale -%}
+        <span class="product-card__badge product-card__badge--champagne">Sale</span>
+      {%- elsif product.tags contains 'new' -%}
+        <span class="product-card__badge product-card__badge--bronze">New</span>
+      {%- endif -%}
+    </div>
+
+    <div class="product-card__quick">
+      <a class="product-card__quick-btn" href="{{ product.url }}" aria-label="{{ 'products.product.view_details' | t }} {{ product.title }}">
+        {% render 'icon', icon: 'eye' %}
+      </a>
+    </div>
+
+    {%- if first_variant.available -%}
+      <div class="product-card__add">
+        <button
+          class="product-card__add-btn"
+          type="button"
+          data-quick-add
+          data-variant-id="{{ first_variant.id }}"
+          aria-label="{{ 'products.product.add_to_cart' | t }} {{ product.title }}"
+        >
+          {% render 'icon', icon: 'shopping-bag' %}
+          {{ 'products.product.add_to_cart' | t }} · {{ product.price | money }}
+        </button>
+      </div>
+    {%- endif -%}
+  </a>
+
+  <div class="product-card__info">
+    <div style="min-width: 0; flex: 1;">
+      <p class="product-card__category">{{ product.type | default: product.vendor }}</p>
+      <h3 class="product-card__title">
+        <a href="{{ product.url }}" style="color: inherit;">{{ product.title }}</a>
+      </h3>
+      <div class="product-card__meta">
+        {%- if first_variant.option1 != blank and first_variant.option1 != 'Default Title' -%}
+          <span>{{ first_variant.option1 }}</span>
+        {%- elsif product.vendor != blank -%}
+          <span>{{ product.vendor }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="product-card__price">
+      {{ product.price | money }}
+      {%- if on_sale -%}
+        <span class="product-card__compare">{{ product.compare_at_price | money }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if first_variant.available -%}
+    <button
+      class="product-card__add-mobile"
+      type="button"
+      data-quick-add
+      data-variant-id="{{ first_variant.id }}"
+    >
+      {{ 'products.product.add_to_cart' | t }}
+      {% render 'icon', icon: 'arrow-up-right', size: 14 %}
+    </button>
+  {%- endif -%}
+</article>

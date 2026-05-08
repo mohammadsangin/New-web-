@@ -1,0 +1,88 @@
+<section class="cart-page">
+  <div class="container">
+    <h1 class="page-hero__title italic-em">Your cart</h1>
+    <p style="margin-top: 12px; color: var(--color-cream-muted);">Curated pieces ready for your project.</p>
+
+    {%- if cart.item_count == 0 -%}
+      <div class="liquid-glass-soft" style="margin-top: 56px; padding: 64px 32px; text-align: center; border-radius: 24px;">
+        <h2 class="font-display" style="font-size: 28px; color: var(--color-cream);">Your room is still waiting for its first glow.</h2>
+        <p style="margin-top: 12px; max-width: 360px; margin-inline: auto; color: var(--color-cream-muted);">Browse our chandeliers, pendants, and wall lights — selected for considered interiors.</p>
+        <a class="btn btn--primary btn--lg" href="{{ routes.collections_url }}" style="margin-top: 24px;">Explore collections {% render 'icon', icon: 'arrow-up-right', size: 16 %}</a>
+      </div>
+    {%- else -%}
+      <form class="cart-page__grid" style="margin-top: 56px;" action="{{ routes.cart_url }}" method="post" data-cart-form>
+        <div>
+          {%- for line_item in cart.items -%}
+            <div class="cart-page__line">
+              <a class="cart-page__media" href="{{ line_item.url }}">
+                {%- if line_item.image != blank -%}
+                  <img
+                    src="{{ line_item.image | image_url: width: 200 }}"
+                    alt="{{ line_item.product.title }}"
+                    width="{{ line_item.image.width }}"
+                    height="{{ line_item.image.height }}"
+                    loading="lazy"
+                  >
+                {%- endif -%}
+              </a>
+              <div>
+                <a href="{{ line_item.url }}" class="font-display" style="font-size: 22px; color: var(--color-cream);">{{ line_item.product.title }}</a>
+                {%- if line_item.variant.title != blank and line_item.variant.title != 'Default Title' -%}
+                  <p class="eyebrow" style="margin-top: 4px;">{{ line_item.variant.title }}</p>
+                {%- endif -%}
+                <div style="margin-top: 16px; display: flex; align-items: center; gap: 16px;">
+                  <div class="qty">
+                    <a class="qty__btn" href="{{ line_item.url_to_remove }}" aria-label="Remove">{% render 'icon', icon: 'trash', size: 14 %}</a>
+                    <a class="qty__btn" href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity={{ line_item.quantity | minus: 1 }}" aria-label="Decrease">{% render 'icon', icon: 'minus', size: 14 %}</a>
+                    <span class="qty__value">{{ line_item.quantity }}</span>
+                    <a class="qty__btn" href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity={{ line_item.quantity | plus: 1 }}" aria-label="Increase">{% render 'icon', icon: 'plus', size: 14 %}</a>
+                  </div>
+                </div>
+              </div>
+              <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-cream); white-space: nowrap;">
+                {{ line_item.final_line_price | money }}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+        <aside class="cart-page__summary liquid-glass-dark border-glow">
+          <p class="eyebrow">Order summary</p>
+          <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: var(--color-cream-muted);">
+            <div style="display: flex; justify-content: space-between;">
+              <span>Subtotal</span>
+              <span style="color: var(--color-cream); font-variant-numeric: tabular-nums;">{{ cart.items_subtotal_price | money }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>Delivery</span>
+              <span>Calculated at checkout</span>
+            </div>
+          </div>
+          <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid hsla(42,32%,92%,0.08); display: flex; justify-content: space-between; align-items: baseline;">
+            <span class="eyebrow">Total</span>
+            <span class="font-display" style="font-size: 30px; color: var(--color-cream); font-variant-numeric: tabular-nums;">{{ cart.total_price | money }}</span>
+          </div>
+          <button class="btn btn--primary btn--xl" name="checkout" type="submit" style="margin-top: 20px; width: 100%;">
+            Checkout · {{ cart.total_price | money }}
+            {% render 'icon', icon: 'arrow-up-right', size: 16 %}
+          </button>
+          <a class="btn btn--glass btn--md" href="{{ routes.collections_url }}" style="margin-top: 8px; width: 100%;">Continue shopping</a>
+          {%- if cart.note != blank or section.settings.show_note -%}
+            <div style="margin-top: 24px;">
+              <label class="label" for="cart-note">Order note</label>
+              <textarea class="textarea" id="cart-note" name="note" placeholder="Project notes, addresses, finish preferences...">{{ cart.note }}</textarea>
+            </div>
+          {%- endif -%}
+        </aside>
+      </form>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": [
+    { "type": "checkbox", "id": "show_note", "label": "Show order note field", "default": true }
+  ]
+}
+{% endschema %}

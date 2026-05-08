@@ -1,0 +1,32 @@
+<section class="container" style="padding: 140px 0 80px;">
+  <a href="{{ routes.account_url }}" style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-cream-muted);">← Account</a>
+  <h1 class="font-display" style="margin-top: 16px; font-size: clamp(32px,4vw,52px); color: var(--color-cream);">Order {{ order.name }}</h1>
+  <p style="margin-top: 8px; color: var(--color-cream-muted);">{{ order.created_at | date: '%-d %B %Y' }} · {{ order.financial_status_label }} · {{ order.fulfillment_status_label }}</p>
+
+  <table style="width:100%; margin-top: 32px; border-collapse: collapse;">
+    <thead>
+      <tr style="border-bottom: 1px solid hsla(42,32%,92%,0.08); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-cream-faint);">
+        <th style="text-align:left; padding: 10px 0;">Product</th>
+        <th>Qty</th>
+        <th>Price</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for line in order.line_items %}
+        <tr style="border-bottom: 1px solid hsla(42,32%,92%,0.06);">
+          <td style="padding: 14px 0; color: var(--color-cream);">{{ line.title }}</td>
+          <td>{{ line.quantity }}</td>
+          <td>{{ line.price | money }}</td>
+          <td>{{ line.line_price | money }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div style="margin-top: 24px; max-width: 320px; margin-left: auto; font-size: 14px; color: var(--color-cream-muted);">
+    <div style="display:flex;justify-content:space-between;padding:8px 0;"><span>Subtotal</span><span style="color:var(--color-cream)">{{ order.subtotal_price | money }}</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;"><span>Shipping</span><span style="color:var(--color-cream)">{{ order.shipping_price | money }}</span></div>
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-top:1px solid hsla(42,32%,92%,0.08); font-family: var(--font-display); font-size: 22px; color: var(--color-cream);"><span>Total</span><span>{{ order.total_price | money }}</span></div>
+  </div>
+</section>

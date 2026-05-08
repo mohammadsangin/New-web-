@@ -1,0 +1,95 @@
+<section class="section-pad">
+  <div class="container">
+    <div class="reveal" style="position: relative; overflow: hidden; border-radius: 40px;">
+      <div style="position: absolute; inset: 0; background: radial-gradient(ellipse at 15% 0%, hsla(32,80%,58%,0.18), transparent 55%), radial-gradient(ellipse at 85% 100%, hsla(22,48%,42%,0.22), transparent 55%); pointer-events: none;"></div>
+      <div style="position: absolute; inset: 0; background: hsla(20,14%,8%,0.6); backdrop-filter: blur(12px); pointer-events: none;"></div>
+      <div class="border-glow" style="position: absolute; inset: 0; border-radius: 40px; pointer-events: none;"></div>
+
+      <div style="position: relative; display: grid; grid-template-columns: 1fr; gap: 48px; padding: 32px;" class="contact-cta__inner">
+        <style>
+          @media (min-width: 1024px) {
+            .contact-cta__inner { grid-template-columns: 1.2fr 1fr; gap: 64px; padding: 56px !important; }
+          }
+        </style>
+
+        <div>
+          <p class="eyebrow section-header__eyebrow">{{ section.settings.eyebrow }}</p>
+          <h2 class="section-header__title italic-em" style="margin-top: 20px; font-size: clamp(36px, 4.6vw, 72px);">{{ section.settings.title }}</h2>
+          <p style="margin-top: 24px; max-width: 560px; font-size: 15px; line-height: 1.7; color: var(--color-cream-muted);">{{ section.settings.description }}</p>
+          <div style="margin-top: 36px; display: flex; flex-wrap: wrap; gap: 12px;">
+            <a class="btn btn--primary btn--lg" href="{{ section.settings.cta1_link | default: '/pages/contact' }}">
+              {{ section.settings.cta1_label | default: 'Contact us' }}
+              {% render 'icon', icon: 'arrow-up-right', size: 16 %}
+            </a>
+            <a class="btn btn--glass btn--lg" href="{{ section.settings.cta2_link | default: '/collections/all' }}">{{ section.settings.cta2_label | default: 'Browse collections' }}</a>
+          </div>
+        </div>
+
+        <div class="liquid-glass-dark" style="border-radius: 24px; padding: 28px;">
+          <p class="eyebrow" style="color: hsla(42,32%,92%,0.8);">How it works</p>
+          <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 20px;">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'step' -%}
+                <div style="display: flex; align-items: flex-start; gap: 16px;" {{ block.shopify_attributes }}>
+                  <span style="display: grid; place-items: center; flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; border: 1px solid hsla(38,55%,68%,0.3); background: hsla(38,55%,68%,0.1); color: var(--color-champagne);">
+                    {% render 'icon', icon: block.settings.icon, size: 16 %}
+                  </span>
+                  <div>
+                    <p style="font-family: var(--font-display); font-size: 18px; color: var(--color-cream);">{{ block.settings.title }}</p>
+                    <p style="margin-top: 4px; font-size: 13px; line-height: 1.7; color: var(--color-cream-muted);">{{ block.settings.body }}</p>
+                  </div>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact CTA",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Help choosing" },
+    { "type": "richtext", "id": "title", "label": "Title", "default": "<p>Need help choosing the <em>right light?</em></p>" },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "Tell us about your room, finish preferences, and project style. Kymra can help you narrow down pieces that suit the space — without the catalogue noise." },
+    { "type": "text", "id": "cta1_label", "label": "Primary CTA", "default": "Contact us" },
+    { "type": "url", "id": "cta1_link", "label": "Primary CTA link" },
+    { "type": "text", "id": "cta2_label", "label": "Secondary CTA", "default": "Browse collections" },
+    { "type": "url", "id": "cta2_link", "label": "Secondary CTA link" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "default": "message-circle",
+          "options": [
+            { "value": "message-circle", "label": "Message" },
+            { "value": "sparkles", "label": "Sparkles" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "star", "label": "Star" }
+          ]
+        },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "body", "label": "Body" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "default": {
+    "blocks": [
+      { "type": "step", "settings": { "icon": "message-circle", "title": "Tell us about the room", "body": "Share photos, dimensions, and existing finishes — anything that helps us picture the space." } },
+      { "type": "step", "settings": { "icon": "sparkles", "title": "We narrow the options", "body": "Two or three considered pieces, matched to atmosphere, scale, and budget." } },
+      { "type": "step", "settings": { "icon": "truck", "title": "Reply within a working day", "body": "Email or phone — sales@kymralighting.co.uk." } }
+    ]
+  },
+  "presets": [{ "name": "Contact CTA" }]
+}
+{% endschema %}

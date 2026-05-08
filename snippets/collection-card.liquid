@@ -1,0 +1,48 @@
+{%- comment -%}
+  Collection card. Accepts: collection (object), image_override (optional asset filename)
+{%- endcomment -%}
+
+{%- liquid
+  assign image = collection.image
+  if image_override != blank
+    assign image_url = image_override | asset_url
+  elsif image != blank
+    assign image_url = image | image_url: width: 1000
+  endif
+-%}
+
+<a href="{{ collection.url }}" class="collection-card reveal" data-collection-card>
+  <div class="collection-card__media">
+    {%- if image_url -%}
+      <img
+        class="collection-card__image"
+        src="{{ image_url }}"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        alt="{{ collection.title | escape }}"
+        loading="lazy"
+        width="1122"
+        height="1402"
+      >
+    {%- else -%}
+      <div class="collection-card__image" style="background: radial-gradient(circle at 50% 38%, hsla(38,55%,68%,0.32), transparent 65%), linear-gradient(135deg, hsla(20,14%,12%,0.4), hsla(18,15%,5%,0.95));"></div>
+    {%- endif -%}
+    <span class="collection-card__chip">
+      {{ collection.products_count }}
+      {% if collection.products_count == 1 %}piece{% else %}pieces{% endif %}
+    </span>
+  </div>
+  <div class="collection-card__body">
+    <div>
+      <h3 class="collection-card__title">{{ collection.title }}</h3>
+      {%- if collection.description != blank -%}
+        <p class="collection-card__desc">{{ collection.description | strip_html | truncate: 140 }}</p>
+      {%- elsif description_override != blank -%}
+        <p class="collection-card__desc">{{ description_override }}</p>
+      {%- endif -%}
+    </div>
+    <div class="collection-card__cta">
+      Explore collection
+      {% render 'icon', icon: 'arrow-up-right', size: 14 %}
+    </div>
+  </div>
+</a>

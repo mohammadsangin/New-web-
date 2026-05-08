@@ -1,0 +1,7 @@
+.DS_Store
+.shopify-cli.yml
+.theme-check.yml.lock
+node_modules/
+*.log
+.env
+.env.local

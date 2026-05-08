@@ -1,0 +1,137 @@
+<section class="hero noise" data-section-id="{{ section.id }}">
+  <div class="hero__bg" aria-hidden="true"></div>
+
+  {%- liquid
+    if section.settings.image != blank
+      assign hero_image_url = section.settings.image | image_url: width: 1800
+    elsif section.settings.fallback_asset != blank
+      assign hero_image_url = section.settings.fallback_asset | asset_url
+    else
+      assign hero_image_url = 'hero-dining.png' | asset_url
+    endif
+  -%}
+
+  <div class="hero__image-wrap" aria-hidden="true">
+    <img class="hero__image" src="{{ hero_image_url }}" alt="" width="1122" height="1402" loading="eager">
+    <div class="hero__image-fade"></div>
+    <div class="hero__image-fade-bottom"></div>
+  </div>
+
+  <div class="hero__vignette" aria-hidden="true"></div>
+
+  <div class="hero__nav-spacer"></div>
+
+  <div class="hero__content">
+    <div class="container">
+      <div class="hero__inner">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="hero__pill reveal">
+            <span class="hero__pill-dot" aria-hidden="true"></span>
+            {{ section.settings.eyebrow }}
+          </span>
+        {%- endif -%}
+
+        <h1 class="hero__title reveal reveal--blur italic-em">{{ section.settings.title }}</h1>
+
+        {%- if section.settings.subtitle != blank -%}
+          <p class="hero__subtitle reveal">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+
+        <div class="hero__ctas reveal">
+          {%- if section.settings.cta1_label != blank -%}
+            <a class="btn btn--primary btn--xl" href="{{ section.settings.cta1_link | default: '/collections/all' }}">
+              {{ section.settings.cta1_label }}
+              {% render 'icon', icon: 'arrow-up-right', size: 16 %}
+            </a>
+          {%- endif -%}
+          {%- if section.settings.cta2_label != blank -%}
+            <a class="btn btn--glass btn--xl" href="{{ section.settings.cta2_link | default: '/pages/studio' }}">
+              {% render 'icon', icon: 'move-3d', size: 16 %}
+              {{ section.settings.cta2_label }}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- if section.settings.show_trust_strip -%}
+    <div class="hero__strip">
+      <div class="container">
+        <div class="hero__strip-inner liquid-glass-dark border-glow">
+          <ul class="hero__strip-list">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'trust' -%}
+                <li class="hero__strip-item" {{ block.shopify_attributes }}>
+                  <span class="hero__strip-icon">
+                    {% render 'icon', icon: block.settings.icon, size: 14 %}
+                  </span>
+                  <span>{{ block.settings.label }}</span>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Hero image" },
+    { "type": "text", "id": "fallback_asset", "label": "Fallback asset filename", "default": "hero-dining.png" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "New season collection · Warm Modern lighting" },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Headline",
+      "default": "<p>Light, <em>composed</em><br>for beautiful rooms.</p>"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Premium decorative lighting for homes, studios, and renovation projects where atmosphere matters as much as the object itself."
+    },
+    { "type": "text", "id": "cta1_label", "label": "Primary CTA", "default": "Shop collection" },
+    { "type": "url", "id": "cta1_link", "label": "Primary CTA link" },
+    { "type": "text", "id": "cta2_label", "label": "Secondary CTA", "default": "Explore in 3D" },
+    { "type": "url", "id": "cta2_link", "label": "Secondary CTA link" },
+    { "type": "checkbox", "id": "show_trust_strip", "label": "Show trust strip", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "trust",
+      "name": "Trust point",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "default": "sparkles",
+          "options": [
+            { "value": "sparkles", "label": "Sparkles" },
+            { "value": "sun", "label": "Sun" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "message-circle", "label": "Message" },
+            { "value": "star", "label": "Star" }
+          ]
+        },
+        { "type": "text", "id": "label", "label": "Label" }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      { "type": "trust", "settings": { "icon": "sparkles", "label": "Decorative lighting, curated" } },
+      { "type": "trust", "settings": { "icon": "sun", "label": "Designed for warm interiors" } },
+      { "type": "trust", "settings": { "icon": "truck", "label": "Fast UK delivery options" } },
+      { "type": "trust", "settings": { "icon": "message-circle", "label": "Help choosing available" } }
+    ]
+  },
+  "presets": [{ "name": "Hero" }]
+}
+{% endschema %}

@@ -1,0 +1,123 @@
+<section class="section-pad">
+  <div class="container reveal">
+    <div class="section-header">
+      <p class="eyebrow section-header__eyebrow">{{ section.settings.eyebrow }}</p>
+      <h2 class="section-header__title italic-em">{{ section.settings.title }}</h2>
+      <p class="section-header__description">{{ section.settings.description }}</p>
+    </div>
+  </div>
+
+  {%- liquid
+    assign reviews = section.blocks | where: 'type', 'review'
+    assign half = reviews.size | divided_by: 2 | plus: 1
+  -%}
+
+  <div style="margin-top: 56px; display: flex; flex-direction: column; gap: 24px;">
+    <div class="marquee">
+      <div class="marquee__track">
+        {%- for review in reviews -%}
+          {%- if forloop.index <= half -%}
+            <article class="review-card liquid-glass-soft border-glow" {{ review.shopify_attributes }}>
+              <div class="review-card__head">
+                <span class="review-card__category">{{ review.settings.category }}</span>
+                <span class="review-card__rating">{% render 'icon', icon: 'star', size: 12 %} {{ review.settings.rating | default: '5.0' }} / 5</span>
+              </div>
+              <p class="review-card__quote">"{{ review.settings.quote }}"</p>
+              <div class="review-card__author">
+                <p class="review-card__author-name">{{ review.settings.name }}</p>
+                <p class="review-card__author-meta">{{ review.settings.role }} · {{ review.settings.location }}</p>
+              </div>
+            </article>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- comment %}Duplicate cards for seamless loop{%- endcomment -%}
+        {%- for review in reviews -%}
+          {%- if forloop.index <= half -%}
+            <article class="review-card liquid-glass-soft border-glow" aria-hidden="true">
+              <div class="review-card__head">
+                <span class="review-card__category">{{ review.settings.category }}</span>
+                <span class="review-card__rating">{% render 'icon', icon: 'star', size: 12 %} {{ review.settings.rating | default: '5.0' }} / 5</span>
+              </div>
+              <p class="review-card__quote">"{{ review.settings.quote }}"</p>
+              <div class="review-card__author">
+                <p class="review-card__author-name">{{ review.settings.name }}</p>
+                <p class="review-card__author-meta">{{ review.settings.role }} · {{ review.settings.location }}</p>
+              </div>
+            </article>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+    <div class="marquee marquee--reverse">
+      <div class="marquee__track">
+        {%- for review in reviews -%}
+          {%- if forloop.index > half -%}
+            <article class="review-card liquid-glass-soft border-glow">
+              <div class="review-card__head">
+                <span class="review-card__category">{{ review.settings.category }}</span>
+                <span class="review-card__rating">{% render 'icon', icon: 'star', size: 12 %} {{ review.settings.rating | default: '5.0' }} / 5</span>
+              </div>
+              <p class="review-card__quote">"{{ review.settings.quote }}"</p>
+              <div class="review-card__author">
+                <p class="review-card__author-name">{{ review.settings.name }}</p>
+                <p class="review-card__author-meta">{{ review.settings.role }} · {{ review.settings.location }}</p>
+              </div>
+            </article>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- for review in reviews -%}
+          {%- if forloop.index > half -%}
+            <article class="review-card liquid-glass-soft border-glow" aria-hidden="true">
+              <div class="review-card__head">
+                <span class="review-card__category">{{ review.settings.category }}</span>
+                <span class="review-card__rating">{% render 'icon', icon: 'star', size: 12 %} {{ review.settings.rating | default: '5.0' }} / 5</span>
+              </div>
+              <p class="review-card__quote">"{{ review.settings.quote }}"</p>
+              <div class="review-card__author">
+                <p class="review-card__author-name">{{ review.settings.name }}</p>
+                <p class="review-card__author-meta">{{ review.settings.role }} · {{ review.settings.location }}</p>
+              </div>
+            </article>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Reviews" },
+    { "type": "richtext", "id": "title", "label": "Title", "default": "<p>Rooms <em>remembered</em> by the light.</p>" },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "What homeowners, designers, architects, and renovation clients say about Kymra Lighting." }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "text", "id": "category", "label": "Category", "default": "Homeowner" },
+        { "type": "text", "id": "rating", "label": "Rating", "default": "5.0" },
+        { "type": "textarea", "id": "quote", "label": "Quote" },
+        { "type": "text", "id": "name", "label": "Name" },
+        { "type": "text", "id": "role", "label": "Role" },
+        { "type": "text", "id": "location", "label": "Location" }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "default": {
+    "blocks": [
+      { "type": "review", "settings": { "category": "Homeowner", "rating": "5.0", "quote": "Everything felt curated rather than mass-produced. The Aurelia chandelier changed the whole dining room.", "name": "Eleanor Whitford", "role": "Homeowner", "location": "Cotswolds" } },
+      { "type": "review", "settings": { "category": "Designer", "rating": "5.0", "quote": "Kymra helped us choose lighting that worked with the materials, not against them.", "name": "Marcus Pelletier", "role": "Interior Designer", "location": "London" } },
+      { "type": "review", "settings": { "category": "Architect", "rating": "5.0", "quote": "The product photography, finish quality, and specification support made specifying lighting straightforward.", "name": "Studio Halden", "role": "Architecture Practice", "location": "Edinburgh" } },
+      { "type": "review", "settings": { "category": "Renovation", "rating": "5.0", "quote": "We replaced every fitting in the house. Atelier switches finally make the rooms feel finished.", "name": "Iris Cavendish", "role": "Renovation Client", "location": "Bath" } },
+      { "type": "review", "settings": { "category": "Homeowner", "rating": "5.0", "quote": "The Elara lamp arrived and it was immediately the warmest thing in the room.", "name": "Camille Aronson", "role": "Homeowner", "location": "Surrey" } },
+      { "type": "review", "settings": { "category": "Designer", "rating": "5.0", "quote": "Sensible lead times, considered specification advice, and someone who actually picks up the phone.", "name": "Atelier Voss", "role": "Interior Design Studio", "location": "Manchester" } }
+    ]
+  },
+  "presets": [{ "name": "Testimonials" }]
+}
+{% endschema %}

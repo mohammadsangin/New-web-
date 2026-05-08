@@ -1,0 +1,64 @@
+<section class="section-pad" style="position: relative; isolation: isolate;">
+  <div aria-hidden="true" style="position: absolute; left: 8%; top: -120px; width: 420px; height: 420px; pointer-events: none; filter: blur(60px); background: radial-gradient(circle, hsla(38,55%,68%,0.18), transparent 70%);"></div>
+  <div aria-hidden="true" style="position: absolute; right: 6%; bottom: 10%; width: 360px; height: 360px; pointer-events: none; filter: blur(60px); background: radial-gradient(circle, hsla(22,48%,42%,0.18), transparent 70%);"></div>
+
+  <div class="container" style="position: relative;">
+    <div style="display: grid; grid-template-columns: 1fr; gap: 48px; align-items: end;" class="reveal">
+      <div>
+        <p class="eyebrow section-header__eyebrow">{{ section.settings.eyebrow }}</p>
+        <p style="margin-top: 20px; max-width: 320px; font-size: 15px; line-height: 1.7; color: var(--color-cream-muted);">
+          {{ section.settings.intro }}
+        </p>
+      </div>
+      <div>
+        <h2 class="section-header__title italic-em">{{ section.settings.title }}</h2>
+      </div>
+    </div>
+
+    <div class="philosophy-points">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'point' -%}
+          <article class="philosophy-point reveal" {{ block.shopify_attributes }}>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="philosophy-point__num">{{ block.settings.number }}</span>
+              <span class="philosophy-point__rule"></span>
+            </div>
+            <h3 class="philosophy-point__title">{{ block.settings.title }}</h3>
+            <p class="philosophy-point__body">{{ block.settings.body }}</p>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Philosophy",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Philosophy" },
+    { "type": "textarea", "id": "intro", "label": "Intro", "default": "Three ideas we apply consistently — to homes, studios, and renovation projects." },
+    { "type": "richtext", "id": "title", "label": "Title", "default": "<p>The room is <em>read</em> by its light.</p>" }
+  ],
+  "blocks": [
+    {
+      "type": "point",
+      "name": "Point",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Number", "default": "01" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Warmth before brightness" },
+        { "type": "textarea", "id": "body", "label": "Body", "default": "We specify around tone first. Brightness is a secondary problem, solved by dimmers and bulb choice." }
+      ]
+    }
+  ],
+  "max_blocks": 3,
+  "default": {
+    "blocks": [
+      { "type": "point", "settings": { "number": "01", "title": "Warmth before brightness", "body": "We specify around tone first. Brightness is a secondary problem, solved by dimmers and bulb choice." } },
+      { "type": "point", "settings": { "number": "02", "title": "Objects with presence", "body": "Each piece reads as a sculptural object when the light is off, and holds the room when it's on." } },
+      { "type": "point", "settings": { "number": "03", "title": "Selected for real interiors", "body": "Designed for renovation projects, considered new builds, and homes where the light decides how the room feels at 9pm." } }
+    ]
+  },
+  "presets": [{ "name": "Philosophy" }]
+}
+{% endschema %}

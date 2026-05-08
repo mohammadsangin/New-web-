@@ -1,0 +1,90 @@
+{
+  "general": {
+    "search": {
+      "placeholder": "Search chandeliers, finishes, rooms...",
+      "submit": "Search",
+      "no_results": "Nothing matches \"{{ terms }}\""
+    },
+    "404": {
+      "title": "This room hasn't been lit yet.",
+      "subtext": "The page you're looking for doesn't exist.",
+      "link": "Browse collections"
+    },
+    "newsletter": {
+      "label_html": "<strong>Lighting notes</strong> for considered interiors",
+      "input_label": "Email",
+      "submit": "Subscribe",
+      "success": "Thank you — added to the journal list."
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "label": "Pagination"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to cart",
+      "added": "Added",
+      "sold_out": "Sold out",
+      "view_details": "View details",
+      "quantity": "Quantity",
+      "quick_view": "Quick view"
+    },
+    "facets": {
+      "filter": "Filter",
+      "sort": "Sort",
+      "clear": "Clear",
+      "apply": "Apply"
+    }
+  },
+  "collections": {
+    "general": {
+      "no_matches": "No products found.",
+      "items_count": {
+        "one": "{{ count }} piece",
+        "other": "{{ count }} pieces"
+      }
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Your cart",
+      "subtotal": "Subtotal",
+      "checkout": "Checkout",
+      "continue_shopping": "Continue shopping",
+      "remove": "Remove",
+      "note": "Order note"
+    }
+  },
+  "sections": {
+    "cart": {
+      "empty": "Your room is still waiting for its first glow.",
+      "empty_subtext": "Browse our chandeliers, pendants, and wall lights — selected for considered interiors.",
+      "explore": "Explore collections"
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "Account",
+      "log_out": "Log out",
+      "details": "Account details",
+      "view_addresses": "View addresses",
+      "no_orders": "No orders yet"
+    },
+    "login": {
+      "title": "Sign in",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "forgot_password": "Forgot password?",
+      "create_account": "Create account"
+    },
+    "register": {
+      "title": "Create account",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "submit": "Create account"
+    }
+  }
+}

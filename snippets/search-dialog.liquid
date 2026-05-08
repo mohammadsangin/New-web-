@@ -1,0 +1,28 @@
+{%- comment -%}
+  Search dialog — Shopify Predictive Search
+{%- endcomment -%}
+
+<div class="search-dialog" data-search-dialog role="dialog" aria-label="Search">
+  <div class="search-dialog__overlay" data-close-search></div>
+  <div class="search-dialog__panel">
+    <div class="search-dialog__head">
+      {% render 'icon', icon: 'search' %}
+      <input
+        type="text"
+        class="search-dialog__input"
+        data-search-input
+        placeholder="Search chandeliers, finishes, rooms..."
+        aria-label="Search products"
+        autocomplete="off"
+      >
+      <button type="button" class="drawer__close" data-close-search aria-label="Close search">
+        {% render 'icon', icon: 'close', size: 14 %}
+      </button>
+    </div>
+    <div class="search-dialog__body" data-search-body></div>
+    <div class="search-dialog__foot">
+      <span>↑ ↓ navigate · ↵ select</span>
+      <span>Esc close</span>
+    </div>
+  </div>
+</div>

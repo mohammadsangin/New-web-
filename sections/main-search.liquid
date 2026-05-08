@@ -1,0 +1,48 @@
+<section class="page-hero">
+  <div class="page-hero__glow" aria-hidden="true"></div>
+  <div class="container">
+    <p class="eyebrow section-header__eyebrow">Search</p>
+    <h1 class="page-hero__title italic-em">Find <em>the right light</em>.</h1>
+    <form action="{{ routes.search_url }}" method="get" role="search" style="margin-top: 28px; max-width: 600px; display: flex; gap: 8px;">
+      <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search chandeliers, finishes, rooms..." class="input" aria-label="Search">
+      <button type="submit" class="btn btn--primary btn--lg">{% render 'icon', icon: 'search', size: 14 %} Search</button>
+    </form>
+  </div>
+</section>
+
+<section class="container" style="padding-bottom: 80px;">
+  {%- if search.performed -%}
+    <p style="margin-bottom: 32px; color: var(--color-cream-muted);">
+      <span style="color: var(--color-cream);">{{ search.results_count }}</span> results for "{{ search.terms | escape }}"
+    </p>
+    {%- if search.results.size > 0 -%}
+      <div class="product-grid product-grid--three">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}
+            {% render 'product-card', product: item %}
+          {%- else -%}
+            <a href="{{ item.url }}" class="liquid-glass-soft border-glow" style="display: block; padding: 24px; border-radius: 24px;">
+              <p class="eyebrow">{{ item.object_type }}</p>
+              <h3 class="font-display" style="margin-top: 12px; font-size: 24px; color: var(--color-cream);">{{ item.title }}</h3>
+              {%- if item.excerpt != blank -%}
+                <p style="margin-top: 12px; font-size: 14px; color: var(--color-cream-muted);">{{ item.excerpt | strip_html | truncatewords: 30 }}</p>
+              {%- endif -%}
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="liquid-glass-soft" style="padding: 64px 32px; text-align: center; border-radius: 24px;">
+        <p class="font-display" style="font-size: 24px; color: var(--color-cream);">Nothing matches "{{ search.terms | escape }}"</p>
+        <p style="margin-top: 12px; color: var(--color-cream-muted);">Try a different keyword, or browse the full catalogue.</p>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Search",
+  "settings": []
+}
+{% endschema %}

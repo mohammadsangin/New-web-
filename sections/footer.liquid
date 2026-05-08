@@ -1,0 +1,188 @@
+<footer class="site-footer noise">
+  <div class="site-footer__rule" aria-hidden="true"></div>
+  <div
+    aria-hidden="true"
+    style="position: absolute; left: 50%; top: -120px; width: 920px; height: 420px; transform: translateX(-50%); pointer-events: none; opacity: 0.5; filter: blur(60px); background: radial-gradient(circle, hsla(32,80%,58%,0.32), hsla(22,48%,42%,0.18) 38%, transparent 68%);"
+  ></div>
+
+  <div class="container site-footer__inner">
+    <div class="site-footer__top">
+      <div>
+        <div class="brand">
+          <span class="brand__dot-wrap">
+            <span class="brand__dot"></span>
+          </span>
+          <span>
+            <span class="brand__name">{{ section.settings.brand_name | default: shop.name | split: ' ' | first }}</span>
+            <span class="brand__tag">{{ section.settings.brand_tagline | default: 'Lighting' }}</span>
+          </span>
+        </div>
+        <p class="site-footer__brand-text">
+          {{ section.settings.brand_description }}
+        </p>
+        {%- if section.settings.show_newsletter -%}
+          {%- form 'customer', class: 'newsletter-form', style: 'margin-top: 32px; max-width: 420px;' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <p class="eyebrow">{{ section.settings.newsletter_label }}</p>
+            {%- if form.posted_successfully? -%}
+              <p style="margin-top: 12px; color: var(--color-success); font-size: 14px;">
+                {{ section.settings.newsletter_success }}
+              </p>
+            {%- else -%}
+              <div style="margin-top: 12px; display: flex; gap: 8px;">
+                <input
+                  type="email"
+                  name="contact[email]"
+                  class="input"
+                  placeholder="your@email.com"
+                  required
+                  aria-label="Email"
+                >
+                <button type="submit" class="btn btn--primary btn--lg" name="commit">Subscribe</button>
+              </div>
+            {%- endif -%}
+          {%- endform -%}
+        {%- endif -%}
+      </div>
+
+      <div class="site-footer__cols">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'column' -%}
+            <div class="footer-col" {{ block.shopify_attributes }}>
+              <h4>{{ block.settings.heading }}</h4>
+              <ul>
+                {%- for i in (1..6) -%}
+                  {%- assign label_key = 'link_' | append: i | append: '_label' -%}
+                  {%- assign link_key = 'link_' | append: i | append: '_url' -%}
+                  {%- assign label = block.settings[label_key] -%}
+                  {%- assign link = block.settings[link_key] -%}
+                  {%- if label != blank -%}
+                    <li>
+                      <a href="{{ link | default: '#' }}">{{ label }}</a>
+                    </li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <p class="site-footer__big" aria-hidden="true">{{ shop.name }}</p>
+
+    <div class="site-footer__bottom">
+      <p>© {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
+      <div class="site-footer__legal">
+        {%- if shop.policies %}
+          {%- for policy in shop.policies -%}
+            {%- if policy.body != blank -%}
+              <a href="{{ policy.url }}">{{ policy.title }}</a>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "text", "id": "brand_name", "label": "Brand name", "default": "Kymra" },
+    { "type": "text", "id": "brand_tagline", "label": "Brand tagline", "default": "Lighting" },
+    {
+      "type": "textarea",
+      "id": "brand_description",
+      "label": "Brand description",
+      "default": "Kymra Lighting curates decorative lighting for homes, studios, and projects where atmosphere matters."
+    },
+    { "type": "header", "content": "Newsletter" },
+    { "type": "checkbox", "id": "show_newsletter", "label": "Show newsletter signup", "default": true },
+    { "type": "text", "id": "newsletter_label", "label": "Newsletter eyebrow", "default": "Lighting notes for considered interiors" },
+    { "type": "text", "id": "newsletter_success", "label": "Success message", "default": "Thank you — added to the journal list." }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Link column",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading" },
+        { "type": "text", "id": "link_1_label", "label": "Link 1 label" },
+        { "type": "url",  "id": "link_1_url",   "label": "Link 1 URL" },
+        { "type": "text", "id": "link_2_label", "label": "Link 2 label" },
+        { "type": "url",  "id": "link_2_url",   "label": "Link 2 URL" },
+        { "type": "text", "id": "link_3_label", "label": "Link 3 label" },
+        { "type": "url",  "id": "link_3_url",   "label": "Link 3 URL" },
+        { "type": "text", "id": "link_4_label", "label": "Link 4 label" },
+        { "type": "url",  "id": "link_4_url",   "label": "Link 4 URL" },
+        { "type": "text", "id": "link_5_label", "label": "Link 5 label" },
+        { "type": "url",  "id": "link_5_url",   "label": "Link 5 URL" },
+        { "type": "text", "id": "link_6_label", "label": "Link 6 label" },
+        { "type": "url",  "id": "link_6_url",   "label": "Link 6 URL" }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "column",
+        "settings": {
+          "heading": "Shop",
+          "link_1_label": "Ceiling Lights",
+          "link_1_url": "/collections/ceiling-lights",
+          "link_2_label": "Floor Lamps",
+          "link_2_url": "/collections/floor-lamps",
+          "link_3_label": "Outdoor Lighting",
+          "link_3_url": "/collections/outdoor",
+          "link_4_label": "Switches & Sockets",
+          "link_4_url": "/collections/switches-sockets"
+        }
+      },
+      {
+        "type": "column",
+        "settings": {
+          "heading": "Support",
+          "link_1_label": "Contact",
+          "link_1_url": "/pages/contact",
+          "link_2_label": "Delivery",
+          "link_2_url": "/pages/faq",
+          "link_3_label": "Returns",
+          "link_3_url": "/pages/faq",
+          "link_4_label": "FAQ",
+          "link_4_url": "/pages/faq"
+        }
+      },
+      {
+        "type": "column",
+        "settings": {
+          "heading": "Explore",
+          "link_1_label": "Inspiration",
+          "link_1_url": "/pages/inspiration",
+          "link_2_label": "Reviews",
+          "link_2_url": "/pages/reviews",
+          "link_3_label": "Journal",
+          "link_3_url": "/blogs/news",
+          "link_4_label": "Featured",
+          "link_4_url": "/collections/featured"
+        }
+      },
+      {
+        "type": "column",
+        "settings": {
+          "heading": "Company",
+          "link_1_label": "About",
+          "link_1_url": "/pages/about",
+          "link_2_label": "Brands",
+          "link_2_url": "/pages/brands",
+          "link_3_label": "Privacy Policy",
+          "link_3_url": "/policies/privacy-policy",
+          "link_4_label": "Terms",
+          "link_4_url": "/policies/terms-of-service"
+        }
+      }
+    ]
+  }
+}
+{% endschema %}

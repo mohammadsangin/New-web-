@@ -1,0 +1,69 @@
+<section class="section-pad">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-header">
+        <p class="eyebrow section-header__eyebrow">{{ section.settings.eyebrow }}</p>
+        <h2 class="section-header__title italic-em">{{ section.settings.title }}</h2>
+        <p class="section-header__description">{{ section.settings.description }}</p>
+      </div>
+    </div>
+
+    <div class="threed border-glow noise reveal">
+      <div class="threed__viewport">
+        <div class="threed__glow" aria-hidden="true"></div>
+        <svg viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;" aria-hidden="true">
+          <defs>
+            <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="hsla(38,55%,68%,0.18)"/>
+              <stop offset="100%" stop-color="hsla(38,55%,68%,0)"/>
+            </linearGradient>
+          </defs>
+          <g stroke="hsla(38,55%,68%,0.18)" stroke-width="1">
+            <line x1="0" y1="420" x2="600" y2="300"/><line x1="120" y1="420" x2="600" y2="300"/><line x1="240" y1="420" x2="600" y2="300"/><line x1="360" y1="420" x2="600" y2="300"/><line x1="480" y1="420" x2="600" y2="300"/><line x1="600" y1="420" x2="600" y2="300"/><line x1="720" y1="420" x2="600" y2="300"/><line x1="840" y1="420" x2="600" y2="300"/><line x1="960" y1="420" x2="600" y2="300"/><line x1="1080" y1="420" x2="600" y2="300"/><line x1="1200" y1="420" x2="600" y2="300"/>
+            <line x1="0" y1="420" x2="1200" y2="420" opacity="0.18"/>
+            <line x1="0" y1="500" x2="1200" y2="500" opacity="0.12"/>
+            <line x1="0" y1="600" x2="1200" y2="600" opacity="0.08"/>
+          </g>
+          <rect x="0" y="420" width="1200" height="340" fill="url(#floor)"/>
+          <rect x="80" y="80" width="1040" height="640" fill="none" stroke="hsla(38,55%,68%,0.18)" stroke-width="1" rx="12"/>
+        </svg>
+        <div class="threed__bottom">
+          <div>
+            <p class="eyebrow" style="display:inline-flex;align-items:center;gap:8px;color:hsla(42,32%,92%,0.8);">
+              {% render 'icon', icon: 'sparkles', size: 12 %}
+              Coming soon
+            </p>
+            <h3 style="margin-top: 12px; font-family: var(--font-display); font-size: clamp(22px, 2.6vw, 36px); color: var(--color-cream);">Virtual lighting preview</h3>
+            <p style="margin-top: 8px; max-width: 420px; font-size: 13px; color: var(--color-cream-muted);">Pin lights into your room and preview the warmth before you buy.</p>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <a class="btn btn--primary btn--lg" href="{{ section.settings.cta1_link | default: '/pages/studio' }}">
+              {% render 'icon', icon: 'move-3d', size: 14 %}
+              {{ section.settings.cta1_label | default: 'Enter 3D room' }}
+            </a>
+            <a class="btn btn--glass btn--lg" href="{{ section.settings.cta2_link | default: '/pages/inspiration' }}">
+              {{ section.settings.cta2_label | default: 'View inspiration' }}
+              {% render 'icon', icon: 'arrow-up-right', size: 14 %}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "3D experience",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "3D room experience" },
+    { "type": "richtext", "id": "title", "label": "Title", "default": "<p>Walk through your room. <em>Switch on the lights.</em></p>" },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "Walk through a virtual room, place lighting, and explore atmosphere before you buy." },
+    { "type": "text", "id": "cta1_label", "label": "Primary CTA", "default": "Enter 3D room" },
+    { "type": "url", "id": "cta1_link", "label": "Primary CTA link" },
+    { "type": "text", "id": "cta2_label", "label": "Secondary CTA", "default": "View inspiration" },
+    { "type": "url", "id": "cta2_link", "label": "Secondary CTA link" }
+  ],
+  "presets": [{ "name": "3D experience" }]
+}
+{% endschema %}

@@ -1,0 +1,28 @@
+{%- comment -%}
+  Cart drawer — populated client-side from /cart.js
+{%- endcomment -%}
+
+<div class="drawer" data-cart-drawer aria-hidden="true" role="dialog" aria-label="Cart">
+  <div class="drawer__overlay" data-close-cart></div>
+  <aside class="drawer__panel">
+    <header class="drawer__head">
+      <div>
+        <h2 class="drawer__title">Your lighting edit</h2>
+        <p style="margin-top: 4px; font-size: 12px; color: var(--color-cream-faint);">
+          Curated pieces ready for your project.
+        </p>
+      </div>
+      <button type="button" class="drawer__close" data-close-cart aria-label="Close cart">
+        {% render 'icon', icon: 'close', size: 14 %}
+      </button>
+    </header>
+    <div class="drawer__body" data-cart-body>
+      <div class="cart-empty">
+        <p class="cart-empty__title">Your room is still waiting for its first glow.</p>
+        <p class="cart-empty__body">Browse our chandeliers, pendants, and wall lights.</p>
+        <a class="btn btn--primary btn--lg" href="{{ routes.collections_url }}">Explore collections</a>
+      </div>
+    </div>
+    <div class="drawer__foot" data-cart-foot></div>
+  </aside>
+</div>

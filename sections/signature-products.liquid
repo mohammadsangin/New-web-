@@ -1,0 +1,84 @@
+<section class="section-pad">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-header">
+        <p class="eyebrow section-header__eyebrow">{{ section.settings.eyebrow }}</p>
+        <h2 class="section-header__title italic-em">{{ section.settings.title }}</h2>
+        <p class="section-header__description">{{ section.settings.description }}</p>
+      </div>
+    </div>
+
+    <div class="product-grid" style="margin-top: 56px;">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'product' -%}
+          {%- assign product = all_products[block.settings.product] -%}
+          {%- if product != blank and product != empty -%}
+            {% render 'product-card', product: product %}
+          {%- else -%}
+            {%- comment %} Fallback card so theme editor has something visible until products are linked {%- endcomment -%}
+            <article class="product-card reveal" {{ block.shopify_attributes }}>
+              <a class="product-card__media" href="{{ block.settings.fallback_link | default: '/collections/all' }}">
+                {%- if block.settings.fallback_asset != blank -%}
+                  <img class="product-card__image" src="{{ block.settings.fallback_asset | asset_url }}" alt="{{ block.settings.fallback_title | escape }}" loading="lazy" width="1122" height="1402">
+                {%- else -%}
+                  <div class="product-card__image" style="background: linear-gradient(135deg, hsla(38,55%,68%,0.12), hsla(22,48%,42%,0.32));"></div>
+                {%- endif -%}
+                {%- if block.settings.fallback_status != blank -%}
+                  <div class="product-card__badges">
+                    <span class="product-card__badge product-card__badge--champagne">{{ block.settings.fallback_status }}</span>
+                  </div>
+                {%- endif -%}
+              </a>
+              <div class="product-card__info">
+                <div style="min-width: 0; flex: 1;">
+                  <p class="product-card__category">{{ block.settings.fallback_category | default: 'Lighting' }}</p>
+                  <h3 class="product-card__title">{{ block.settings.fallback_title | default: 'Product' }}</h3>
+                </div>
+                {%- if block.settings.fallback_price != blank -%}
+                  <div class="product-card__price">{{ block.settings.fallback_price }}</div>
+                {%- endif -%}
+              </div>
+            </article>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Signature Products",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Signature pieces" },
+    { "type": "richtext", "id": "title", "label": "Title", "default": "<p>Designed to <em>hold</em> the room.</p>" },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "Four standout pieces selected for atmosphere, finish, and presence." }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "header", "content": "Fallback (used until a product is linked)" },
+        { "type": "text", "id": "fallback_title", "label": "Title fallback" },
+        { "type": "text", "id": "fallback_category", "label": "Category fallback" },
+        { "type": "text", "id": "fallback_status", "label": "Status badge fallback" },
+        { "type": "text", "id": "fallback_price", "label": "Price fallback" },
+        { "type": "text", "id": "fallback_asset", "label": "Image asset filename" },
+        { "type": "url", "id": "fallback_link", "label": "Fallback link" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "default": {
+    "blocks": [
+      { "type": "product", "settings": { "fallback_title": "Aurelia Glass Chandelier", "fallback_category": "Chandeliers", "fallback_status": "Best Seller", "fallback_price": "£1,480", "fallback_asset": "product-ring-chandelier.png" } },
+      { "type": "product", "settings": { "fallback_title": "Valen Smoked Glass Pendant", "fallback_category": "Pendant Lights", "fallback_status": "New", "fallback_price": "£385", "fallback_asset": "product-ribbed-glass-pendant.png" } },
+      { "type": "product", "settings": { "fallback_title": "Nocturne Linear Island Pendant", "fallback_category": "Pendant Lights", "fallback_status": "Limited", "fallback_price": "£1,140", "fallback_asset": "hero-dining.png" } },
+      { "type": "product", "settings": { "fallback_title": "Elara Alabaster Table Lamp", "fallback_category": "Table Lamps", "fallback_status": "Top Rated", "fallback_price": "£540", "fallback_asset": "product-alabaster-table-lamp.png" } }
+    ]
+  },
+  "presets": [{ "name": "Signature Products" }]
+}
+{% endschema %}

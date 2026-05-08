@@ -1,0 +1,13 @@
+<section class="container" style="padding: 200px 0; text-align: center;">
+  <p class="eyebrow section-header__eyebrow" style="justify-content: center;">404</p>
+  <h1 class="page-hero__title italic-em" style="margin-inline: auto;">This room hasn't been <em>lit</em> yet.</h1>
+  <p style="margin: 24px auto 0; max-width: 480px; color: var(--color-cream-muted);">The page you're looking for doesn't exist. Browse the collections instead.</p>
+  <a class="btn btn--primary btn--xl" href="{{ routes.collections_url }}" style="margin-top: 32px;">Browse collections {% render 'icon', icon: 'arrow-up-right', size: 16 %}</a>
+</section>
+
+{% schema %}
+{
+  "name": "404",
+  "settings": []
+}
+{% endschema %}

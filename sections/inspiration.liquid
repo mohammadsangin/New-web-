@@ -1,0 +1,76 @@
+<section class="section-pad">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-header">
+        <p class="eyebrow section-header__eyebrow">{{ section.settings.eyebrow }}</p>
+        <h2 class="section-header__title italic-em">{{ section.settings.title }}</h2>
+        <p class="section-header__description">{{ section.settings.description }}</p>
+      </div>
+    </div>
+
+    <div class="inspiration-grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'card' -%}
+          {%- liquid
+            assign image_url = block.settings.image | image_url: width: 1000
+            if block.settings.fallback_asset != blank and image_url == blank
+              assign image_url = block.settings.fallback_asset | asset_url
+            elsif block.settings.fallback_asset != blank and block.settings.image == blank
+              assign image_url = block.settings.fallback_asset | asset_url
+            endif
+          -%}
+          <a class="inspiration-card reveal" href="{{ block.settings.link | default: '#' }}" {{ block.shopify_attributes }}>
+            {%- if image_url != blank -%}
+              <img class="inspiration-card__image" src="{{ image_url }}" alt="{{ block.settings.title | escape }}" loading="lazy" width="1122" height="1402">
+            {%- else -%}
+              <div class="inspiration-card__image" style="background: linear-gradient(135deg, hsla(38,55%,68%,0.18), hsla(22,48%,42%,0.32));"></div>
+            {%- endif -%}
+            <div class="inspiration-card__overlay" aria-hidden="true"></div>
+            <div class="inspiration-card__body">
+              <p class="inspiration-card__category">{{ block.settings.category }}</p>
+              <h3 class="inspiration-card__title">{{ block.settings.title }}</h3>
+              <div style="margin-top: 16px; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-cream-muted);">
+                View this room
+                {% render 'icon', icon: 'arrow-up-right', size: 14 %}
+              </div>
+            </div>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Inspiration",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Inspiration" },
+    { "type": "richtext", "id": "title", "label": "Title", "default": "<p>Lighting in <em>considered</em> rooms.</p>" },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "Real interiors specified with Kymra lighting — dining rooms, kitchens, bedrooms, and hallways." }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Inspiration card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "fallback_asset", "label": "Fallback asset filename" },
+        { "type": "text", "id": "category", "label": "Category", "default": "Dining rooms" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Dining room, warm modern" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "default": {
+    "blocks": [
+      { "type": "card", "settings": { "category": "Dining rooms", "title": "Dining room, warm modern", "fallback_asset": "hero-dining.png", "link": "/pages/inspiration" } },
+      { "type": "card", "settings": { "category": "Kitchens", "title": "Kitchen island, smoked glass trio", "fallback_asset": "product-kitchen-island-trio.png", "link": "/pages/inspiration" } },
+      { "type": "card", "settings": { "category": "Bedrooms", "title": "Bedroom, paired wall lights", "fallback_asset": "product-ribbed-wall-sconce.png", "link": "/pages/inspiration" } },
+      { "type": "card", "settings": { "category": "Hallways", "title": "Stairwell, double-height drop", "fallback_asset": "product-ring-chandelier.png", "link": "/pages/inspiration" } }
+    ]
+  },
+  "presets": [{ "name": "Inspiration" }]
+}
+{% endschema %}

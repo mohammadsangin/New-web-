@@ -1,0 +1,20 @@
+<section class="page-hero">
+  <div class="page-hero__glow" aria-hidden="true"></div>
+  <div class="container">
+    <p class="eyebrow section-header__eyebrow reveal">Page</p>
+    <h1 class="page-hero__title italic-em reveal reveal--blur">{{ page.title }}</h1>
+  </div>
+</section>
+
+<section class="container" style="padding-bottom: 80px;">
+  <article class="rte" style="max-width: 760px; margin-inline: auto; font-size: 17px; line-height: 1.8; color: var(--color-cream-muted);">
+    {{ page.content }}
+  </article>
+</section>
+
+{% schema %}
+{
+  "name": "Page",
+  "settings": []
+}
+{% endschema %}

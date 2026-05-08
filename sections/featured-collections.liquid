@@ -1,0 +1,85 @@
+<section class="section-pad">
+  <div class="container">
+    <div style="display: flex; flex-direction: column; gap: 24px; justify-content: space-between;" class="reveal">
+      <div class="section-header">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow section-header__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="section-header__title italic-em">{{ section.settings.title }}</h2>
+        {%- if section.settings.description != blank -%}
+          <p class="section-header__description">{{ section.settings.description }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="collections-grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign collection = collections[block.settings.collection]
+          assign image_override = block.settings.fallback_asset
+          assign description_override = block.settings.description
+        -%}
+        {%- if collection != blank or image_override != blank -%}
+          {%- if collection != blank -%}
+            {% render 'collection-card', collection: collection, image_override: image_override, description_override: description_override %}
+          {%- else -%}
+            <a class="collection-card reveal" href="{{ block.settings.fallback_link | default: '/collections/all' }}" {{ block.shopify_attributes }}>
+              <div class="collection-card__media">
+                <img class="collection-card__image" src="{{ image_override | asset_url }}" alt="{{ block.settings.title | escape }}" loading="lazy" width="1122" height="1402">
+                <span class="collection-card__chip">{{ block.settings.chip | default: 'Collection' }}</span>
+              </div>
+              <div class="collection-card__body">
+                <div>
+                  <h3 class="collection-card__title">{{ block.settings.title }}</h3>
+                  {%- if description_override != blank -%}
+                    <p class="collection-card__desc">{{ description_override }}</p>
+                  {%- endif -%}
+                </div>
+                <div class="collection-card__cta">
+                  Explore collection
+                  {% render 'icon', icon: 'arrow-up-right', size: 14 %}
+                </div>
+              </div>
+            </a>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Collections",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Collections" },
+    { "type": "richtext", "id": "title", "label": "Title", "default": "<p>Lighting, <em>considered</em> for every layer.</p>" },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "Explore ceiling lights, floor lamps, outdoor lighting, and refined switches selected to finish a room with warmth and intention." }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection card",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "header", "content": "Fallback (used until a Shopify collection is linked)" },
+        { "type": "text", "id": "title", "label": "Title fallback" },
+        { "type": "text", "id": "description", "label": "Description fallback" },
+        { "type": "text", "id": "chip", "label": "Chip text fallback", "default": "Collection" },
+        { "type": "text", "id": "fallback_asset", "label": "Fallback asset filename" },
+        { "type": "url", "id": "fallback_link", "label": "Fallback link" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "default": {
+    "blocks": [
+      { "type": "collection", "settings": { "title": "Ceiling Lights", "description": "Flush-mount and semi-flush ceiling fittings.", "chip": "Ceiling", "fallback_asset": "product-chandelier-closeup.png", "fallback_link": "/collections/ceiling-lights" } },
+      { "type": "collection", "settings": { "title": "Floor Lamps", "description": "Bronze, brass, and linen — designed around posture and proportion.", "chip": "Floor lamps", "fallback_asset": "product-arc-floor-lamp.png", "fallback_link": "/collections/floor-lamps" } },
+      { "type": "collection", "settings": { "title": "Outdoor Lighting", "description": "Bronze lanterns and outdoor fittings designed to age outdoors.", "chip": "Outdoor", "fallback_asset": "product-outdoor-wall-lantern.png", "fallback_link": "/collections/outdoor" } },
+      { "type": "collection", "settings": { "title": "Switches & Sockets", "description": "Solid brass plates designed to coordinate with our lighting.", "chip": "Hardware", "fallback_asset": "product-brass-switch.png", "fallback_link": "/collections/switches-sockets" } }
+    ]
+  },
+  "presets": [{ "name": "Featured Collections" }]
+}
+{% endschema %}

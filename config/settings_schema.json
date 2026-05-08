@@ -1,0 +1,58 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Kymra Lighting",
+    "theme_version": "1.0.0",
+    "theme_author": "Kymra Lighting",
+    "theme_documentation_url": "https://kymralighting.co.uk",
+    "theme_support_url": "mailto:sales@kymralighting.co.uk"
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "32×32 PNG"
+      },
+      {
+        "type": "image_picker",
+        "id": "og_image",
+        "label": "Default Open Graph image",
+        "info": "1200×630 PNG/JPG"
+      }
+    ]
+  },
+  {
+    "name": "Colours",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Reference only"
+      },
+      {
+        "type": "paragraph",
+        "content": "Theme colours are defined in `application.css` and use the Kymra Lighting palette: dark luxury ink, warm cream, champagne accent, amber and copper warmth. To customise, edit CSS variables in the asset."
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Cormorant Garamond (display) + Inter (body). Loaded as web fonts in `application.css`."
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "The cart drawer uses Shopify's standard cart endpoints. No additional setup required."
+      }
+    ]
+  }
+]

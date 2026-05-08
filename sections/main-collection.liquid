@@ -1,0 +1,82 @@
+<section class="page-hero">
+  <div class="page-hero__glow" aria-hidden="true"></div>
+  <div class="container">
+    <p class="eyebrow section-header__eyebrow reveal">Collection</p>
+    <h1 class="page-hero__title italic-em reveal reveal--blur">{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <p class="page-hero__desc reveal">{{ collection.description | strip_html | truncate: 280 }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+<section class="container" style="padding-bottom: 80px;">
+  <div class="collection-toolbar">
+    <p style="font-size: 12px; color: var(--color-cream-muted);">
+      <span class="font-display" style="font-size: 16px; color: var(--color-cream);">{{ collection.products_count }}</span>
+      {% if collection.products_count == 1 %}piece{% else %}pieces{% endif %}
+    </p>
+    <form class="" id="sort-form">
+      <label class="eyebrow" for="sort-by" style="color:hsla(42,32%,92%,0.7);margin-right:8px;">Sort</label>
+      <select id="sort-by" name="sort_by" onchange="this.form.submit()" class="input" style="display:inline-block;width:auto;height:40px;padding:0 36px 0 16px;font-size:13px;border-radius:999px;">
+        {%- assign sort_options = 'manual,best-selling,title-ascending,title-descending,price-ascending,price-descending,created-descending,created-ascending' | split: ',' -%}
+        {%- for opt in sort_options -%}
+          <option value="{{ opt }}" {% if collection.sort_by == opt %}selected{% endif %}>
+            {%- case opt -%}
+              {%- when 'manual' -%}Featured
+              {%- when 'best-selling' -%}Best selling
+              {%- when 'title-ascending' -%}Alphabetical, A–Z
+              {%- when 'title-descending' -%}Alphabetical, Z–A
+              {%- when 'price-ascending' -%}Price · low to high
+              {%- when 'price-descending' -%}Price · high to low
+              {%- when 'created-descending' -%}New arrivals
+              {%- when 'created-ascending' -%}Oldest first
+            {%- endcase -%}
+          </option>
+        {%- endfor -%}
+      </select>
+    </form>
+  </div>
+
+  {%- if collection.products.size > 0 -%}
+    {%- paginate collection.products by 24 -%}
+      <div class="product-grid product-grid--three">
+        {%- for product in collection.products -%}
+          {% render 'product-card', product: product %}
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="pagination" aria-label="Pagination">
+          {%- if paginate.previous -%}
+            <a href="{{ paginate.previous.url }}">←</a>
+          {%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}
+              <a href="{{ part.url }}">{{ part.title }}</a>
+            {%- elsif part.title == paginate.current_page -%}
+              <span class="pagination__current">{{ part.title }}</span>
+            {%- else -%}
+              <span>{{ part.title }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}
+            <a href="{{ paginate.next.url }}">→</a>
+          {%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  {%- else -%}
+    <div class="liquid-glass-soft" style="padding: 64px 32px; text-align: center; border-radius: 24px;">
+      <h3 class="font-display" style="font-size: 24px; color: var(--color-cream);">No pieces in this collection yet.</h3>
+      <p style="margin-top: 12px; color: var(--color-cream-muted);">Check back soon, or browse the full catalogue.</p>
+      <a class="btn btn--primary btn--lg" href="{{ routes.collections_url }}" style="margin-top: 24px;">Browse all collections</a>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": []
+}
+{% endschema %}

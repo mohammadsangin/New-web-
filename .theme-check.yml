@@ -1,0 +1,17 @@
+root: "."
+
+ignore:
+  - "node_modules/**"
+  - "**/*.md"
+
+PaginationSize:
+  enabled: false
+
+UnusedAssign:
+  enabled: false
+
+DeprecateLazysizes:
+  enabled: false
+
+AssetPreload:
+  enabled: false

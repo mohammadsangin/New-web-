@@ -1,0 +1,45 @@
+<section class="page-hero">
+  <div class="page-hero__glow" aria-hidden="true"></div>
+  <div class="container">
+    <p class="eyebrow section-header__eyebrow">Account</p>
+    <h1 class="page-hero__title italic-em">Welcome, <em>{{ customer.first_name | default: customer.email }}</em>.</h1>
+  </div>
+</section>
+
+<section class="container" style="padding-bottom: 80px;">
+  <div style="display: grid; grid-template-columns: 1fr; gap: 32px; max-width: 960px; margin-inline: auto;">
+    <div>
+      <h2 class="font-display" style="font-size: 28px; color: var(--color-cream);">Order history</h2>
+      {% if customer.orders.size > 0 %}
+        <table style="width:100%; margin-top: 24px; border-collapse: collapse;">
+          <thead>
+            <tr style="border-bottom: 1px solid hsla(42,32%,92%,0.08); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-cream-faint);">
+              <th style="text-align:left; padding: 10px 0;">Order</th>
+              <th style="text-align:left;">Date</th>
+              <th style="text-align:left;">Total</th>
+              <th style="text-align:left;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in customer.orders %}
+              <tr style="border-bottom: 1px solid hsla(42,32%,92%,0.06);">
+                <td style="padding: 14px 0; color: var(--color-cream);">
+                  <a href="{{ order.customer_url }}">{{ order.name }}</a>
+                </td>
+                <td>{{ order.created_at | date: '%-d %b %Y' }}</td>
+                <td>{{ order.total_price | money }}</td>
+                <td>{{ order.fulfillment_status_label }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p style="margin-top: 16px; color: var(--color-cream-muted);">No orders yet.</p>
+      {% endif %}
+    </div>
+    <div>
+      {{ 'customer.account.log_out' | t }}
+      <a href="{{ routes.account_logout_url }}" class="btn btn--glass btn--md">Log out</a>
+    </div>
+  </div>
+</section>
