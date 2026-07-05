@@ -35,8 +35,8 @@
   --maxw: 1360px;
   --gutter: clamp(16px, 4vw, 40px);
   --section-pad: clamp(48px, 6vw, 96px);
-  --radius: 3px;
-  --radius-lg: 6px;
+  --radius: 10px;
+  --radius-lg: 16px;
 
   /* Motion */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -544,9 +544,11 @@ p:last-child { margin-bottom: 0; }
   flex-direction: column;
   transition: transform var(--dur-drawer) var(--ease);
   visibility: hidden;
+  overflow: hidden; /* clip the rounded inner edge */
 }
-.drawer--left { left: 0; transform: translateX(-100%); }
-.drawer--right { right: 0; transform: translateX(100%); }
+/* Round only the inward-facing edge so the panel meets the viewport cleanly */
+.drawer--left { left: 0; transform: translateX(-100%); border-top-right-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg); }
+.drawer--right { right: 0; transform: translateX(100%); border-top-left-radius: var(--radius-lg); border-bottom-left-radius: var(--radius-lg); }
 .drawer.is-open { transform: none; visibility: visible; }
 .drawer__header {
   display: flex;
