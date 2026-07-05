@@ -12,6 +12,7 @@
     "hero": {
       "type": "hero",
       "settings": {
+        "image": "shopify://shop_images/ChatGPT_Image_Jul_5_2026_05_44_07_PM.png",
         "alignment": "left",
         "eyebrow": "Solid brass, made to order",
         "heading": "Lighting with a considered hand",
