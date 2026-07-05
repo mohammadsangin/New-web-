@@ -1,6 +1,15 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
-    "logo_width": 140,
+    "logo_width": 220,
     "color_bg": "#F5F1E9",
     "color_surface": "#FEFDFB",
     "color_panel": "#EFEADD",
@@ -20,7 +29,88 @@
     "social_facebook": "",
     "contact_phone": "0333 090 0045",
     "contact_email": "sales@kymralighting.co.uk",
-    "registered_office": "3rd Floor, 86–90 Paul Street, London EC2A 4NE"
+    "registered_office": "3rd Floor, 86–90 Paul Street, London EC2A 4NE",
+    "sections": {
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "blocks": {
+          "announcement-bar-0": {
+            "type": "message",
+            "settings": {
+              "text": "Free UK delivery on orders over £300",
+              "link": ""
+            }
+          },
+          "announcement-bar-1": {
+            "type": "message",
+            "settings": {
+              "text": "Made to order — allow 3–4 weeks for your piece",
+              "link": ""
+            }
+          },
+          "announcement-bar-2": {
+            "type": "message",
+            "settings": {
+              "text": "Expert advice — 0333 090 0045",
+              "link": ""
+            }
+          }
+        },
+        "block_order": [
+          "announcement-bar-0",
+          "announcement-bar-1",
+          "announcement-bar-2"
+        ],
+        "settings": {
+          "rotate_speed": 5
+        }
+      },
+      "header": {
+        "type": "header",
+        "settings": {
+          "logo": "shopify://shop_images/BIG_Kymra_logo_for_flows_eg_klaviyo_1800_x_340_px.png",
+          "menu": "main-menu"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "blocks": {
+          "footer-0": {
+            "type": "menu",
+            "settings": {
+              "heading": "Shop",
+              "menu": ""
+            }
+          },
+          "footer-1": {
+            "type": "menu",
+            "settings": {
+              "heading": "Help",
+              "menu": ""
+            }
+          },
+          "footer-2": {
+            "type": "newsletter",
+            "settings": {
+              "heading": "Join the list",
+              "body": "Considered new pieces and interior notes. No noise."
+            }
+          }
+        },
+        "block_order": [
+          "footer-0",
+          "footer-1",
+          "footer-2"
+        ],
+        "settings": {
+          "brand_name": "KYMRA",
+          "tagline": "Solid brass lighting for considered interiors. Period & Art Deco, made to order in the UK.",
+          "show_payments": true,
+          "policy_menu": ""
+        }
+      }
+    },
+    "content_for_index": []
   },
   "presets": {
     "Kymra Lighting": {
