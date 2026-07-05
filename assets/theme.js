@@ -123,20 +123,87 @@
   }
 
   /* ======================================================================
-     ANNOUNCEMENT BAR ROTATOR
+     ANNOUNCEMENT BAR — auto-rotate + arrows + directional slide.
+     Pauses on hover/focus and when the tab is hidden; under reduced motion
+     it swaps instantly and does not auto-rotate (arrows still work).
      ====================================================================== */
   function initAnnouncement() {
     var bar = $('[data-announcement]');
     if (!bar) return;
-    var items = $all('.announcement__item', bar);
+    var items = $all('[data-ann-item]', bar);
     if (items.length < 2) return;
-    var interval = parseInt(bar.getAttribute('data-rotate'), 10) || 5000;
-    var i = 0;
-    setInterval(function () {
-      items[i].classList.remove('is-active');
-      i = (i + 1) % items.length;
-      items[i].classList.add('is-active');
-    }, interval);
+
+    var interval = parseInt(bar.getAttribute('data-interval'), 10) || 6000;
+    if (interval < 5000) interval = 5000;
+    var index = 0;
+    var animating = false;
+    var timer = null;
+
+    function go(target, dir) {
+      target = (target + items.length) % items.length;
+      if (target === index) return;
+      var current = items[index];
+      var next = items[target];
+
+      if (reduceMotion) {
+        current.classList.remove('is-active');
+        next.classList.add('is-active');
+        index = target;
+        return;
+      }
+      if (animating) return;
+      animating = true;
+
+      var fromY = dir >= 0 ? '100%' : '-100%'; // incoming enters from below (fwd) / above (back)
+      var toY = dir >= 0 ? '-100%' : '100%';   // outgoing exits up (fwd) / down (back)
+
+      next.style.transition = 'none';
+      next.style.transform = 'translateY(' + fromY + ')';
+      next.style.opacity = '0';
+      next.classList.add('is-active');
+      void next.offsetWidth; // commit start position before transitioning
+
+      next.style.transition = '';
+      next.style.transform = 'translateY(0)';
+      next.style.opacity = '1';
+      current.style.transform = 'translateY(' + toY + ')';
+      current.style.opacity = '0';
+      current.classList.remove('is-active');
+
+      var leaving = current;
+      index = target;
+      setTimeout(function () {
+        leaving.style.transition = 'none';
+        leaving.style.transform = '';
+        leaving.style.opacity = '';
+        void leaving.offsetWidth;
+        leaving.style.transition = '';
+        next.style.transform = '';
+        next.style.opacity = '';
+        animating = false;
+      }, 560);
+    }
+
+    function start() {
+      if (reduceMotion || timer) return;
+      timer = setInterval(function () { go(index + 1, 1); }, interval);
+    }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+    var prev = $('[data-ann-prev]', bar);
+    var next = $('[data-ann-next]', bar);
+    if (prev) prev.addEventListener('click', function () { go(index - 1, -1); });
+    if (next) next.addEventListener('click', function () { go(index + 1, 1); });
+
+    bar.addEventListener('mouseenter', stop);
+    bar.addEventListener('mouseleave', start);
+    bar.addEventListener('focusin', stop);
+    bar.addEventListener('focusout', start);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stop(); else start();
+    });
+
+    start();
   }
 
   /* ======================================================================
