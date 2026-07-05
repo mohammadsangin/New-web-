@@ -41,6 +41,14 @@
 
   <div class="container">
     {%- comment -%} ===== Link columns + newsletter ===== {%- endcomment -%}
+    {%- liquid
+      assign show_contact = false
+      if section.settings.show_contact_column
+        if settings.contact_phone != blank or settings.contact_email != blank
+          assign show_contact = true
+        endif
+      endif
+    -%}
     <div class="footer__main">
       <div class="footer__menus">
         {%- for block in section.blocks -%}
@@ -58,6 +66,21 @@
             {%- endif -%}
           {%- endif -%}
         {%- endfor -%}
+
+        {%- comment -%} Contact column — real details, always tidy even before menus are assigned {%- endcomment -%}
+        {%- if show_contact -%}
+          <div class="footer__col">
+            <p class="footer__col-head">{{ 'general.footer.contact' | t }}</p>
+            <ul class="footer__links">
+              {%- if settings.contact_phone != blank -%}
+                <li><a href="tel:{{ settings.contact_phone | replace: ' ', '' }}">{{ settings.contact_phone }}</a></li>
+              {%- endif -%}
+              {%- if settings.contact_email != blank -%}
+                <li><a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a></li>
+              {%- endif -%}
+            </ul>
+          </div>
+        {%- endif -%}
       </div>
 
       {%- for block in section.blocks -%}
@@ -143,6 +166,8 @@
     { "type": "text", "id": "trust_made", "label": "Made to order", "default": "Made to order — allow 3–4 weeks" },
     { "type": "text", "id": "trust_returns", "label": "Returns", "default": "30-day returns" },
     { "type": "text", "id": "trust_advice", "label": "Expert advice", "default": "Expert advice — 0333 090 0045" },
+    { "type": "header", "content": "Link columns" },
+    { "type": "checkbox", "id": "show_contact_column", "label": "Show contact column", "info": "Adds a tidy column with the phone and email from Theme settings → Contact.", "default": true },
     { "type": "header", "content": "Bottom bar" },
     { "type": "checkbox", "id": "show_payments", "label": "Show payment icons", "default": true },
     { "type": "link_list", "id": "policy_menu", "label": "Policy / legal menu", "info": "Shown in the bottom bar." }
