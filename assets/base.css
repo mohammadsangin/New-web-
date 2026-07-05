@@ -660,6 +660,70 @@ p:last-child { margin-bottom: 0; }
 .row-head__link { flex: none; }
 
 /* ==========================================================================
+   CATEGORY TILES (asymmetric editorial "shop by category")
+   ========================================================================== */
+.cat-tiles {
+  display: grid;
+  gap: clamp(12px, 1.6vw, 20px);
+  grid-template-columns: 1fr 1fr;
+}
+@media (min-width: 750px) {
+  .cat-tiles { grid-template-columns: 1.15fr 1fr; align-items: stretch; }
+}
+.cat-tiles__grid {
+  display: grid;
+  gap: clamp(12px, 1.6vw, 20px);
+  grid-template-columns: 1fr 1fr;
+  grid-column: 1 / -1;
+}
+@media (min-width: 750px) {
+  .cat-tiles__grid { grid-column: auto; }
+}
+.cat-tile {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+.cat-tile--feature { grid-column: 1 / -1; }
+@media (min-width: 750px) {
+  .cat-tile--feature { grid-column: auto; }
+  /* feature matches the height of the 2x2 grid beside it */
+  .cat-tile--feature .cat-tile__media { height: 100%; }
+  .cat-tile--feature .ratio-portrait { aspect-ratio: auto; height: 100%; }
+}
+.cat-tile__media { border-radius: var(--radius); }
+.cat-tile__media img { transition: transform 400ms var(--ease); }
+.cat-tile:hover .cat-tile__media img { transform: scale(1.04); }
+.cat-tile__scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(27,25,21,0) 38%, rgba(27,25,21,0.60) 100%);
+  border-radius: var(--radius);
+  pointer-events: none;
+}
+.cat-tile__body {
+  position: absolute;
+  left: clamp(14px, 1.6vw, 24px);
+  right: clamp(14px, 1.6vw, 24px);
+  bottom: clamp(14px, 1.6vw, 22px);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #fff;
+}
+.cat-tile__eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #fff;
+  opacity: 0.9;
+}
+.cat-tile__title { font-family: var(--font-display); font-size: 22px; line-height: 1.08; }
+.cat-tile__title--lg { font-size: clamp(26px, 3.2vw, 40px); }
+.cat-tile:focus-visible { outline: 2px solid var(--brass-deep); outline-offset: 3px; }
+
+/* ==========================================================================
    SHOP THE ROOM (dark editorial band)
    ========================================================================== */
 .editorial {

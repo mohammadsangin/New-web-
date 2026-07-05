@@ -1,0 +1,96 @@
+{%- comment -%}
+  Category tiles — editorial "shop by category". Asymmetric on desktop: the
+  first tile block is a large feature (~60%) beside a 2x2 of smaller tiles;
+  2-up grid on mobile. Block-driven (merchant sets image/label/heading/link
+  and reorders in the Customizer). Image-led and calm — no price/sale badges.
+{%- endcomment -%}
+<section class="section category-tiles">
+  <div class="container">
+    {%- if section.settings.eyebrow != blank or section.settings.heading != blank -%}
+      <div class="row-head reveal">
+        <div class="row-head__text">
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 class="section-head__title">{{ section.settings.heading | escape }}</h2>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.link_label != blank -%}
+          <a class="row-head__link link-underline" href="{{ section.settings.link_url | default: routes.all_products_collection_url }}">{{ section.settings.link_label | escape }}</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="cat-tiles">
+        {%- assign feature = section.blocks.first -%}
+        <a class="cat-tile cat-tile--feature reveal" href="{{ feature.settings.link | default: routes.all_products_collection_url }}" {{ feature.shopify_attributes }}>
+          <div class="cat-tile__media media ratio-portrait">
+            {% render 'responsive-image', image: feature.settings.image, ratio: 'portrait', sizes: '(min-width: 750px) 55vw, 100vw', alt: feature.settings.heading, priority: false %}
+          </div>
+          <span class="cat-tile__scrim"></span>
+          <span class="cat-tile__body">
+            {%- if feature.settings.label != blank -%}<span class="cat-tile__eyebrow">{{ feature.settings.label | escape }}</span>{%- endif -%}
+            <span class="cat-tile__title cat-tile__title--lg">{{ feature.settings.heading | escape }}</span>
+          </span>
+        </a>
+
+        {%- if section.blocks.size > 1 -%}
+          <div class="cat-tiles__grid">
+            {%- for block in section.blocks offset: 1 -%}
+              <a class="cat-tile reveal" href="{{ block.settings.link | default: routes.all_products_collection_url }}" {{ block.shopify_attributes }}>
+                <div class="cat-tile__media media ratio-square">
+                  {% render 'responsive-image', image: block.settings.image, ratio: 'square', sizes: '(min-width: 750px) 22vw, 50vw', alt: block.settings.heading %}
+                </div>
+                <span class="cat-tile__scrim"></span>
+                <span class="cat-tile__body">
+                  {%- if block.settings.label != blank -%}<span class="cat-tile__eyebrow">{{ block.settings.label | escape }}</span>{%- endif -%}
+                  <span class="cat-tile__title">{{ block.settings.heading | escape }}</span>
+                </span>
+              </a>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Category tiles",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Explore" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by category" },
+    { "type": "text", "id": "link_label", "label": "View-all label", "default": "View all lighting" },
+    { "type": "url", "id": "link_url", "label": "View-all link" },
+    { "type": "paragraph", "content": "The first tile is the large feature; the rest form a 2x2 grid. Reorder blocks to change which is featured." }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Category tile",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Feature tile shows 4:5; small tiles show 1:1." },
+        { "type": "text", "id": "label", "label": "Category label", "info": "Small-caps eyebrow, e.g. Ceiling" },
+        { "type": "text", "id": "heading", "label": "Title", "default": "Category" },
+        { "type": "url", "id": "link", "label": "Link to collection" }
+      ]
+    }
+  ],
+  "max_blocks": 9,
+  "presets": [
+    {
+      "name": "Category tiles",
+      "blocks": [
+        { "type": "tile", "settings": { "label": "Ceiling", "heading": "Pendants" } },
+        { "type": "tile", "settings": { "label": "Ceiling", "heading": "Chandeliers" } },
+        { "type": "tile", "settings": { "label": "Wall", "heading": "Wall Lights" } },
+        { "type": "tile", "settings": { "label": "Portable", "heading": "Table & Floor" } },
+        { "type": "tile", "settings": { "label": "Exterior", "heading": "Outdoor" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

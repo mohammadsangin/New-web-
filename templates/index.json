@@ -13,6 +13,23 @@
         "cta2_link": "shopify://collections/all"
       }
     },
+    "category_tiles": {
+      "type": "category-tiles",
+      "settings": {
+        "eyebrow": "Explore",
+        "heading": "Shop by category",
+        "link_label": "View all lighting",
+        "link_url": "shopify://collections/all"
+      },
+      "blocks": {
+        "t1": { "type": "tile", "settings": { "label": "Ceiling", "heading": "Pendants" } },
+        "t2": { "type": "tile", "settings": { "label": "Ceiling", "heading": "Chandeliers" } },
+        "t3": { "type": "tile", "settings": { "label": "Wall", "heading": "Wall Lights" } },
+        "t4": { "type": "tile", "settings": { "label": "Portable", "heading": "Table & Floor" } },
+        "t5": { "type": "tile", "settings": { "label": "Exterior", "heading": "Outdoor" } }
+      },
+      "block_order": ["t1", "t2", "t3", "t4", "t5"]
+    },
     "featured_1": {
       "type": "featured-collection",
       "settings": {
@@ -59,5 +76,5 @@
       "block_order": ["b1", "b2", "b3", "b4"]
     }
   },
-  "order": ["hero", "featured_1", "shop_the_room", "featured_2", "trust"]
+  "order": ["hero", "category_tiles", "featured_1", "shop_the_room", "featured_2", "trust"]
 }
