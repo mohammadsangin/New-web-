@@ -143,42 +143,57 @@
       </div>
     </div>
 
-    {%- comment -%} ===== Full-width editorial details, below the sticky buy panel ===== {%- endcomment -%}
+    {%- comment -%}
+      ===== Full-width details — one exclusive accordion group =====
+      The editorial description becomes its own collapsible row alongside the
+      spec rows; opening one closes the others (see initAccordions in theme.js).
+      All rows are native <details>, closed by default; degrade gracefully with
+      JS off (independent, just not mutually exclusive).
+    {%- endcomment -%}
+    {%- assign has_details = false -%}
     {%- for block in section.blocks -%}
-      {%- case block.type -%}
-        {%- when 'description' -%}
-          {%- if product.description != blank -%}
-            <div class="pdp__details" {{ block.shopify_attributes }}>
-              <div class="pdp-desc rte">{{ product.description }}</div>
-            </div>
-          {%- endif -%}
-        {%- when 'accordions' -%}
-          {%- if block.settings.details != blank or block.settings.dimensions != blank or block.settings.delivery != blank -%}
-            <div class="pdp__details" {{ block.shopify_attributes }}>
-              <div class="accordions">
+      {%- if block.type == 'description' and product.description != blank -%}{%- assign has_details = true -%}{%- endif -%}
+      {%- if block.type == 'accordions' -%}
+        {%- if block.settings.details != blank or block.settings.dimensions != blank or block.settings.delivery != blank -%}{%- assign has_details = true -%}{%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if has_details -%}
+      <div class="pdp__details">
+        <div class="accordions" data-accordion-group>
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'description' -%}
+                {%- if product.description != blank -%}
+                  <details class="accordion" {{ block.shopify_attributes }}>
+                    <summary class="accordion__summary">{{ block.settings.title | default: 'Overview' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
+                    <div class="accordion__body rte">{{ product.description }}</div>
+                  </details>
+                {%- endif -%}
+              {%- when 'accordions' -%}
                 {%- if block.settings.details != blank -%}
-                  <details class="accordion">
+                  <details class="accordion" {{ block.shopify_attributes }}>
                     <summary class="accordion__summary">{{ block.settings.details_title | default: 'Details' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
                     <div class="accordion__body rte">{{ block.settings.details }}</div>
                   </details>
                 {%- endif -%}
                 {%- if block.settings.dimensions != blank -%}
-                  <details class="accordion">
+                  <details class="accordion" {{ block.shopify_attributes }}>
                     <summary class="accordion__summary">{{ block.settings.dimensions_title | default: 'Dimensions' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
                     <div class="accordion__body rte">{{ block.settings.dimensions }}</div>
                   </details>
                 {%- endif -%}
                 {%- if block.settings.delivery != blank -%}
-                  <details class="accordion">
+                  <details class="accordion" {{ block.shopify_attributes }}>
                     <summary class="accordion__summary">{{ block.settings.delivery_title | default: 'Delivery & returns' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
                     <div class="accordion__body rte">{{ block.settings.delivery }}</div>
                   </details>
                 {%- endif -%}
-              </div>
-            </div>
-          {%- endif -%}
-      {%- endcase -%}
-    {%- endfor -%}
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
   </div>
 
   {%- comment -%} Variant data for JS {%- endcomment -%}
@@ -261,7 +276,12 @@
         { "type": "text", "id": "line_3", "label": "Line 3", "default": "Made to order — allow 3–4 weeks" }
       ]
     },
-    { "type": "description", "name": "Description", "limit": 1 },
+    {
+      "type": "description", "name": "Description", "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Row title", "default": "Overview" }
+      ]
+    },
     {
       "type": "accordions", "name": "Accordions", "limit": 1,
       "settings": [

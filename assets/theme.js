@@ -640,6 +640,23 @@
   /* ======================================================================
      INIT
      ====================================================================== */
+  /* ======================================================================
+     EXCLUSIVE ACCORDIONS — opening one <details> closes its siblings.
+     Progressive enhancement: without JS the rows still open/close, just not
+     mutually exclusive.
+     ====================================================================== */
+  function initAccordions() {
+    $all('[data-accordion-group]').forEach(function (group) {
+      var items = $all('details', group);
+      items.forEach(function (d) {
+        d.addEventListener('toggle', function () {
+          if (!d.open) return;
+          items.forEach(function (other) { if (other !== d && other.open) other.open = false; });
+        });
+      });
+    });
+  }
+
   function init() {
     Drawers.init();
     Cart.init();
@@ -648,6 +665,7 @@
     initQtySteppers();
     initProduct();
     initCollection();
+    initAccordions();
   }
 
   if (document.readyState === 'loading') {
