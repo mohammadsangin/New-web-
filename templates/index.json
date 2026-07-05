@@ -28,6 +28,7 @@
         "t1": {
           "type": "tile",
           "settings": {
+            "image": "shopify://shop_images/lt-sh-13-pen459-br_1.webp",
             "label": "Ceiling",
             "heading": "Pendants",
             "link": ""
