@@ -53,6 +53,7 @@
         "t4": {
           "type": "tile",
           "settings": {
+            "image": "shopify://shop_images/w_560_h_560_r_contain_16acb240-60ec-4160-be3d-59316bf0ae00.avif",
             "label": "Portable",
             "heading": "Table & Floor",
             "link": ""
