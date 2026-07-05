@@ -1,20 +1,37 @@
 {%- comment -%}
-  Header: sticky. Wordmark/logo · centred nav from linklist · search/account/bag.
+  Header: sticky, three zones. Logo hard LEFT · primary nav CENTRED · utility
+  icons (search, account, cart) hard RIGHT on desktop. On mobile: hamburger
+  left, logo centred, cart right. Single logo element repositioned via CSS grid
+  areas (no duplicate markup, no CLS).
   Mega menu auto-selects: image-tile layout when a top-level item has >=2 image
   blocks; grouped columns when it has 3-level nesting; simple columns otherwise.
 {%- endcomment -%}
 {%- liquid
   assign menu = linklists[section.settings.menu]
+  assign logo_image = section.settings.logo | default: settings.logo
 -%}
 <div class="header">
   <div class="header__inner container">
-    <div class="header__nav-left">
-      <button class="header__icon header__menu-toggle" type="button"
-        data-drawer-open="menu-drawer" aria-label="{{ 'accessibility.open_menu' | t }}" aria-controls="menu-drawer" aria-expanded="false">
-        {% render 'icon', name: 'menu' %}
-      </button>
+    <button class="header__icon header__menu-toggle" type="button"
+      data-drawer-open="menu-drawer" aria-label="{{ 'accessibility.open_menu' | t }}" aria-controls="menu-drawer" aria-expanded="false">
+      {% render 'icon', name: 'menu' %}
+    </button>
 
-      <nav class="nav" aria-label="{{ 'accessibility.primary_nav' | t }}">
+    <a class="header__brand{% unless logo_image %} header__brand--text{% endunless %}" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+      {%- if logo_image != blank -%}
+        {%- assign logo_w = logo_image.width | default: 300 -%}
+        {%- assign logo_h = settings.logo_width | times: logo_image.height | divided_by: logo_w -%}
+        <img src="{{ logo_image | image_url: width: 400 }}"
+          srcset="{{ logo_image | image_url: width: 200 }} 200w, {{ logo_image | image_url: width: 400 }} 400w"
+          sizes="{{ settings.logo_width }}px"
+          width="{{ settings.logo_width }}" height="{{ logo_h }}"
+          alt="{{ shop.name | escape }}" style="width:{{ settings.logo_width }}px;height:auto;">
+      {%- else -%}
+        {{ shop.name | default: 'KYMRA' }}
+      {%- endif -%}
+    </a>
+
+    <nav class="nav" aria-label="{{ 'accessibility.primary_nav' | t }}">
         <ul class="nav__list">
           {%- for link in menu.links -%}
             {%- liquid
@@ -118,28 +135,13 @@
             </li>
           {%- endfor -%}
         </ul>
-      </nav>
-    </div>
-
-    <a class="header__brand" href="{{ routes.root_url }}">
-      {%- if section.settings.logo != blank -%}
-        {%- assign logo_w = section.settings.logo.width | default: 300 -%}
-        <img src="{{ section.settings.logo | image_url: width: 400 }}"
-          srcset="{{ section.settings.logo | image_url: width: 200 }} 200w, {{ section.settings.logo | image_url: width: 400 }} 400w"
-          sizes="{{ settings.logo_width }}px"
-          width="{{ settings.logo_width }}"
-          height="{{ settings.logo_width | times: section.settings.logo.height | divided_by: logo_w }}"
-          alt="{{ shop.name | escape }}" style="width:{{ settings.logo_width }}px">
-      {%- else -%}
-        {{ shop.name | default: 'KYMRA' }}
-      {%- endif -%}
-    </a>
+    </nav>
 
     <div class="header__actions">
-      <a class="header__icon" href="{{ routes.search_url }}" aria-label="{{ 'general.search.title' | t }}">
+      <a class="header__icon header__icon--desktop" href="{{ routes.search_url }}" aria-label="{{ 'general.search.title' | t }}">
         {% render 'icon', name: 'search' %}
       </a>
-      <a class="header__icon" href="{% if shop.customer_accounts_enabled %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" aria-label="{{ 'customer.account.title' | t }}">
+      <a class="header__icon header__icon--desktop" href="{% if shop.customer_accounts_enabled %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" aria-label="{{ 'customer.account.title' | t }}">
         {% render 'icon', name: 'account' %}
       </a>
       <a class="header__icon" href="{{ routes.cart_url }}" data-drawer-open="cart-drawer" aria-label="{{ 'cart.general.title' | t }}" aria-controls="cart-drawer" aria-expanded="false">
