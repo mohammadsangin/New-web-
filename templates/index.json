@@ -40,7 +40,7 @@
             "image": "shopify://shop_images/mlf363polbrsgl155-grey_60ba92f4-38d6-439e-8d25-f6cce6d0b271.jpg",
             "label": "Ceiling",
             "heading": "Chandeliers",
-            "link": ""
+            "link": "shopify://collections/chandeliers"
           }
         },
         "t3": {
@@ -58,7 +58,7 @@
             "image": "shopify://shop_images/w_560_h_560_r_contain_16acb240-60ec-4160-be3d-59316bf0ae00.avif",
             "label": "Portable",
             "heading": "Table & Floor",
-            "link": ""
+            "link": "shopify://collections/table-lamps"
           }
         },
         "t5": {
