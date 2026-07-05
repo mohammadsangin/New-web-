@@ -163,10 +163,13 @@
     }
 
     function refreshDrawer() {
-      // Re-render the cart drawer body + footer via the Section Rendering API.
-      return fetch(routes.cart_url + '?section_id=cart-drawer', { headers: { 'Accept': 'text/html' } })
-        .then(function (r) { return r.text(); })
-        .then(function (html) {
+      // Re-render the cart drawer via the Section Rendering API `sections=` param.
+      // This works for the cart-drawer section regardless of the current page.
+      return fetch(routes.cart_url + '?sections=cart-drawer', { headers: { 'Accept': 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var html = data && data['cart-drawer'];
+          if (!html) return;
           var fresh = getSectionHTML(html, '#cart-drawer .drawer__wrap');
           var current = $('#cart-drawer .drawer__wrap');
           if (fresh && current) current.innerHTML = fresh.innerHTML;
@@ -351,9 +354,20 @@
     }
 
     function render() {
-      var opts = currentOptions();
-      updateAvailability(opts);
-      var variant = findVariant(opts);
+      // No variant data (shouldn't happen) — leave the server-rendered state intact.
+      if (!variants.length) return;
+
+      var groups = $all('[data-option-index]', root);
+      var variant;
+      if (!groups.length) {
+        // Single-variant product: no option picker is rendered. Use the sole variant.
+        variant = variants[0];
+      } else {
+        var opts = currentOptions();
+        updateAvailability(opts);
+        variant = findVariant(opts);
+      }
+
       if (!variant) {
         if (idField) idField.value = '';
         if (addBtn) { addBtn.setAttribute('aria-disabled', 'true'); }

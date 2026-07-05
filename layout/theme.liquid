@@ -23,14 +23,13 @@
     assign body_bold = body_font | font_modify: 'weight', 'bold'
     assign heading_medium = heading_font | font_modify: 'weight', '500'
   -%}
-  {{ heading_font | font_face: font_display: 'swap' }}
-  {{ heading_medium | font_face: font_display: 'swap' }}
-  {{ body_font | font_face: font_display: 'swap' }}
-  {{ body_bold | font_face: font_display: 'swap' }}
-
   {{ 'base.css' | asset_url | stylesheet_tag }}
 
   <style>
+    {{ heading_font | font_face: font_display: 'swap' }}
+    {{ heading_medium | font_face: font_display: 'swap' }}
+    {{ body_font | font_face: font_display: 'swap' }}
+    {{ body_bold | font_face: font_display: 'swap' }}
     :root {
       --font-display: {{ heading_font.family }}, {{ heading_font.fallback_families }};
       --font-body: {{ body_font.family }}, {{ body_font.fallback_families }};
@@ -87,7 +86,7 @@
 
   {% section 'footer' %}
 
-  {% section 'cart-drawer' %}
+  {% render 'cart-drawer' %}
 
   {%- comment -%} Live region for AJAX cart announcements {%- endcomment -%}
   <div aria-live="polite" role="status" class="visually-hidden" data-cart-live></div>

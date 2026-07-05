@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ 'gift_cards.issued.title' | t: shop: shop.name }}</title>
   <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
-  {{ settings.heading_font | font_face: font_display: 'swap' }}
-  {{ settings.body_font | font_face: font_display: 'swap' }}
   {{ 'base.css' | asset_url | stylesheet_tag }}
   <style>
+    {{ settings.heading_font | font_face: font_display: 'swap' }}
+    {{ settings.body_font | font_face: font_display: 'swap' }}
     :root{
       --font-display: {{ settings.heading_font.family }}, {{ settings.heading_font.fallback_families }};
       --font-body: {{ settings.body_font.family }}, {{ settings.body_font.fallback_families }};
