@@ -1,0 +1,43 @@
+<div class="page-hero container">
+  <p class="eyebrow eyebrow--center">{{ 'customer.account.welcome' | t: name: customer.first_name | default: customer.email }}</p>
+  <h1 class="page-hero__title">{{ 'customer.account.title' | t }}</h1>
+</div>
+<div class="section container">
+  <div style="display:grid;gap:clamp(24px,4vw,48px);grid-template-columns:1fr;max-width:900px;margin-inline:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
+      <h2 style="font-size:var(--fs-h3);">{{ 'customer.orders.title' | t }}</h2>
+      <a class="link-underline" style="text-transform:none;letter-spacing:0;" href="{{ routes.account_addresses_url }}">{{ 'customer.account.addresses' | t }}</a>
+    </div>
+
+    {%- if customer.orders.size > 0 -%}
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+          <thead>
+            <tr style="text-align:left;border-bottom:1px solid var(--hairline);">
+              <th style="padding:12px 8px;">{{ 'customer.orders.order' | t }}</th>
+              <th style="padding:12px 8px;">{{ 'customer.orders.date' | t }}</th>
+              <th style="padding:12px 8px;">{{ 'customer.orders.payment' | t }}</th>
+              <th style="padding:12px 8px;">{{ 'customer.orders.fulfillment' | t }}</th>
+              <th style="padding:12px 8px;text-align:right;">{{ 'customer.orders.total' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%- for order in customer.orders -%}
+              <tr style="border-bottom:1px solid var(--hairline);">
+                <td style="padding:14px 8px;"><a class="link-underline" style="text-transform:none;letter-spacing:0;" href="{{ order.customer_url }}">{{ order.name }}</a></td>
+                <td style="padding:14px 8px;color:var(--muted);">{{ order.created_at | date: '%d %b %Y' }}</td>
+                <td style="padding:14px 8px;color:var(--muted);">{{ order.financial_status_label }}</td>
+                <td style="padding:14px 8px;color:var(--muted);">{{ order.fulfillment_status_label }}</td>
+                <td style="padding:14px 8px;text-align:right;">{{ order.total_price | money }}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+      </div>
+    {%- else -%}
+      <p style="color:var(--muted);">{{ 'customer.orders.none' | t }}</p>
+    {%- endif -%}
+
+    <p class="mt-24"><a class="link-underline" style="text-transform:none;letter-spacing:0;" href="{{ routes.account_logout_url }}">{{ 'customer.account.log_out' | t }}</a></p>
+  </div>
+</div>

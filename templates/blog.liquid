@@ -1,0 +1,38 @@
+<div class="page-hero container">
+  <p class="eyebrow eyebrow--center">{{ 'blogs.journal.eyebrow' | t }}</p>
+  <h1 class="page-hero__title">{{ blog.title }}</h1>
+</div>
+
+<div class="section container">
+  {%- paginate blog.articles by 9 -%}
+    <div class="article-grid">
+      {%- for article in blog.articles -%}
+        <article class="article-card reveal">
+          <a class="article-card__media media ratio-portrait" href="{{ article.url }}" tabindex="-1" aria-hidden="true" style="aspect-ratio:3/2;">
+            {%- if article.image -%}
+              {% render 'responsive-image', image: article.image, ratio: 'square', sizes: '(min-width:990px) 33vw, 100vw', alt: article.title %}
+            {%- else -%}
+              <div class="media-placeholder">{% render 'icon', name: 'image' %}</div>
+            {%- endif -%}
+          </a>
+          <p class="article-card__meta">{{ article.published_at | date: '%d %B %Y' }}{% if article.tags.size > 0 %} · {{ article.tags.first }}{% endif %}</p>
+          <h2 class="article-card__title"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+          {%- if article.excerpt_or_content != blank -%}
+            <p class="article-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
+          {%- endif -%}
+        </article>
+      {%- endfor -%}
+    </div>
+    {%- if paginate.pages > 1 -%}
+      <nav class="pagination" aria-label="{{ 'general.pagination.label' | t }}">
+        {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">{% render 'icon', name: 'chevron-left' %}</a>{%- endif -%}
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>
+          {%- elsif part.title == paginate.current_page -%}<span class="is-current" aria-current="page">{{ part.title }}</span>
+          {%- else -%}<span>{{ part.title }}</span>{%- endif -%}
+        {%- endfor -%}
+        {%- if paginate.next -%}<a href="{{ paginate.next.url }}">{% render 'icon', name: 'chevron-right' %}</a>{%- endif -%}
+      </nav>
+    {%- endif -%}
+  {%- endpaginate -%}
+</div>

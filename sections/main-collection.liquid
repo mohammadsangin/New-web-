@@ -1,0 +1,147 @@
+{%- comment -%} Collection: banner, sticky toolbar (filter + count + sort), grid, pagination, native facets. {%- endcomment -%}
+{%- paginate collection.products by section.settings.products_per_page -%}
+<section class="main-collection" id="main-collection">
+  {%- comment -%} Banner {%- endcomment -%}
+  {%- if section.settings.show_banner -%}
+    <div class="coll-banner container">
+      <h1 class="coll-banner__title">{{ collection.title }}</h1>
+      {%- if collection.description != blank and section.settings.show_description -%}
+        <div class="coll-banner__desc rte">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Sticky toolbar {%- endcomment -%}
+  <div class="coll-toolbar">
+    <div class="container coll-toolbar__inner" style="display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;">
+      <div class="coll-toolbar__left">
+        {%- if collection.filters.size > 0 -%}
+          <button class="filter-toggle" type="button" data-drawer-open="filters-drawer" aria-controls="filters-drawer" aria-expanded="false">
+            {% render 'icon', name: 'filter' %} {{ 'collections.filters.title' | t }}
+          </button>
+        {%- endif -%}
+        <span class="coll-count">{{ 'collections.count' | t: count: collection.products_count }}</span>
+      </div>
+      <div class="coll-sort">
+        <label for="sort-by">{{ 'collections.sort.label' | t }}</label>
+        <span class="select-wrap">
+          <select id="sort-by" data-sort aria-label="{{ 'collections.sort.label' | t }}">
+            {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+            {%- for option in collection.sort_options -%}
+              <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>
+            {%- endfor -%}
+          </select>
+          {% render 'icon', name: 'chevron-down' %}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Active facets summary {%- endcomment -%}
+  {%- assign active_count = 0 -%}
+  {%- for filter in collection.filters -%}{%- assign active_count = active_count | plus: filter.active_values.size -%}{%- endfor -%}
+  {%- if active_count > 0 -%}
+    <div class="container">
+      <div class="active-facets">
+        {%- for filter in collection.filters -%}
+          {%- for value in filter.active_values -%}
+            <a class="active-facet" href="{{ value.url_to_remove }}">{{ value.label }} {% render 'icon', name: 'close' %}</a>
+          {%- endfor -%}
+        {%- endfor -%}
+        <a class="active-facet" href="{{ collection.url }}">{{ 'collections.filters.clear_all' | t }}</a>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Grid {%- endcomment -%}
+  <div class="coll-layout container">
+    {%- if collection.products.size > 0 -%}
+      <div class="product-grid product-grid--4">
+        {%- for product in collection.products -%}
+          {% render 'product-card', product: product %}
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="pagination" aria-label="{{ 'general.pagination.label' | t }}">
+          {%- if paginate.previous -%}
+            <a href="{{ paginate.previous.url }}" aria-label="{{ 'general.pagination.previous' | t }}">{% render 'icon', name: 'chevron-left' %}</a>
+          {%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}
+              <a href="{{ part.url }}">{{ part.title }}</a>
+            {%- elsif part.title == paginate.current_page -%}
+              <span class="is-current" aria-current="page">{{ part.title }}</span>
+            {%- else -%}
+              <span>{{ part.title }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}
+            <a href="{{ paginate.next.url }}" aria-label="{{ 'general.pagination.next' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
+          {%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- else -%}
+      <div class="coll-empty">
+        <h2 class="coll-empty__title">{{ 'collections.empty.title' | t }}</h2>
+        <p class="coll-empty__body">{{ 'collections.empty.body' | t }}</p>
+        <a class="btn" href="{{ collection.url }}">{{ 'collections.filters.clear_all' | t }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{%- comment -%} ===== Filters drawer (native storefront facets) ===== {%- endcomment -%}
+{%- if collection.filters.size > 0 -%}
+  <div class="drawer drawer--left" id="filters-drawer" role="dialog" aria-modal="true" aria-label="{{ 'collections.filters.title' | t }}" aria-hidden="true">
+    <div class="drawer__header">
+      <span class="drawer__title">{{ 'collections.filters.title' | t }}</span>
+      <button class="drawer__close" type="button" data-drawer-close aria-label="{{ 'accessibility.close' | t }}" data-drawer-focus>{% render 'icon', name: 'close' %}</button>
+    </div>
+    <form class="drawer__body" method="get">
+      {%- comment -%} Preserve sort {%- endcomment -%}
+      {%- if collection.sort_by != blank -%}<input type="hidden" name="sort_by" value="{{ collection.sort_by }}">{%- endif -%}
+      <div class="filters">
+        {%- for filter in collection.filters -%}
+          <details class="filters__group" open>
+            <summary class="filters__summary">{{ filter.label }}<span class="m-nav__icon">{% render 'icon', name: 'plus' %}</span></summary>
+            {%- case filter.type -%}
+              {%- when 'price_range' -%}
+                <div class="filters__price">
+                  <input type="number" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value }}" placeholder="{{ 0 | money_without_currency }}" min="0" max="{{ filter.range_max | money_without_currency | strip }}" aria-label="{{ 'collections.filters.min' | t }}">
+                  <span>–</span>
+                  <input type="number" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value }}" placeholder="{{ filter.range_max | money_without_currency }}" min="0" max="{{ filter.range_max | money_without_currency | strip }}" aria-label="{{ 'collections.filters.max' | t }}">
+                </div>
+              {%- else -%}
+                <div class="filters__values">
+                  {%- for value in filter.values -%}
+                    <label class="filters__value{% if value.active %} filters__value--active{% endif %}">
+                      <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}"{% if value.active %} checked{% endif %}{% if value.count == 0 and value.active == false %} disabled{% endif %}>
+                      <span>{{ value.label }}</span>
+                      <span class="filters__count">{{ value.count }}</span>
+                    </label>
+                  {%- endfor -%}
+                </div>
+            {%- endcase -%}
+          </details>
+        {%- endfor -%}
+      </div>
+      <div class="filters__footer">
+        <a class="btn btn--secondary" href="{{ collection.url }}" style="flex:1;">{{ 'collections.filters.clear_all' | t }}</a>
+        <button type="submit" class="btn" style="flex:1;">{{ 'collections.filters.apply' | t }}</button>
+      </div>
+    </form>
+  </div>
+{%- endif -%}
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    { "type": "checkbox", "id": "show_banner", "label": "Show collection banner", "default": true },
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": true },
+    { "type": "range", "id": "products_per_page", "min": 12, "max": 48, "step": 4, "label": "Products per page", "default": 24 }
+  ]
+}
+{% endschema %}

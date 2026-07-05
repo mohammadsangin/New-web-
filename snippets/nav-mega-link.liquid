@@ -1,0 +1,23 @@
+{%- comment -%}
+  A single mega-menu / mobile submenu link, with automatic IP44 tag.
+  Params: link (required), mobile (bool)
+{%- endcomment -%}
+{%- liquid
+  assign title = link.title
+  assign is_ip44 = false
+  if title contains 'IP44' or title contains 'Bathroom'
+    assign is_ip44 = true
+  endif
+  assign clean = title | replace: ' (IP44)', '' | replace: ' [IP44]', '' | replace: ' IP44', ''
+-%}
+{%- if mobile -%}
+  <a class="m-nav__sub-link" href="{{ link.url }}">
+    {{ clean }}{% if is_ip44 %} <span class="tag-ip44">IP44</span>{% endif %}
+  </a>
+{%- else -%}
+  <li>
+    <a class="mega__link" href="{{ link.url }}">
+      {{ clean }}{% if is_ip44 %} <span class="tag-ip44">IP44</span>{% endif %}
+    </a>
+  </li>
+{%- endif -%}

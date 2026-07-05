@@ -1,0 +1,268 @@
+{%- comment -%} Main product (PDP). Editor-ordered blocks in the info column. {%- endcomment -%}
+{%- liquid
+  assign product = product
+  assign current = product.selected_or_first_available_variant
+  assign media = product.media
+-%}
+<section class="pdp" data-product>
+  <div class="container">
+
+    {%- comment -%} Breadcrumb {%- endcomment -%}
+    <nav class="breadcrumb" aria-label="{{ 'general.breadcrumb' | t }}">
+      <ol>
+        <li><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a></li>
+        {%- if product.collections.size > 0 -%}
+          {%- assign col = product.collections.first -%}
+          <li><span class="breadcrumb__sep">/</span> <a href="{{ col.url }}">{{ col.title }}</a></li>
+        {%- endif -%}
+        <li><span class="breadcrumb__sep">/</span> <span aria-current="page">{{ product.title }}</span></li>
+      </ol>
+    </nav>
+
+    <div class="pdp__grid">
+      {%- comment -%} ===== Gallery ===== {%- endcomment -%}
+      <div class="gallery gallery--sticky">
+        {%- if media.size > 1 -%}
+          <div class="gallery__thumbs" role="tablist" aria-label="{{ 'products.product.gallery_thumbnails' | t }}">
+            {%- for m in media -%}
+              <button class="gallery__thumb" type="button" data-gallery-thumb="{{ forloop.index0 }}"
+                aria-current="{% if forloop.first %}true{% else %}false{% endif %}"
+                aria-label="{{ 'products.product.view_image' | t: number: forloop.index }}">
+                <span class="media ratio-square">
+                  <img src="{{ m.preview_image | image_url: width: 160 }}" alt="" width="66" height="66" loading="lazy" decoding="async">
+                </span>
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+        <div class="gallery__main">
+          {%- if media.size > 0 -%}
+            {%- for m in media -%}
+              <div class="gallery__slide{% if forloop.first %} is-active{% endif %}" data-gallery-slide="{{ forloop.index0 }}">
+                <div class="media ratio-square">
+                  <img
+                    src="{{ m.preview_image | image_url: width: 1000 }}"
+                    srcset="{{ m.preview_image | image_url: width: 500 }} 500w, {{ m.preview_image | image_url: width: 800 }} 800w, {{ m.preview_image | image_url: width: 1000 }} 1000w, {{ m.preview_image | image_url: width: 1400 }} 1400w"
+                    sizes="(min-width: 900px) 55vw, 100vw"
+                    alt="{{ m.preview_image.alt | escape }}"
+                    width="{{ m.preview_image.width }}" height="{{ m.preview_image.height }}"
+                    {% if forloop.first %}fetchpriority="high" loading="eager"{% else %}loading="lazy"{% endif %} decoding="async">
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            <div class="media ratio-square"><div class="media-placeholder">{% render 'icon', name: 'lightbulb' %}</div></div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- comment -%} ===== Info column ===== {%- endcomment -%}
+      <div class="pdp-info">
+        {%- form 'product', product, data-product-form: '', novalidate: 'novalidate' -%}
+          <input type="hidden" name="id" value="{{ current.id }}">
+
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+
+              {%- when 'vendor' -%}
+                {%- if product.vendor != blank -%}
+                  <p class="pdp-info__vendor" {{ block.shopify_attributes }}>{{ product.vendor }}</p>
+                {%- endif -%}
+
+              {%- when 'title' -%}
+                <h1 class="pdp-info__title" {{ block.shopify_attributes }}>{{ product.title }}</h1>
+
+              {%- when 'price' -%}
+                <div class="pdp-info__price" data-price-mount {{ block.shopify_attributes }}>
+                  {% render 'price', product: product, variant: current %}
+                </div>
+
+              {%- when 'lede' -%}
+                {%- if block.settings.text != blank -%}
+                  <p class="pdp-info__desc-lede" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+                {%- elsif product.metafields.custom.lede -%}
+                  <p class="pdp-info__desc-lede" {{ block.shopify_attributes }}>{{ product.metafields.custom.lede }}</p>
+                {%- endif -%}
+
+              {%- when 'variant_picker' -%}
+                {%- unless product.has_only_default_variant -%}
+                  <div {{ block.shopify_attributes }}>
+                    {%- for option in product.options_with_values -%}
+                      <div class="variant-group" data-option-index="{{ forloop.index0 }}">
+                        <span class="variant-group__label">{{ option.name }}<span data-selected-value>{{ option.selected_value }}</span></span>
+                        <div class="variant-options">
+                          {%- for value in option.values -%}
+                            {%- liquid
+                              assign input_id = 'opt-' | append: forloop.parentloop.index0 | append: '-' | append: forloop.index0
+                              assign is_checked = false
+                              if option.selected_value == value
+                                assign is_checked = true
+                              endif
+                            -%}
+                            <div class="variant-option">
+                              <input type="radio" id="{{ input_id }}" name="option-{{ forloop.parentloop.index0 }}" value="{{ value | escape }}"{% if is_checked %} checked{% endif %}>
+                              <label for="{{ input_id }}">{{ value }}</label>
+                            </div>
+                          {%- endfor -%}
+                        </div>
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                {%- endunless -%}
+
+              {%- when 'buy_buttons' -%}
+                <div data-buy-anchor {{ block.shopify_attributes }}>
+                  <div class="pdp-buy">
+                    <div class="qty">
+                      <button type="button" data-qty-step="-1" aria-label="{{ 'cart.general.decrease' | t }}">{% render 'icon', name: 'minus' %}</button>
+                      <input type="number" name="quantity" value="1" min="1" inputmode="numeric" aria-label="{{ 'cart.general.quantity' | t }}">
+                      <button type="button" data-qty-step="1" aria-label="{{ 'cart.general.increase' | t }}">{% render 'icon', name: 'plus' %}</button>
+                    </div>
+                    <button type="submit" class="btn btn--lg"{% unless current.available %} aria-disabled="true"{% endunless %}>
+                      <span data-add-label>{% if current.available %}{{ 'products.product.add_to_bag' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
+                    </button>
+                  </div>
+                </div>
+
+              {%- when 'trust' -%}
+                <div class="pdp-trust" {{ block.shopify_attributes }}>
+                  {%- if block.settings.line_1 != blank -%}
+                    <p class="pdp-trust__item">{% render 'icon', name: 'truck' %} <span>{{ block.settings.line_1 }}</span></p>
+                  {%- endif -%}
+                  {%- if block.settings.line_2 != blank -%}
+                    <p class="pdp-trust__item">{% render 'icon', name: 'refresh' %} <span>{{ block.settings.line_2 }}</span></p>
+                  {%- endif -%}
+                  {%- if block.settings.line_3 != blank -%}
+                    <p class="pdp-trust__item">{% render 'icon', name: 'clock' %} <span>{{ block.settings.line_3 }}</span></p>
+                  {%- endif -%}
+                </div>
+
+              {%- when 'description' -%}
+                {%- if product.description != blank -%}
+                  <div class="pdp-desc rte" {{ block.shopify_attributes }}>{{ product.description }}</div>
+                {%- endif -%}
+
+              {%- when 'accordions' -%}
+                <div class="accordions" {{ block.shopify_attributes }}>
+                  {%- if block.settings.details != blank -%}
+                    <details class="accordion">
+                      <summary class="accordion__summary">{{ block.settings.details_title | default: 'Details' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
+                      <div class="accordion__body rte">{{ block.settings.details }}</div>
+                    </details>
+                  {%- endif -%}
+                  {%- if block.settings.dimensions != blank -%}
+                    <details class="accordion">
+                      <summary class="accordion__summary">{{ block.settings.dimensions_title | default: 'Dimensions' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
+                      <div class="accordion__body rte">{{ block.settings.dimensions }}</div>
+                    </details>
+                  {%- endif -%}
+                  {%- if block.settings.delivery != blank -%}
+                    <details class="accordion">
+                      <summary class="accordion__summary">{{ block.settings.delivery_title | default: 'Delivery & returns' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
+                      <div class="accordion__body rte">{{ block.settings.delivery }}</div>
+                    </details>
+                  {%- endif -%}
+                </div>
+
+            {%- endcase -%}
+          {%- endfor -%}
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Variant data for JS {%- endcomment -%}
+  <script type="application/json" data-product-variants>
+    [
+      {%- for variant in product.variants -%}
+        {
+          "id": {{ variant.id }},
+          "available": {{ variant.available }},
+          "options": {{ variant.options | json }},
+          "price_html": {% capture ph %}{% render 'price', product: product, variant: variant %}{% endcapture %}{{ ph | strip_newlines | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  </script>
+</section>
+
+{%- comment -%} ===== Complete the look ===== {%- endcomment -%}
+{%- if section.settings.show_complete_look -%}
+  {%- assign look = product.collections.first -%}
+  {%- if look and look.products.size > 1 -%}
+    <section class="complete">
+      <div class="container">
+        <div class="row-head reveal">
+          <div class="row-head__text">
+            <p class="eyebrow">{{ 'products.product.complete_look_eyebrow' | t }}</p>
+            <h2 class="section-head__title">{{ 'products.product.complete_look' | t }}</h2>
+          </div>
+          <a class="row-head__link link-underline" href="{{ look.url }}">{{ 'products.product.view_collection' | t }}</a>
+        </div>
+        <div class="product-grid product-grid--4">
+          {%- assign shown = 0 -%}
+          {%- for p in look.products limit: 8 -%}
+            {%- if p.id != product.id and shown < 4 -%}
+              {% render 'product-card', product: p %}
+              {%- assign shown = shown | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+{%- endif -%}
+
+{%- comment -%} ===== Sticky mini add-to-bag ===== {%- endcomment -%}
+<div class="sticky-buy" data-sticky-buy aria-hidden="true">
+  <div class="sticky-buy__inner container">
+    {%- if product.featured_media -%}
+      <div class="sticky-buy__media"><img src="{{ product.featured_media | image_url: width: 100 }}" alt="" width="46" height="46" loading="lazy"></div>
+    {%- endif -%}
+    <div class="sticky-buy__text">
+      <p class="sticky-buy__title">{{ product.title }}</p>
+      <p class="sticky-buy__price" data-sticky-price>{% render 'price', product: product, variant: current %}</p>
+    </div>
+    <button type="button" class="btn" data-sticky-add>{{ 'products.product.add_to_bag' | t }}</button>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": [
+    { "type": "checkbox", "id": "show_complete_look", "label": "Show 'Complete the look'", "default": true }
+  ],
+  "blocks": [
+    { "type": "vendor", "name": "Vendor", "limit": 1 },
+    { "type": "title", "name": "Title", "limit": 1 },
+    { "type": "price", "name": "Price", "limit": 1 },
+    {
+      "type": "lede", "name": "Short intro", "limit": 1,
+      "settings": [ { "type": "textarea", "id": "text", "label": "Intro text", "info": "Falls back to the custom.lede metafield if empty." } ]
+    },
+    { "type": "variant_picker", "name": "Variant picker", "limit": 1 },
+    { "type": "buy_buttons", "name": "Quantity + Add to bag", "limit": 1 },
+    {
+      "type": "trust", "name": "Trust line", "limit": 1,
+      "settings": [
+        { "type": "text", "id": "line_1", "label": "Line 1", "default": "Free UK delivery over £300" },
+        { "type": "text", "id": "line_2", "label": "Line 2", "default": "30-day returns" },
+        { "type": "text", "id": "line_3", "label": "Line 3", "default": "Made to order — allow 3–4 weeks" }
+      ]
+    },
+    { "type": "description", "name": "Description", "limit": 1 },
+    {
+      "type": "accordions", "name": "Accordions", "limit": 1,
+      "settings": [
+        { "type": "text", "id": "details_title", "label": "Details title", "default": "Details" },
+        { "type": "richtext", "id": "details", "label": "Details content" },
+        { "type": "text", "id": "dimensions_title", "label": "Dimensions title", "default": "Dimensions" },
+        { "type": "richtext", "id": "dimensions", "label": "Dimensions content" },
+        { "type": "text", "id": "delivery_title", "label": "Delivery title", "default": "Delivery & returns" },
+        { "type": "richtext", "id": "delivery", "label": "Delivery content" }
+      ]
+    }
+  ]
+}
+{% endschema %}

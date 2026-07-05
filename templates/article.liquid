@@ -1,0 +1,50 @@
+<article class="article container">
+  <header class="article__header">
+    <p class="eyebrow eyebrow--center">{{ article.published_at | date: '%d %B %Y' }}</p>
+    <h1 class="article__title">{{ article.title }}</h1>
+    {%- if article.author != blank -%}
+      <p class="article__meta">{{ 'blogs.article.by' | t: author: article.author }}</p>
+    {%- endif -%}
+  </header>
+
+  {%- if article.image -%}
+    <div class="article__hero">
+      {% render 'responsive-image', image: article.image, ratio: 'square', sizes: '(min-width:760px) 760px, 100vw', priority: true, alt: article.title %}
+    </div>
+  {%- endif -%}
+
+  <div class="rte">{{ article.content }}</div>
+
+  {%- if blog.comments_enabled? -%}
+    <div class="rule" style="margin:48px 0 32px;"></div>
+    <h2 style="font-size:var(--fs-h3);margin-bottom:20px;">{{ 'blogs.article.comments' | t: count: article.comments_count }}</h2>
+    {%- if article.comments.size > 0 -%}
+      {%- for comment in article.comments -%}
+        <div style="padding:18px 0;border-bottom:1px solid var(--hairline);">
+          <p style="color:var(--muted);">{{ comment.content }}</p>
+          <p style="font-size:13px;color:var(--brass-deep);margin-top:8px;font-weight:600;">— {{ comment.author }}</p>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+    {%- form 'new_comment', article -%}
+      {%- if form.posted_successfully? -%}
+        <p class="form-note form-note--success" style="margin:20px 0;">{{ 'blogs.article.comment_success' | t }}</p>
+      {%- endif -%}
+      <div style="max-width:560px;margin-top:24px;">
+        <div class="field">
+          <label for="comment-author">{{ 'contact.name' | t }}</label>
+          <input type="text" id="comment-author" name="comment[author]" value="{{ form.author }}" required>
+        </div>
+        <div class="field">
+          <label for="comment-email">{{ 'contact.email' | t }}</label>
+          <input type="email" id="comment-email" name="comment[email]" value="{{ form.email }}" required>
+        </div>
+        <div class="field">
+          <label for="comment-body">{{ 'blogs.article.comment' | t }}</label>
+          <textarea id="comment-body" name="comment[body]" required>{{ form.body }}</textarea>
+        </div>
+        <button type="submit" class="btn">{{ 'blogs.article.post_comment' | t }}</button>
+      </div>
+    {%- endform -%}
+  {%- endif -%}
+</article>

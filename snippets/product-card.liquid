@@ -1,0 +1,42 @@
+{%- comment -%}
+  Product card — the single card used everywhere.
+  Params:
+    product   (required)
+    sizes     optional sizes attr
+    show_vendor  bool (default from settings)
+{%- endcomment -%}
+{%- liquid
+  assign second = product.images[1]
+  assign show_vendor = show_vendor | default: settings.card_show_vendor
+-%}
+<article class="card reveal">
+  <a class="card__media media ratio-portrait" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+    {%- if product.featured_media -%}
+      <img
+        class="card__img card__img--primary"
+        src="{{ product.featured_media | image_url: width: 600 }}"
+        srcset="{{ product.featured_media | image_url: width: 300 }} 300w, {{ product.featured_media | image_url: width: 450 }} 450w, {{ product.featured_media | image_url: width: 600 }} 600w, {{ product.featured_media | image_url: width: 800 }} 800w"
+        sizes="{{ sizes | default: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw' }}"
+        alt="{{ product.featured_media.alt | escape }}"
+        width="{{ product.featured_media.width }}" height="{{ product.featured_media.height }}"
+        loading="lazy" decoding="async">
+      {%- if second -%}
+        <img class="card__img card__img--alt"
+          src="{{ second | image_url: width: 600 }}"
+          srcset="{{ second | image_url: width: 300 }} 300w, {{ second | image_url: width: 600 }} 600w"
+          sizes="{{ sizes | default: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw' }}"
+          alt="" width="{{ second.width }}" height="{{ second.height }}" loading="lazy" decoding="async">
+      {%- endif -%}
+    {%- else -%}
+      <div class="media-placeholder">{% render 'icon', name: 'lightbulb' %}</div>
+    {%- endif -%}
+    {%- unless product.available -%}
+      <span class="card__badge card__badge--soldout">{{ 'products.card.sold_out' | t }}</span>
+    {%- endunless -%}
+  </a>
+  {%- if show_vendor and product.vendor != blank -%}
+    <p class="card__vendor">{{ product.vendor }}</p>
+  {%- endif -%}
+  <h3 class="card__title"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+  <div class="card__meta">{% render 'price', product: product %}</div>
+</article>

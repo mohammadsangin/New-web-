@@ -1,0 +1,40 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "show_complete_look": true
+      },
+      "blocks": {
+        "vendor": { "type": "vendor" },
+        "title": { "type": "title" },
+        "price": { "type": "price" },
+        "lede": { "type": "lede", "settings": { "text": "" } },
+        "variant_picker": { "type": "variant_picker" },
+        "buy_buttons": { "type": "buy_buttons" },
+        "trust": {
+          "type": "trust",
+          "settings": {
+            "line_1": "Free UK delivery over £300",
+            "line_2": "30-day returns",
+            "line_3": "Made to order — allow 3–4 weeks"
+          }
+        },
+        "description": { "type": "description" },
+        "accordions": {
+          "type": "accordions",
+          "settings": {
+            "details_title": "Details",
+            "details": "<p>Solid brass, hand-finished. Supplied with fittings for a straightforward professional installation.</p>",
+            "dimensions_title": "Dimensions",
+            "dimensions": "<p>Full dimensions are listed on request — contact us for a spec sheet.</p>",
+            "delivery_title": "Delivery & returns",
+            "delivery": "<p>Free UK delivery over £300. Made to order — please allow 3–4 weeks. 30-day returns on unused pieces.</p>"
+          }
+        }
+      },
+      "block_order": ["vendor", "title", "price", "lede", "variant_picker", "buy_buttons", "trust", "description", "accordions"]
+    }
+  },
+  "order": ["main"]
+}

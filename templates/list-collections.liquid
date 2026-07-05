@@ -1,0 +1,24 @@
+<div class="page-hero container">
+  <p class="eyebrow eyebrow--center">{{ 'collections.list.eyebrow' | t }}</p>
+  <h1 class="page-hero__title">{{ 'collections.list.title' | t }}</h1>
+</div>
+
+<div class="section container">
+  <div class="list-collections">
+    {%- for collection in collections -%}
+      <a class="coll-tile reveal" href="{{ collection.url }}">
+        <div class="coll-tile__media media ratio-portrait">
+          {%- if collection.image -%}
+            {% render 'responsive-image', image: collection.image, ratio: 'portrait', sizes: '(min-width:750px) 33vw, 50vw', alt: collection.title %}
+          {%- elsif collection.products.first.featured_media -%}
+            {% render 'responsive-image', image: collection.products.first.featured_media, ratio: 'portrait', sizes: '(min-width:750px) 33vw, 50vw', alt: collection.title %}
+          {%- else -%}
+            <div class="media-placeholder">{% render 'icon', name: 'lightbulb' %}</div>
+          {%- endif -%}
+        </div>
+        <span class="coll-tile__scrim"></span>
+        <span class="coll-tile__title">{{ collection.title }}</span>
+      </a>
+    {%- endfor -%}
+  </div>
+</div>

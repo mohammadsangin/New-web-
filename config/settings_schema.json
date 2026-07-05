@@ -1,0 +1,126 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Kymra Lighting",
+    "theme_version": "1.0.0",
+    "theme_author": "Kymra Lighting",
+    "theme_documentation_url": "https://kymralighting.co.uk",
+    "theme_support_url": "https://kymralighting.co.uk/pages/contact"
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image",
+        "info": "Optional. If empty, the KYMRA wordmark is used."
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 80,
+        "max": 220,
+        "step": 5,
+        "unit": "px",
+        "label": "Logo width",
+        "default": 140
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon"
+      }
+    ]
+  },
+  {
+    "name": "Colours",
+    "settings": [
+      { "type": "header", "content": "Foundations" },
+      { "type": "color", "id": "color_bg", "label": "Page background", "default": "#F5F1E9" },
+      { "type": "color", "id": "color_surface", "label": "Surface (cards, header)", "default": "#FEFDFB" },
+      { "type": "color", "id": "color_panel", "label": "Panel / bands", "default": "#EFEADD" },
+      { "type": "color", "id": "color_ink", "label": "Ink (primary text)", "default": "#1F1D18" },
+      { "type": "color", "id": "color_muted", "label": "Muted text", "default": "#6A6459" },
+      { "type": "color", "id": "color_hairline", "label": "Hairline / borders", "default": "#DED7C7" },
+      { "type": "header", "content": "Brass accents" },
+      { "type": "color", "id": "color_brass", "label": "Brass", "default": "#A8894F" },
+      { "type": "color", "id": "color_brass_deep", "label": "Brass deep", "default": "#8A6E37" },
+      { "type": "header", "content": "Dark surfaces" },
+      { "type": "color", "id": "color_dark", "label": "Dark (footer, bands)", "default": "#1B1915" },
+      { "type": "color", "id": "color_on_dark", "label": "Text on dark", "default": "#E9E3D6" }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "heading_font",
+        "label": "Display / heading font",
+        "default": "cormorant_n5"
+      },
+      {
+        "type": "font_picker",
+        "id": "body_font",
+        "label": "Body font",
+        "default": "assistant_n4"
+      }
+    ]
+  },
+  {
+    "name": "Product cards",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "card_show_vendor",
+        "label": "Show vendor / brand on cards",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "The cart drawer slides out globally. Cross-sell and free-delivery note are configured on the Cart drawer section."
+      },
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free UK delivery threshold",
+        "info": "Amount in your store currency (e.g. 300). Set to 0 to hide the progress note.",
+        "default": 300
+      },
+      {
+        "type": "collection",
+        "id": "cart_cross_sell",
+        "label": "Cross-sell collection",
+        "info": "Products offered in the cart drawer under 'Complete the look'."
+      }
+    ]
+  },
+  {
+    "name": "Social",
+    "settings": [
+      { "type": "text", "id": "social_instagram", "label": "Instagram URL" },
+      { "type": "text", "id": "social_pinterest", "label": "Pinterest URL" },
+      { "type": "text", "id": "social_facebook", "label": "Facebook URL" }
+    ]
+  },
+  {
+    "name": "Contact",
+    "settings": [
+      { "type": "text", "id": "contact_phone", "label": "Phone", "default": "0333 090 0045" },
+      { "type": "text", "id": "contact_email", "label": "Email", "default": "sales@kymralighting.co.uk" },
+      {
+        "type": "textarea",
+        "id": "registered_office",
+        "label": "Registered office address",
+        "info": "The only public address.",
+        "default": "3rd Floor, 86–90 Paul Street, London EC2A 4NE"
+      }
+    ]
+  }
+]

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme-color" content="{{ settings.color_dark | default: '#1B1915' }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  {%- if settings.favicon != blank -%}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+  {%- endif -%}
+
+  <title>{{ page_title }}{% if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif %}{% if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif %}{% unless page_title contains shop.name %} &middot; {{ shop.name }}{% endunless %}</title>
+  {%- if page_description -%}<meta name="description" content="{{ page_description | escape }}">{%- endif -%}
+
+  {% comment %} Preconnect only to Shopify CDN — no third-party font hosts (GDPR + speed). {% endcomment %}
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+  {%- liquid
+    assign heading_font = settings.heading_font
+    assign body_font = settings.body_font
+    assign body_bold = body_font | font_modify: 'weight', 'bold'
+    assign heading_medium = heading_font | font_modify: 'weight', '500'
+  -%}
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ heading_medium | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+  {{ body_bold | font_face: font_display: 'swap' }}
+
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+
+  <style>
+    :root {
+      --font-display: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+      --font-body: {{ body_font.family }}, {{ body_font.fallback_families }};
+      --bg: {{ settings.color_bg }};
+      --surface: {{ settings.color_surface }};
+      --panel: {{ settings.color_panel }};
+      --ink: {{ settings.color_ink }};
+      --muted: {{ settings.color_muted }};
+      --hairline: {{ settings.color_hairline }};
+      --brass: {{ settings.color_brass }};
+      --brass-deep: {{ settings.color_brass_deep }};
+      --dark: {{ settings.color_dark }};
+      --on-dark: {{ settings.color_on_dark }};
+    }
+  </style>
+
+  {{ content_for_header }}
+
+  <script>
+    document.documentElement.classList.remove('no-js');
+    document.documentElement.classList.add('js');
+    window.Kymra = {
+      routes: {
+        cart_url: {{ routes.cart_url | json }},
+        cart_add_url: {{ routes.cart_add_url | json }},
+        cart_change_url: {{ routes.cart_change_url | json }},
+        cart_update_url: {{ routes.cart_update_url | json }}
+      },
+      moneyFormat: {{ shop.money_format | json }},
+      freeShipThreshold: {{ settings.free_shipping_threshold | default: 0 | times: 100 }},
+      strings: {
+        adding: {{ 'products.product.adding' | t | json }},
+        addToBag: {{ 'products.product.add_to_bag' | t | json }},
+        soldOut: {{ 'products.product.sold_out' | t | json }},
+        unavailable: {{ 'products.product.unavailable' | t | json }},
+        cartError: {{ 'cart.general.error' | t | json }}
+      }
+    };
+  </script>
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+</head>
+
+<body class="template-{{ template.name | handle }}">
+  <a class="skip-link" href="#main-content">{{ 'accessibility.skip_to_content' | t }}</a>
+
+  <header class="header-group">
+    {% section 'announcement-bar' %}
+    {% section 'header' %}
+  </header>
+
+  <main id="main-content" role="main">
+    {{ content_for_layout }}
+  </main>
+
+  {% section 'footer' %}
+
+  {% section 'cart-drawer' %}
+
+  {%- comment -%} Live region for AJAX cart announcements {%- endcomment -%}
+  <div aria-live="polite" role="status" class="visually-hidden" data-cart-live></div>
+</body>
+</html>

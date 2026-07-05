@@ -1,0 +1,59 @@
+<div class="page-hero container">
+  <p class="eyebrow eyebrow--center">{{ 'contact.eyebrow' | t }}</p>
+  <h1 class="page-hero__title">{{ page.title }}</h1>
+  <p class="page-hero__lede">{{ 'contact.lede' | t }}</p>
+</div>
+
+<div class="section container">
+  <div style="display:grid;gap:clamp(32px,5vw,64px);grid-template-columns:1fr;max-width:960px;margin-inline:auto;">
+    <div class="rte" style="margin:0;">{{ page.content }}</div>
+
+    <div style="display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+      {%- if settings.contact_phone != blank -%}
+        <div>
+          <p class="footer__col-head" style="color:var(--brass-deep);">{{ 'contact.call' | t }}</p>
+          <a class="link-underline" style="text-transform:none;letter-spacing:0;font-size:16px;" href="tel:{{ settings.contact_phone | replace: ' ', '' }}">{{ settings.contact_phone }}</a>
+        </div>
+      {%- endif -%}
+      {%- if settings.contact_email != blank -%}
+        <div>
+          <p class="footer__col-head" style="color:var(--brass-deep);">{{ 'contact.email' | t }}</p>
+          <a class="link-underline" style="text-transform:none;letter-spacing:0;font-size:16px;" href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a>
+        </div>
+      {%- endif -%}
+      {%- if settings.registered_office != blank -%}
+        <div>
+          <p class="footer__col-head" style="color:var(--brass-deep);">{{ 'contact.office' | t }}</p>
+          <address style="font-style:normal;color:var(--muted);">{{ settings.registered_office | escape }}</address>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div style="max-width:560px;">
+      {%- form 'contact', class: 'contact-form' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="form-note form-note--success" style="margin-bottom:20px;">{{ 'contact.success' | t }}</p>
+        {%- elsif form.errors -%}
+          <p class="form-note form-note--error" style="margin-bottom:20px;">{{ form.errors | default_errors }}</p>
+        {%- endif -%}
+        <div class="field">
+          <label for="contact-name">{{ 'contact.name' | t }}</label>
+          <input type="text" id="contact-name" name="contact[name]" value="{{ form.name }}" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="contact-email">{{ 'contact.email' | t }}</label>
+          <input type="email" id="contact-email" name="contact[email]" value="{{ form.email }}" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="contact-phone">{{ 'contact.phone' | t }}</label>
+          <input type="tel" id="contact-phone" name="contact[phone]" value="{{ form.phone }}" autocomplete="tel">
+        </div>
+        <div class="field">
+          <label for="contact-body">{{ 'contact.message' | t }}</label>
+          <textarea id="contact-body" name="contact[body]" required>{{ form.body }}</textarea>
+        </div>
+        <button type="submit" class="btn btn--lg">{{ 'contact.send' | t }}</button>
+      {%- endform -%}
+    </div>
+  </div>
+</div>

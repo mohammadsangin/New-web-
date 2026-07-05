@@ -1,0 +1,67 @@
+{%- comment -%} Featured collection row — reusable, identical product-card. {%- endcomment -%}
+{%- liquid
+  assign collection = collections[section.settings.collection]
+  assign count = section.settings.products_to_show
+  assign grid_class = 'product-grid'
+  if section.settings.columns == '4'
+    assign grid_class = 'product-grid product-grid--4'
+  endif
+-%}
+<section class="section">
+  <div class="container">
+    <div class="row-head reveal">
+      <div class="row-head__text">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="section-head__title">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.body != blank -%}
+          <p class="section-head__body">{{ section.settings.body | escape }}</p>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.show_view_all and collection != blank -%}
+        <a class="row-head__link link-underline" href="{{ collection.url }}">{{ section.settings.view_all_label | default: 'View all' | escape }}</a>
+      {%- endif -%}
+    </div>
+
+    {%- if collection != blank and collection.products.size > 0 -%}
+      <div class="{{ grid_class }}">
+        {%- for product in collection.products limit: count -%}
+          {% render 'product-card', product: product %}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="{{ grid_class }}">
+        {%- for i in (1..count) -%}
+          <article class="card">
+            <div class="card__media media ratio-portrait"><div class="media-placeholder">{% render 'icon', name: 'lightbulb' %}</div></div>
+            <h3 class="card__title">{{ 'onboarding.product_title' | t }}</h3>
+            <div class="card__meta"><span class="price"><span class="price__regular">{{ 550 | times: 100 | money }}</span></span></div>
+          </article>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured collection",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The collection" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "New in brass" },
+    { "type": "textarea", "id": "body", "label": "Body" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "products_to_show", "min": 2, "max": 12, "step": 1, "label": "Products to show", "default": 4 },
+    {
+      "type": "select", "id": "columns", "label": "Desktop columns", "default": "4",
+      "options": [ { "value": "3", "label": "3" }, { "value": "4", "label": "4" } ]
+    },
+    { "type": "checkbox", "id": "show_view_all", "label": "Show 'view all' link", "default": true },
+    { "type": "text", "id": "view_all_label", "label": "View-all label", "default": "View all" }
+  ],
+  "presets": [{ "name": "Featured collection" }]
+}
+{% endschema %}

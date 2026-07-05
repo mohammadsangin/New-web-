@@ -1,0 +1,50 @@
+{%- comment -%}
+  Responsive image with srcset + explicit width/height (no CLS).
+  Params:
+    image      (required) an image object
+    ratio      'portrait' | 'square' | 'hero' | number (w/h). Sets the media box class.
+    sizes      the sizes attribute (default full-width)
+    priority   true => fetchpriority high + eager; else lazy
+    alt        override alt text
+    class      extra class(es) on the wrapping .media
+    widths     comma list of candidate widths
+{%- endcomment -%}
+{%- liquid
+  assign ratio = ratio | default: 'portrait'
+  assign sizes = sizes | default: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw'
+  assign widths = widths | default: '200,300,400,500,600,700,800,1000,1200,1500'
+  assign ratio_class = ''
+  case ratio
+    when 'portrait'
+      assign ratio_class = 'ratio-portrait'
+    when 'square'
+      assign ratio_class = 'ratio-square'
+    when 'hero'
+      assign ratio_class = 'ratio-hero'
+  endcase
+-%}
+<div class="media {{ ratio_class }} {{ class }}">
+  {%- if image != blank -%}
+    <img
+      src="{{ image | image_url: width: 800 }}"
+      srcset="
+        {%- assign widths_arr = widths | split: ',' -%}
+        {%- assign srcset_parts = '' -%}
+        {%- for w in widths_arr -%}
+          {%- assign wn = w | plus: 0 -%}
+          {%- if image.width >= wn -%}
+            {%- capture part -%}{{ image | image_url: width: wn }} {{ wn }}w{%- endcapture -%}
+            {%- if srcset_parts == '' -%}{%- assign srcset_parts = part -%}{%- else -%}{%- assign srcset_parts = srcset_parts | append: ', ' | append: part -%}{%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- comment -%} always include the native width as a fallback candidate {%- endcomment -%}
+        {%- if srcset_parts == '' -%}{{ image | image_url }} {{ image.width }}w{%- else -%}{{ srcset_parts }}{%- endif -%}"
+      sizes="{{ sizes }}"
+      alt="{{ alt | default: image.alt | escape }}"
+      width="{{ image.width }}"
+      height="{{ image.height }}"
+      {% if priority %}fetchpriority="high" loading="eager" decoding="async"{% else %}loading="lazy" decoding="async"{% endif %}>
+  {%- else -%}
+    <div class="media-placeholder">{% render 'icon', name: 'image' %}</div>
+  {%- endif -%}
+</div>

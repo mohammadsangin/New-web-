@@ -1,0 +1,238 @@
+{
+  "general": {
+    "home": "Home",
+    "menu": "Menu",
+    "breadcrumb": "Breadcrumb",
+    "meta": {
+      "tags": "Tagged \"{{ tags }}\"",
+      "page": "Page {{ page }}"
+    },
+    "footer": {
+      "rights": "All rights reserved."
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous page",
+      "next": "Next page"
+    },
+    "search": {
+      "title": "Search",
+      "placeholder": "Search our collection",
+      "submit": "Search",
+      "results_for": {
+        "one": "{{ count }} result for \"{{ terms }}\"",
+        "other": "{{ count }} results for \"{{ terms }}\""
+      },
+      "no_results_title": "Nothing found",
+      "no_results": "We couldn't find anything for \"{{ terms }}\". Try another term.",
+      "browse_all": "Browse the collection"
+    },
+    "404": {
+      "title": "This page has moved on",
+      "body": "The page you're looking for isn't here. Let's find you something lovely instead.",
+      "cta": "Return home"
+    },
+    "password": {
+      "coming_soon": "Opening soon",
+      "message": "We're putting the finishing touches to something considered. Leave your email and we'll be in touch.",
+      "enter_password": "Enter using password",
+      "enter_store": "Enter the store",
+      "password_label": "Password",
+      "enter": "Enter"
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "open_menu": "Open menu",
+    "close": "Close",
+    "menu": "Menu",
+    "primary_nav": "Primary"
+  },
+  "onboarding": {
+    "product_title": "Example fixture"
+  },
+  "newsletter": {
+    "email": "Email",
+    "email_placeholder": "Your email address",
+    "subscribe": "Subscribe",
+    "success": "Thank you — you're on the list."
+  },
+  "customer": {
+    "account": {
+      "title": "Account",
+      "welcome": "Welcome, {{ name }}",
+      "addresses": "Addresses",
+      "log_out": "Log out"
+    },
+    "login": {
+      "title": "Sign in",
+      "email": "Email",
+      "password": "Password",
+      "sign_in": "Sign in",
+      "forgot": "Forgotten your password?",
+      "create": "Create an account"
+    },
+    "recover": {
+      "title": "Reset your password",
+      "body": "We'll email you a link to set a new password.",
+      "submit": "Send reset link",
+      "cancel": "Back to sign in",
+      "success": "We've sent you an email with a link to reset your password."
+    },
+    "register": {
+      "title": "Create account",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "submit": "Create account",
+      "have_account": "Already have an account? Sign in"
+    },
+    "orders": {
+      "title": "Order history",
+      "order": "Order",
+      "date": "Date",
+      "payment": "Payment",
+      "fulfillment": "Fulfilment",
+      "total": "Total",
+      "none": "You haven't placed any orders yet."
+    },
+    "order": {
+      "title": "Order {{ name }}",
+      "date": "Placed on {{ date }}",
+      "product": "Product",
+      "qty": "Quantity",
+      "total": "Total",
+      "billing": "Billing address",
+      "shipping": "Shipping address",
+      "back": "Back to account"
+    },
+    "addresses": {
+      "title": "Your addresses",
+      "add": "Add address",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "address1": "Address",
+      "address2": "Apartment, suite, etc.",
+      "city": "City",
+      "zip": "Postcode",
+      "country": "Country",
+      "save": "Save address",
+      "default": "Default",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "reset": {
+      "title": "Set a new password",
+      "password": "New password",
+      "confirm": "Confirm password",
+      "submit": "Save password"
+    },
+    "activate": {
+      "title": "Activate your account",
+      "body": "Create a password to activate your account.",
+      "submit": "Activate account",
+      "decline": "Decline invitation"
+    }
+  },
+  "products": {
+    "price": {
+      "from": "From",
+      "sale_price": "Sale price"
+    },
+    "card": {
+      "sold_out": "Sold out"
+    },
+    "product": {
+      "adding": "Adding…",
+      "add_to_bag": "Add to bag",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "gallery_thumbnails": "Product images",
+      "view_image": "View image {{ number }}",
+      "complete_look_eyebrow": "Considered together",
+      "complete_look": "Complete the look",
+      "view_collection": "View collection"
+    }
+  },
+  "collections": {
+    "count": {
+      "one": "{{ count }} piece",
+      "other": "{{ count }} pieces"
+    },
+    "sort": {
+      "label": "Sort by"
+    },
+    "empty": {
+      "title": "Nothing to show here yet",
+      "body": "No pieces match those filters. Adjust or clear them to keep browsing."
+    },
+    "filters": {
+      "title": "Filter",
+      "clear_all": "Clear all",
+      "apply": "Apply",
+      "min": "Minimum price",
+      "max": "Maximum price"
+    },
+    "list": {
+      "eyebrow": "Browse",
+      "title": "Collections"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Your bag",
+      "summary": "Summary",
+      "subtotal": "Subtotal",
+      "total": "Total",
+      "quantity": "Quantity",
+      "increase": "Increase quantity",
+      "decrease": "Decrease quantity",
+      "remove": "Remove",
+      "checkout": "Checkout",
+      "continue": "Continue shopping",
+      "start_shopping": "Start shopping",
+      "empty": "Your bag is empty.",
+      "add": "Add",
+      "complete_the_look": "Complete the look",
+      "taxes_note": "Taxes and delivery calculated at checkout.",
+      "free_shipping_progress_html": "You're {{ amount }} away from free UK delivery.",
+      "free_shipping_qualified": "You've unlocked free UK delivery.",
+      "error": "Sorry, that couldn't be added to your bag."
+    }
+  },
+  "blogs": {
+    "journal": {
+      "eyebrow": "The journal"
+    },
+    "article": {
+      "by": "By {{ author }}",
+      "comments": {
+        "one": "{{ count }} comment",
+        "other": "{{ count }} comments"
+      },
+      "comment": "Comment",
+      "post_comment": "Post comment",
+      "comment_success": "Thank you — your comment has been received."
+    }
+  },
+  "contact": {
+    "eyebrow": "We're here to help",
+    "lede": "Speak to our team for advice on finishes, fittings and made-to-order pieces.",
+    "call": "Call",
+    "email": "Email",
+    "office": "Registered office",
+    "name": "Name",
+    "phone": "Phone",
+    "message": "Message",
+    "send": "Send message",
+    "success": "Thank you — we'll be in touch shortly."
+  },
+  "gift_cards": {
+    "issued": {
+      "title": "{{ shop }} gift card",
+      "subtext": "A gift for you",
+      "gift_card": "Gift card",
+      "qr_alt": "QR code to redeem the gift card",
+      "shop_link": "Visit the store"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+<div class="page-hero container">
+  <h1 class="page-hero__title">{{ 'customer.activate.title' | t }}</h1>
+  <p class="page-hero__lede">{{ 'customer.activate.body' | t }}</p>
+</div>
+<div class="section container">
+  <div style="max-width:420px;margin-inline:auto;">
+    {%- form 'activate_customer_password' -%}
+      {%- if form.errors -%}<p class="form-note form-note--error" style="margin-bottom:16px;">{{ form.errors | default_errors }}</p>{%- endif -%}
+      <div class="field">
+        <label for="ac-password">{{ 'customer.reset.password' | t }}</label>
+        <input type="password" id="ac-password" name="customer[password]" autocomplete="new-password" required>
+      </div>
+      <div class="field">
+        <label for="ac-confirm">{{ 'customer.reset.confirm' | t }}</label>
+        <input type="password" id="ac-confirm" name="customer[password_confirmation]" autocomplete="new-password" required>
+      </div>
+      <button type="submit" class="btn btn--block btn--lg">{{ 'customer.activate.submit' | t }}</button>
+      <button type="submit" name="decline" class="btn btn--secondary btn--block" style="margin-top:10px;">{{ 'customer.activate.decline' | t }}</button>
+    {%- endform -%}
+  </div>
+</div>

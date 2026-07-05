@@ -1,0 +1,41 @@
+{% layout none %}<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ 'gift_cards.issued.title' | t: shop: shop.name }}</title>
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+  {{ settings.heading_font | font_face: font_display: 'swap' }}
+  {{ settings.body_font | font_face: font_display: 'swap' }}
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+  <style>
+    :root{
+      --font-display: {{ settings.heading_font.family }}, {{ settings.heading_font.fallback_families }};
+      --font-body: {{ settings.body_font.family }}, {{ settings.body_font.fallback_families }};
+      --bg:{{ settings.color_bg }};--surface:{{ settings.color_surface }};--panel:{{ settings.color_panel }};
+      --ink:{{ settings.color_ink }};--muted:{{ settings.color_muted }};--hairline:{{ settings.color_hairline }};
+      --brass:{{ settings.color_brass }};--brass-deep:{{ settings.color_brass_deep }};--dark:{{ settings.color_dark }};--on-dark:{{ settings.color_on_dark }};
+    }
+    .gc{max-width:460px;margin:8vh auto;padding:0 var(--gutter);text-align:center;}
+    .gc__card{background:var(--dark);color:var(--on-dark);border-radius:var(--radius-lg);padding:40px 32px;margin:28px 0;}
+    .gc__value{font-family:var(--font-display);font-size:52px;color:#fff;}
+    .gc__code{display:inline-block;margin-top:20px;padding:12px 20px;border:1px dashed rgba(233,227,214,.4);border-radius:var(--radius);letter-spacing:0.18em;font-size:18px;}
+  </style>
+  {{ content_for_header }}
+</head>
+<body class="template-gift-card">
+  <div class="gc">
+    <p class="footer__brand-name" style="color:var(--ink);">{{ shop.name }}</p>
+    <p class="eyebrow eyebrow--center">{{ 'gift_cards.issued.subtext' | t }}</p>
+    <div class="gc__card">
+      <p style="letter-spacing:.14em;text-transform:uppercase;font-size:12px;color:var(--brass);">{{ 'gift_cards.issued.gift_card' | t }}</p>
+      <p class="gc__value">{{ gift_card.balance | money }}</p>
+      {%- if gift_card.qr_identifier -%}
+        <img src="{{ gift_card.qr_identifier }}" alt="{{ 'gift_cards.issued.qr_alt' | t }}" width="120" height="120" style="margin:20px auto 0;background:#fff;padding:8px;border-radius:6px;">
+      {%- endif -%}
+      <p class="gc__code">{{ gift_card.code | format_code }}</p>
+    </div>
+    <a class="btn btn--lg" href="{{ shop.url }}">{{ 'gift_cards.issued.shop_link' | t }}</a>
+  </div>
+</body>
+</html>

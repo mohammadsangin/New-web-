@@ -1,0 +1,246 @@
+{%- comment -%}
+  Header: sticky. Wordmark/logo · centred nav from linklist · search/account/bag.
+  Mega menu auto-selects: image-tile layout when a top-level item has >=2 image
+  blocks; grouped columns when it has 3-level nesting; simple columns otherwise.
+{%- endcomment -%}
+{%- liquid
+  assign menu = linklists[section.settings.menu]
+-%}
+<div class="header">
+  <div class="header__inner container">
+    <div class="header__nav-left">
+      <button class="header__icon header__menu-toggle" type="button"
+        data-drawer-open="menu-drawer" aria-label="{{ 'accessibility.open_menu' | t }}" aria-controls="menu-drawer" aria-expanded="false">
+        {% render 'icon', name: 'menu' %}
+      </button>
+
+      <nav class="nav" aria-label="{{ 'accessibility.primary_nav' | t }}">
+        <ul class="nav__list">
+          {%- for link in menu.links -%}
+            {%- liquid
+              assign has_children = false
+              if link.links.size > 0
+                assign has_children = true
+              endif
+              # Detect three-level nesting
+              assign has_grandchildren = false
+              for child in link.links
+                if child.links.size > 0
+                  assign has_grandchildren = true
+                  break
+                endif
+              endfor
+              # Collect image blocks for this top-level item
+              assign tile_count = 0
+              for block in section.blocks
+                if block.type == 'menu_image' and block.settings.parent == link.title
+                  assign tile_count = tile_count | plus: 1
+                endif
+              endfor
+              assign use_tiles = false
+              if tile_count >= 2
+                assign use_tiles = true
+              endif
+              # Side promo block for this item
+              assign promo = null
+              for block in section.blocks
+                if block.type == 'menu_promo' and block.settings.parent == link.title
+                  assign promo = block
+                  break
+                endif
+              endfor
+            -%}
+            <li class="nav__item{% if has_children %} nav__item--has-mega{% endif %}">
+              <a class="nav__link" href="{{ link.url }}"
+                {% if has_children %}aria-haspopup="true" aria-expanded="false"{% endif %}
+                {% if link.active or link.child_active %}aria-current="page"{% endif %}>
+                {{ link.title }}
+                {%- if has_children -%}<span class="nav__caret">{% render 'icon', name: 'chevron-down' %}</span>{%- endif -%}
+              </a>
+
+              {%- if has_children -%}
+                {%- if use_tiles -%}
+                  <div class="mega mega--tiles">
+                    <div class="mega__inner container">
+                      {%- for block in section.blocks -%}
+                        {%- if block.type == 'menu_image' and block.settings.parent == link.title -%}
+                          <a class="mega-tile" href="{{ block.settings.link | default: link.url }}" {{ block.shopify_attributes }}>
+                            {% render 'responsive-image', image: block.settings.image, ratio: 'portrait', sizes: '260px', alt: block.settings.title %}
+                            <p class="mega-tile__title">{{ block.settings.title | escape }}</p>
+                            {%- if block.settings.subtitle != blank -%}<p class="mega-tile__meta">{{ block.settings.subtitle | escape }}</p>{%- endif -%}
+                          </a>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                  </div>
+                {%- else -%}
+                  <div class="mega mega--columns{% if promo %} has-promo{% endif %}">
+                    <div class="mega__inner container">
+                      {%- if has_grandchildren -%}
+                        {%- for child in link.links -%}
+                          <div class="mega__col">
+                            <p class="mega__col-head">{{ child.title }}</p>
+                            <ul class="mega__links">
+                              {%- if child.links.size > 0 -%}
+                                {%- for grandchild in child.links -%}
+                                  {%- render 'nav-mega-link', link: grandchild -%}
+                                {%- endfor -%}
+                              {%- else -%}
+                                {%- render 'nav-mega-link', link: child -%}
+                              {%- endif -%}
+                            </ul>
+                          </div>
+                        {%- endfor -%}
+                      {%- else -%}
+                        <div class="mega__col">
+                          <p class="mega__col-head">{{ link.title }}</p>
+                          <ul class="mega__links">
+                            {%- for child in link.links -%}
+                              {%- render 'nav-mega-link', link: child -%}
+                            {%- endfor -%}
+                          </ul>
+                        </div>
+                      {%- endif -%}
+
+                      {%- if promo -%}
+                        <a class="mega__promo" href="{{ promo.settings.link | default: link.url }}" {{ promo.shopify_attributes }}>
+                          {% render 'responsive-image', image: promo.settings.image, ratio: 'portrait', sizes: '300px', alt: promo.settings.title %}
+                          <span class="mega__promo-caption">
+                            {%- if promo.settings.eyebrow != blank -%}<span class="mega__promo-eyebrow">{{ promo.settings.eyebrow | escape }}</span>{%- endif -%}
+                            <span class="mega__promo-title">{{ promo.settings.title | escape }}</span>
+                          </span>
+                        </a>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                {%- endif -%}
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    </div>
+
+    <a class="header__brand" href="{{ routes.root_url }}">
+      {%- if section.settings.logo != blank -%}
+        {%- assign logo_w = section.settings.logo.width | default: 300 -%}
+        <img src="{{ section.settings.logo | image_url: width: 400 }}"
+          srcset="{{ section.settings.logo | image_url: width: 200 }} 200w, {{ section.settings.logo | image_url: width: 400 }} 400w"
+          sizes="{{ settings.logo_width }}px"
+          width="{{ settings.logo_width }}"
+          height="{{ settings.logo_width | times: section.settings.logo.height | divided_by: logo_w }}"
+          alt="{{ shop.name | escape }}" style="width:{{ settings.logo_width }}px">
+      {%- else -%}
+        {{ shop.name | default: 'KYMRA' }}
+      {%- endif -%}
+    </a>
+
+    <div class="header__actions">
+      <a class="header__icon" href="{{ routes.search_url }}" aria-label="{{ 'general.search.title' | t }}">
+        {% render 'icon', name: 'search' %}
+      </a>
+      <a class="header__icon" href="{% if shop.customer_accounts_enabled %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" aria-label="{{ 'customer.account.title' | t }}">
+        {% render 'icon', name: 'account' %}
+      </a>
+      <a class="header__icon" href="{{ routes.cart_url }}" data-drawer-open="cart-drawer" aria-label="{{ 'cart.general.title' | t }}" aria-controls="cart-drawer" aria-expanded="false">
+        {% render 'icon', name: 'bag' %}
+        <span class="cart-count" data-cart-count {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+{%- comment -%} ===== Mobile menu drawer ===== {%- endcomment -%}
+<div class="drawer drawer--left" id="menu-drawer" role="dialog" aria-modal="true" aria-label="{{ 'accessibility.menu' | t }}" aria-hidden="true">
+  <div class="drawer__header">
+    <span class="drawer__title">{{ 'general.menu' | t }}</span>
+    <button class="drawer__close" type="button" data-drawer-close aria-label="{{ 'accessibility.close' | t }}" data-drawer-focus>
+      {% render 'icon', name: 'close' %}
+    </button>
+  </div>
+  <div class="drawer__body">
+    <ul class="m-nav">
+      {%- for link in menu.links -%}
+        <li class="m-nav__item">
+          {%- if link.links.size > 0 -%}
+            <details class="m-nav__group">
+              <summary class="m-nav__summary">
+                {{ link.title }}
+                <span class="m-nav__icon">{% render 'icon', name: 'plus' %}</span>
+              </summary>
+              <div class="m-nav__sub">
+                {%- for child in link.links -%}
+                  {%- if child.links.size > 0 -%}
+                    <p class="m-nav__sub-head">{{ child.title }}</p>
+                    {%- for grandchild in child.links -%}
+                      {%- render 'nav-mega-link', link: grandchild, mobile: true -%}
+                    {%- endfor -%}
+                  {%- else -%}
+                    {%- render 'nav-mega-link', link: child, mobile: true -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </details>
+          {%- else -%}
+            <a class="m-nav__link" href="{{ link.url }}">{{ link.title }}</a>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+    <div class="m-nav__utility">
+      <a href="{% if shop.customer_accounts_enabled %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">
+        {% render 'icon', name: 'account' %} {{ 'customer.account.title' | t }}
+      </a>
+      <a href="{{ routes.search_url }}">{% render 'icon', name: 'search' %} {{ 'general.search.title' | t }}</a>
+      {%- if settings.contact_phone != blank -%}
+        <a href="tel:{{ settings.contact_phone | replace: ' ', '' }}">{% render 'icon', name: 'phone' %} {{ settings.contact_phone }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image",
+      "info": "Overrides the theme logo. Empty = KYMRA wordmark."
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Main menu",
+      "default": "main-menu"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu_image",
+      "name": "Mega menu image tile",
+      "settings": [
+        { "type": "paragraph", "content": "Two or more tiles under the same top-level item switch that menu to an image layout." },
+        { "type": "text", "id": "parent", "label": "Top-level menu item (exact title)", "info": "e.g. Brands" },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    },
+    {
+      "type": "menu_promo",
+      "name": "Mega menu side promo",
+      "settings": [
+        { "type": "paragraph", "content": "A single promo image shown beside a column menu." },
+        { "type": "text", "id": "parent", "label": "Top-level menu item (exact title)" },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ]
+}
+{% endschema %}

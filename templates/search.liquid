@@ -1,0 +1,55 @@
+<div class="page-hero container">
+  <h1 class="page-hero__title">{{ 'general.search.title' | t }}</h1>
+</div>
+
+<div class="section container">
+  <form class="search-form" action="{{ routes.search_url }}" method="get" role="search">
+    <label class="visually-hidden" for="search-input">{{ 'general.search.placeholder' | t }}</label>
+    <input type="search" id="search-input" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" autocomplete="off">
+    <button type="submit" class="btn">{{ 'general.search.submit' | t }}</button>
+  </form>
+
+  {%- if search.performed -%}
+    {%- if search.results_count > 0 -%}
+      <p class="coll-count text-center" style="margin-bottom:32px;">{{ 'general.search.results_for' | t: count: search.results_count, terms: search.terms }}</p>
+      {%- paginate search.results by 24 -%}
+        <div class="product-grid product-grid--4">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              {% render 'product-card', product: item %}
+            {%- else -%}
+              <article class="article-card">
+                <a class="article-card__media media ratio-portrait" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+                  {%- if item.image -%}
+                    {% render 'responsive-image', image: item.image, ratio: 'portrait', sizes: '25vw' %}
+                  {%- else -%}
+                    <div class="media-placeholder">{% render 'icon', name: 'image' %}</div>
+                  {%- endif -%}
+                </a>
+                <p class="article-card__meta">{{ item.object_type }}</p>
+                <h3 class="card__title"><a href="{{ item.url }}">{{ item.title }}</a></h3>
+              </article>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination" aria-label="{{ 'general.pagination.label' | t }}">
+            {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">{% render 'icon', name: 'chevron-left' %}</a>{%- endif -%}
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>
+              {%- elsif part.title == paginate.current_page -%}<span class="is-current" aria-current="page">{{ part.title }}</span>
+              {%- else -%}<span>{{ part.title }}</span>{%- endif -%}
+            {%- endfor -%}
+            {%- if paginate.next -%}<a href="{{ paginate.next.url }}">{% render 'icon', name: 'chevron-right' %}</a>{%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- else -%}
+      <div class="coll-empty">
+        <h2 class="coll-empty__title">{{ 'general.search.no_results_title' | t }}</h2>
+        <p class="coll-empty__body">{{ 'general.search.no_results' | t: terms: search.terms }}</p>
+        <a class="btn" href="{{ routes.all_products_collection_url }}">{{ 'general.search.browse_all' | t }}</a>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+</div>

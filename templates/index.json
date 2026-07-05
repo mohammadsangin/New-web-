@@ -1,0 +1,63 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "alignment": "left",
+        "eyebrow": "Solid brass, made to order",
+        "heading": "Lighting with a considered hand",
+        "subheading": "Period and Art Deco fixtures, cast in solid brass and finished for interiors that last.",
+        "cta_label": "Explore the collection",
+        "cta_link": "shopify://collections/all",
+        "cta2_label": "Made-to-order pieces",
+        "cta2_link": "shopify://collections/all"
+      }
+    },
+    "featured_1": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "The collection",
+        "heading": "New in brass",
+        "body": "Fixtures chosen for their proportion and finish — pieces we would put in our own homes.",
+        "products_to_show": 4,
+        "columns": "4",
+        "show_view_all": true,
+        "view_all_label": "View all"
+      }
+    },
+    "shop_the_room": {
+      "type": "shop-the-room",
+      "settings": {
+        "image_side": "left",
+        "eyebrow": "Shop the room",
+        "heading": "The Dean, at home",
+        "body": "Seen here in a period drawing room — solid brass, hand-finished, and quietly at ease among the details that matter.",
+        "cta_label": "Shop this look",
+        "cta_link": "shopify://collections/all"
+      }
+    },
+    "featured_2": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "Overhead",
+        "heading": "Pendants & chandeliers",
+        "body": "Considered ceiling pieces, from single pendants to statement chandeliers.",
+        "products_to_show": 4,
+        "columns": "4",
+        "show_view_all": true,
+        "view_all_label": "View all"
+      }
+    },
+    "trust": {
+      "type": "trust-band",
+      "blocks": {
+        "b1": { "type": "item", "settings": { "icon": "truck", "title": "Free UK delivery", "text": "On all orders over £300, to your door." } },
+        "b2": { "type": "item", "settings": { "icon": "clock", "title": "Made to order", "text": "Cast for you — please allow 3–4 weeks." } },
+        "b3": { "type": "item", "settings": { "icon": "refresh", "title": "30-day returns", "text": "Not quite right? Return within 30 days." } },
+        "b4": { "type": "item", "settings": { "icon": "headset", "title": "Expert advice", "text": "Speak to us on 0333 090 0045." } }
+      },
+      "block_order": ["b1", "b2", "b3", "b4"]
+    }
+  },
+  "order": ["hero", "featured_1", "shop_the_room", "featured_2", "trust"]
+}

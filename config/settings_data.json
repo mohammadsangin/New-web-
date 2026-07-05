@@ -1,0 +1,47 @@
+{
+  "current": {
+    "logo_width": 140,
+    "color_bg": "#F5F1E9",
+    "color_surface": "#FEFDFB",
+    "color_panel": "#EFEADD",
+    "color_ink": "#1F1D18",
+    "color_muted": "#6A6459",
+    "color_hairline": "#DED7C7",
+    "color_brass": "#A8894F",
+    "color_brass_deep": "#8A6E37",
+    "color_dark": "#1B1915",
+    "color_on_dark": "#E9E3D6",
+    "heading_font": "cormorant_n5",
+    "body_font": "assistant_n4",
+    "card_show_vendor": true,
+    "free_shipping_threshold": 300,
+    "social_instagram": "",
+    "social_pinterest": "",
+    "social_facebook": "",
+    "contact_phone": "0333 090 0045",
+    "contact_email": "sales@kymralighting.co.uk",
+    "registered_office": "3rd Floor, 86–90 Paul Street, London EC2A 4NE"
+  },
+  "presets": {
+    "Kymra Lighting": {
+      "logo_width": 140,
+      "color_bg": "#F5F1E9",
+      "color_surface": "#FEFDFB",
+      "color_panel": "#EFEADD",
+      "color_ink": "#1F1D18",
+      "color_muted": "#6A6459",
+      "color_hairline": "#DED7C7",
+      "color_brass": "#A8894F",
+      "color_brass_deep": "#8A6E37",
+      "color_dark": "#1B1915",
+      "color_on_dark": "#E9E3D6",
+      "heading_font": "cormorant_n5",
+      "body_font": "assistant_n4",
+      "card_show_vendor": true,
+      "free_shipping_threshold": 300,
+      "contact_phone": "0333 090 0045",
+      "contact_email": "sales@kymralighting.co.uk",
+      "registered_office": "3rd Floor, 86–90 Paul Street, London EC2A 4NE"
+    }
+  }
+}

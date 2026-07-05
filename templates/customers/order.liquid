@@ -1,0 +1,47 @@
+<div class="page-hero container">
+  <h1 class="page-hero__title">{{ 'customer.order.title' | t: name: order.name }}</h1>
+  <p class="page-hero__lede">{{ 'customer.order.date' | t: date: order.created_at | date: '%d %B %Y' }}</p>
+</div>
+<div class="section container">
+  <div style="max-width:900px;margin-inline:auto;overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+      <thead>
+        <tr style="text-align:left;border-bottom:1px solid var(--hairline);">
+          <th style="padding:12px 8px;">{{ 'customer.order.product' | t }}</th>
+          <th style="padding:12px 8px;">{{ 'customer.order.qty' | t }}</th>
+          <th style="padding:12px 8px;text-align:right;">{{ 'customer.order.total' | t }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for line in order.line_items -%}
+          <tr style="border-bottom:1px solid var(--hairline);">
+            <td style="padding:14px 8px;">
+              <a class="link-underline" style="text-transform:none;letter-spacing:0;" href="{{ line.product.url }}">{{ line.title }}</a>
+            </td>
+            <td style="padding:14px 8px;color:var(--muted);">{{ line.quantity }}</td>
+            <td style="padding:14px 8px;text-align:right;">{{ line.final_line_price | money }}</td>
+          </tr>
+        {%- endfor -%}
+      </tbody>
+      <tfoot>
+        <tr><td colspan="2" style="padding:12px 8px;text-align:right;color:var(--muted);">{{ 'cart.general.subtotal' | t }}</td><td style="padding:12px 8px;text-align:right;">{{ order.subtotal_price | money }}</td></tr>
+        {%- for shipping in order.shipping_methods -%}
+          <tr><td colspan="2" style="padding:8px;text-align:right;color:var(--muted);">{{ shipping.title }}</td><td style="padding:8px;text-align:right;">{{ shipping.price | money }}</td></tr>
+        {%- endfor -%}
+        <tr><td colspan="2" style="padding:12px 8px;text-align:right;font-weight:600;">{{ 'customer.order.total' | t }}</td><td style="padding:12px 8px;text-align:right;font-weight:600;">{{ order.total_price | money }}</td></tr>
+      </tfoot>
+    </table>
+
+    <div style="display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:40px;">
+      <div>
+        <p class="footer__col-head" style="color:var(--brass-deep);">{{ 'customer.order.billing' | t }}</p>
+        <div style="color:var(--muted);font-size:14px;">{{ order.billing_address | format_address }}</div>
+      </div>
+      <div>
+        <p class="footer__col-head" style="color:var(--brass-deep);">{{ 'customer.order.shipping' | t }}</p>
+        <div style="color:var(--muted);font-size:14px;">{{ order.shipping_address | format_address }}</div>
+      </div>
+    </div>
+    <p class="mt-24"><a class="link-underline" style="text-transform:none;letter-spacing:0;" href="{{ routes.account_url }}">{{ 'customer.order.back' | t }}</a></p>
+  </div>
+</div>
