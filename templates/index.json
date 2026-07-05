@@ -61,6 +61,7 @@
         "t5": {
           "type": "tile",
           "settings": {
+            "image": "shopify://shop_images/lt-sh-11-wlt352-brl-1.jpg",
             "label": "Exterior",
             "heading": "Outdoor",
             "link": ""
