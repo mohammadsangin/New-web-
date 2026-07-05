@@ -864,6 +864,8 @@ p:last-child { margin-bottom: 0; }
 .select-wrap select:focus-visible { outline: 2px solid var(--brass-deep); outline-offset: 1px; }
 
 .coll-layout { padding-block: clamp(28px, 4vw, 48px); }
+/* AJAX facet apply: dim results while fetching — content stays in place (no shift) */
+.main-collection.is-loading [data-facet-results] { opacity: 0.5; pointer-events: none; transition: opacity 150ms var(--ease); }
 .coll-empty { text-align: center; padding-block: clamp(48px, 8vw, 96px); }
 .coll-empty__title { font-size: var(--fs-h2); margin-bottom: 12px; }
 .coll-empty__body { color: var(--muted); font-size: var(--fs-lede); margin-bottom: 24px; }

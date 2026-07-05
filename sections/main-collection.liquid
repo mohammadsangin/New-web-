@@ -1,6 +1,6 @@
 {%- comment -%} Collection: banner, sticky toolbar (filter + count + sort), grid, pagination, native facets. {%- endcomment -%}
 {%- paginate collection.products by section.settings.products_per_page -%}
-<section class="main-collection" id="main-collection">
+<section class="main-collection" id="main-collection" data-facets data-section-id="{{ section.id }}">
   {%- comment -%} Banner {%- endcomment -%}
   {%- if section.settings.show_banner -%}
     <div class="coll-banner container">
@@ -22,10 +22,10 @@
         {%- if collection.filters.size > 0 -%}
           <button class="filter-toggle" type="button" data-drawer-open="filters-drawer" aria-controls="filters-drawer" aria-expanded="false">
             {% render 'icon', name: 'filter' %} {{ 'collections.filters.title' | t }}
-            {%- if active_count > 0 -%}<span class="filter-toggle__badge">{{ active_count }}</span>{%- endif -%}
+            <span class="filter-toggle__badge-slot" data-facet-badge>{%- if active_count > 0 -%}<span class="filter-toggle__badge">{{ active_count }}</span>{%- endif -%}</span>
           </button>
         {%- endif -%}
-        <span class="coll-count">{{ 'collections.count' | t: count: collection.products_count }}</span>
+        <span class="coll-count" data-facet-count>{{ 'collections.count' | t: count: collection.products_count }}</span>
       </div>
       <div class="coll-sort">
         <label for="sort-by">{{ 'collections.sort.label' | t }}</label>
@@ -43,24 +43,24 @@
   </div>
 
   {%- comment -%} Active facets summary — individual remove + clear all {%- endcomment -%}
-  {%- if active_count > 0 -%}
-    <div class="container">
+  <div class="container" data-facet-summary>
+    {%- if active_count > 0 -%}
       <div class="active-facets" role="list" aria-label="{{ 'collections.filters.active' | t }}">
         {%- for filter in collection.filters -%}
           {%- for value in filter.active_values -%}
-            <a class="active-facet" role="listitem" href="{{ value.url_to_remove }}">
+            <a class="active-facet" role="listitem" href="{{ value.url_to_remove }}" data-facet-link>
               <span>{{ value.label }}</span>{% render 'icon', name: 'close' %}
               <span class="visually-hidden">{{ 'collections.filters.remove' | t: label: value.label }}</span>
             </a>
           {%- endfor -%}
         {%- endfor -%}
-        <a class="active-facet active-facet--clear" href="{{ collection.url }}">{{ 'collections.filters.clear_all' | t }}</a>
+        <a class="active-facet active-facet--clear" href="{{ collection.url }}" data-facet-link>{{ 'collections.filters.clear_all' | t }}</a>
       </div>
-    </div>
-  {%- endif -%}
+    {%- endif -%}
+  </div>
 
   {%- comment -%} Grid {%- endcomment -%}
-  <div class="coll-layout container">
+  <div class="coll-layout container" data-facet-results>
     {%- if collection.products.size > 0 -%}
       <div class="product-grid product-grid--4">
         {%- for product in collection.products -%}
@@ -71,11 +71,11 @@
       {%- if paginate.pages > 1 -%}
         <nav class="pagination" aria-label="{{ 'general.pagination.label' | t }}">
           {%- if paginate.previous -%}
-            <a href="{{ paginate.previous.url }}" aria-label="{{ 'general.pagination.previous' | t }}">{% render 'icon', name: 'chevron-left' %}</a>
+            <a href="{{ paginate.previous.url }}" aria-label="{{ 'general.pagination.previous' | t }}" data-facet-link>{% render 'icon', name: 'chevron-left' %}</a>
           {%- endif -%}
           {%- for part in paginate.parts -%}
             {%- if part.is_link -%}
-              <a href="{{ part.url }}">{{ part.title }}</a>
+              <a href="{{ part.url }}" data-facet-link>{{ part.title }}</a>
             {%- elsif part.title == paginate.current_page -%}
               <span class="is-current" aria-current="page">{{ part.title }}</span>
             {%- else -%}
@@ -83,7 +83,7 @@
             {%- endif -%}
           {%- endfor -%}
           {%- if paginate.next -%}
-            <a href="{{ paginate.next.url }}" aria-label="{{ 'general.pagination.next' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
+            <a href="{{ paginate.next.url }}" aria-label="{{ 'general.pagination.next' | t }}" data-facet-link>{% render 'icon', name: 'chevron-right' %}</a>
           {%- endif -%}
         </nav>
       {%- endif -%}
@@ -110,10 +110,10 @@
       <span class="drawer__title">{{ 'collections.filters.title' | t }}</span>
       <button class="drawer__close" type="button" data-drawer-close aria-label="{{ 'accessibility.close' | t }}" data-drawer-focus>{% render 'icon', name: 'close' %}</button>
     </div>
-    <form class="drawer__body" method="get">
+    <form class="drawer__body" method="get" action="{{ collection.url }}" data-facet-form>
       {%- comment -%} Preserve sort {%- endcomment -%}
       {%- if collection.sort_by != blank -%}<input type="hidden" name="sort_by" value="{{ collection.sort_by }}">{%- endif -%}
-      <div class="filters">
+      <div class="filters" data-facet-filters>
         {%- for filter in collection.filters -%}
           <details class="filters__group" open>
             <summary class="filters__summary">
@@ -142,7 +142,7 @@
         {%- endfor -%}
       </div>
       <div class="filters__footer">
-        <a class="btn btn--secondary" href="{{ collection.url }}" style="flex:1;">{{ 'collections.filters.clear_all' | t }}</a>
+        <a class="btn btn--secondary" href="{{ collection.url }}" data-facet-link style="flex:1;">{{ 'collections.filters.clear_all' | t }}</a>
         <button type="submit" class="btn" style="flex:1;">{{ 'collections.filters.apply' | t }}</button>
       </div>
     </form>

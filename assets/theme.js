@@ -451,15 +451,100 @@
   }
 
   /* ======================================================================
-     COLLECTION: sort submit
+     COLLECTION FACETS — AJAX apply via the Section Rendering API.
+     Updates the grid, count, chips and drawer counts in place (no reload,
+     no scroll jump, drawer stays open). Degrades to normal form/link
+     navigation when JS is unavailable or a request fails.
      ====================================================================== */
   function initCollection() {
+    var root = $('[data-facets]');
+    if (!root) return;
+    var sectionId = root.getAttribute('data-section-id');
+    var debounceTimer;
+
+    function swapRegion(doc, selector) {
+      var fresh = doc.querySelector(selector);
+      var current = $(selector);
+      if (current && fresh) current.innerHTML = fresh.innerHTML;
+      else if (current && !fresh) current.innerHTML = '';
+    }
+
+    function render(url, addToHistory) {
+      var fetchUrl = new URL(url, window.location.origin);
+      fetchUrl.searchParams.set('section_id', sectionId);
+      root.classList.add('is-loading');
+      fetch(fetchUrl.toString(), { headers: { 'Accept': 'text/html' } })
+        .then(function (r) {
+          if (!r.ok) throw new Error('facet fetch failed');
+          return r.text();
+        })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          swapRegion(doc, '[data-facet-results]');
+          swapRegion(doc, '[data-facet-count]');
+          swapRegion(doc, '[data-facet-summary]');
+          swapRegion(doc, '[data-facet-badge]');
+          swapRegion(doc, '[data-facet-filters]');
+          root.classList.remove('is-loading');
+          if (addToHistory !== false) {
+            var clean = new URL(url, window.location.origin);
+            clean.searchParams.delete('section_id');
+            window.history.pushState({ facets: true }, '', clean.toString());
+          }
+        })
+        .catch(function () {
+          // Hard fallback: let the browser navigate normally.
+          window.location.href = url;
+        });
+    }
+
+    function urlFromForm(form) {
+      var action = form.getAttribute('action') || window.location.pathname;
+      var params = new URLSearchParams();
+      new FormData(form).forEach(function (value, key) {
+        if (value !== '' && value != null) params.append(key, value);
+      });
+      var qs = params.toString();
+      return qs ? action + '?' + qs : action;
+    }
+
+    // Filter form: apply as soon as a value changes (debounced for price typing).
+    document.addEventListener('change', function (e) {
+      var form = e.target.closest('[data-facet-form]');
+      if (!form) return;
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(function () { render(urlFromForm(form)); }, 250);
+    });
+    // Keep the Apply button working (and instant) without a full submit.
+    document.addEventListener('submit', function (e) {
+      var form = e.target.closest('[data-facet-form]');
+      if (!form) return;
+      e.preventDefault();
+      clearTimeout(debounceTimer);
+      render(urlFromForm(form));
+      Drawers.closeAll();
+    });
+
+    // Sort select preserves active facets (rewrites sort_by on the current URL).
     var sort = $('[data-sort]');
     if (sort) sort.addEventListener('change', function () {
       var url = new URL(window.location.href);
       url.searchParams.set('sort_by', sort.value);
       url.searchParams.delete('page');
-      window.location.href = url.toString();
+      render(url.toString());
+    });
+
+    // Chips (remove / clear-all), drawer clear-all, and pagination.
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest('[data-facet-link]');
+      if (!link || !link.getAttribute('href')) return;
+      e.preventDefault();
+      render(link.getAttribute('href'));
+    });
+
+    // Back / forward buttons re-render the matching state.
+    window.addEventListener('popstate', function () {
+      render(window.location.href, false);
     });
   }
 
