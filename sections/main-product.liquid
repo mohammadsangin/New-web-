@@ -20,8 +20,8 @@
     </nav>
 
     <div class="pdp__grid">
-      {%- comment -%} ===== Gallery ===== {%- endcomment -%}
-      <div class="gallery gallery--sticky">
+      {%- comment -%} ===== Gallery: thumb-switch on desktop, swipeable on mobile ===== {%- endcomment -%}
+      <div class="gallery">
         {%- if media.size > 1 -%}
           <div class="gallery__thumbs" role="tablist" aria-label="{{ 'products.product.gallery_thumbnails' | t }}">
             {%- for m in media -%}
@@ -35,7 +35,7 @@
             {%- endfor -%}
           </div>
         {%- endif -%}
-        <div class="gallery__main">
+        <div class="gallery__main" data-gallery-main>
           {%- if media.size > 0 -%}
             {%- for m in media -%}
               <div class="gallery__slide{% if forloop.first %} is-active{% endif %}" data-gallery-slide="{{ forloop.index0 }}">
@@ -56,8 +56,8 @@
         </div>
       </div>
 
-      {%- comment -%} ===== Info column ===== {%- endcomment -%}
-      <div class="pdp-info">
+      {%- comment -%} ===== Info column (sticky buy panel on desktop) ===== {%- endcomment -%}
+      <div class="pdp-info pdp-info--sticky">
         {%- form 'product', product, data-product-form: '', novalidate: 'novalidate' -%}
           <input type="hidden" name="id" value="{{ current.id }}">
 
@@ -137,38 +137,48 @@
                   {%- endif -%}
                 </div>
 
-              {%- when 'description' -%}
-                {%- if product.description != blank -%}
-                  <div class="pdp-desc rte" {{ block.shopify_attributes }}>{{ product.description }}</div>
-                {%- endif -%}
-
-              {%- when 'accordions' -%}
-                <div class="accordions" {{ block.shopify_attributes }}>
-                  {%- if block.settings.details != blank -%}
-                    <details class="accordion">
-                      <summary class="accordion__summary">{{ block.settings.details_title | default: 'Details' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
-                      <div class="accordion__body rte">{{ block.settings.details }}</div>
-                    </details>
-                  {%- endif -%}
-                  {%- if block.settings.dimensions != blank -%}
-                    <details class="accordion">
-                      <summary class="accordion__summary">{{ block.settings.dimensions_title | default: 'Dimensions' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
-                      <div class="accordion__body rte">{{ block.settings.dimensions }}</div>
-                    </details>
-                  {%- endif -%}
-                  {%- if block.settings.delivery != blank -%}
-                    <details class="accordion">
-                      <summary class="accordion__summary">{{ block.settings.delivery_title | default: 'Delivery & returns' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
-                      <div class="accordion__body rte">{{ block.settings.delivery }}</div>
-                    </details>
-                  {%- endif -%}
-                </div>
-
             {%- endcase -%}
           {%- endfor -%}
         {%- endform -%}
       </div>
     </div>
+
+    {%- comment -%} ===== Full-width editorial details, below the sticky buy panel ===== {%- endcomment -%}
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'description' -%}
+          {%- if product.description != blank -%}
+            <div class="pdp__details" {{ block.shopify_attributes }}>
+              <div class="pdp-desc rte">{{ product.description }}</div>
+            </div>
+          {%- endif -%}
+        {%- when 'accordions' -%}
+          {%- if block.settings.details != blank or block.settings.dimensions != blank or block.settings.delivery != blank -%}
+            <div class="pdp__details" {{ block.shopify_attributes }}>
+              <div class="accordions">
+                {%- if block.settings.details != blank -%}
+                  <details class="accordion">
+                    <summary class="accordion__summary">{{ block.settings.details_title | default: 'Details' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
+                    <div class="accordion__body rte">{{ block.settings.details }}</div>
+                  </details>
+                {%- endif -%}
+                {%- if block.settings.dimensions != blank -%}
+                  <details class="accordion">
+                    <summary class="accordion__summary">{{ block.settings.dimensions_title | default: 'Dimensions' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
+                    <div class="accordion__body rte">{{ block.settings.dimensions }}</div>
+                  </details>
+                {%- endif -%}
+                {%- if block.settings.delivery != blank -%}
+                  <details class="accordion">
+                    <summary class="accordion__summary">{{ block.settings.delivery_title | default: 'Delivery & returns' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
+                    <div class="accordion__body rte">{{ block.settings.delivery }}</div>
+                  </details>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+      {%- endcase -%}
+    {%- endfor -%}
   </div>
 
   {%- comment -%} Variant data for JS {%- endcomment -%}

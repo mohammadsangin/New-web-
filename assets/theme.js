@@ -401,18 +401,37 @@
     });
     render();
 
-    /* Gallery thumbnails */
+    /* Gallery: thumbs switch the desktop view and scroll the mobile carousel */
+    var galleryMain = $('[data-gallery-main]', root);
+    function setActiveThumb(idx) {
+      $all('[data-gallery-thumb]', root).forEach(function (t) {
+        t.setAttribute('aria-current', parseInt(t.getAttribute('data-gallery-thumb'), 10) === idx ? 'true' : 'false');
+      });
+    }
     $all('[data-gallery-thumb]', root).forEach(function (thumb) {
       thumb.addEventListener('click', function () {
-        var target = thumb.getAttribute('data-gallery-thumb');
+        var idx = parseInt(thumb.getAttribute('data-gallery-thumb'), 10);
         $all('[data-gallery-slide]', root).forEach(function (s) {
-          s.classList.toggle('is-active', s.getAttribute('data-gallery-slide') === target);
+          s.classList.toggle('is-active', parseInt(s.getAttribute('data-gallery-slide'), 10) === idx);
         });
-        $all('[data-gallery-thumb]', root).forEach(function (t) {
-          t.setAttribute('aria-current', t === thumb ? 'true' : 'false');
-        });
+        setActiveThumb(idx);
+        // Mobile: scroll the swipe carousel to the chosen slide.
+        if (galleryMain && galleryMain.scrollWidth > galleryMain.clientWidth) {
+          galleryMain.scrollTo({ left: idx * galleryMain.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
+        }
       });
     });
+    // Mobile: keep the active thumb in sync as the carousel is swiped.
+    if (galleryMain) {
+      var galleryTimer;
+      galleryMain.addEventListener('scroll', function () {
+        clearTimeout(galleryTimer);
+        galleryTimer = setTimeout(function () {
+          if (galleryMain.scrollWidth <= galleryMain.clientWidth) return;
+          setActiveThumb(Math.round(galleryMain.scrollLeft / galleryMain.clientWidth));
+        }, 90);
+      }, { passive: true });
+    }
 
     /* Sticky add-to-bag reveal */
     var sticky = $('[data-sticky-buy]');
