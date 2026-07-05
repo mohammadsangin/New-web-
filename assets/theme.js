@@ -40,8 +40,9 @@
      ====================================================================== */
   var Drawers = (function () {
     var overlay = null;
-    var openDrawer = null;
+    var openId = null;        // track by id, never a (possibly re-rendered) element ref
     var lastFocus = null;
+    var activeOpener = null;
 
     function ensureOverlay() {
       overlay = $('#drawer-overlay');
@@ -51,15 +52,18 @@
         overlay.className = 'overlay';
         document.body.appendChild(overlay);
       }
-      overlay.addEventListener('click', closeAll);
+      overlay.addEventListener('click', function () { close(); });
     }
 
-    var activeOpener = null;
+    function currentDrawer() { return openId ? document.getElementById(openId) : null; }
 
     function open(id, opener) {
       var drawer = document.getElementById(id);
       if (!drawer) return;
-      if (openDrawer && openDrawer !== drawer) closeAll(true);
+      // close any other open drawer without releasing the scroll lock
+      $all('.drawer.is-open').forEach(function (d) {
+        if (d !== drawer) { d.classList.remove('is-open'); d.setAttribute('aria-hidden', 'true'); }
+      });
       lastFocus = opener || document.activeElement;
       activeOpener = opener || null;
       if (activeOpener && activeOpener.hasAttribute('aria-expanded')) activeOpener.setAttribute('aria-expanded', 'true');
@@ -67,39 +71,40 @@
       drawer.setAttribute('aria-hidden', 'false');
       overlay.classList.add('is-open');
       document.body.classList.add('no-scroll');
-      openDrawer = drawer;
+      openId = id;
       var focusTarget = drawer.querySelector('[data-drawer-focus]') || drawer.querySelector('.drawer__close');
-      if (focusTarget) setTimeout(function () { focusTarget.focus(); }, 60);
+      if (focusTarget) setTimeout(function () { try { focusTarget.focus(); } catch (e) {} }, 80);
       document.dispatchEvent(new CustomEvent('drawer:open', { detail: { id: id } }));
     }
 
-    function closeAll(keepScroll) {
-      if (openDrawer) {
-        openDrawer.classList.remove('is-open');
-        openDrawer.setAttribute('aria-hidden', 'true');
-      }
+    // Close whatever drawer is open. Robust to AJAX re-renders: works off the
+    // live `.drawer.is-open` elements, not a cached reference.
+    function close() {
+      var any = $all('.drawer.is-open');
+      any.forEach(function (d) { d.classList.remove('is-open'); d.setAttribute('aria-hidden', 'true'); });
       overlay && overlay.classList.remove('is-open');
-      if (!keepScroll) document.body.classList.remove('no-scroll');
+      document.body.classList.remove('no-scroll');
       if (activeOpener && activeOpener.hasAttribute('aria-expanded')) activeOpener.setAttribute('aria-expanded', 'false');
-      if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
-      openDrawer = null;
+      if (lastFocus && typeof lastFocus.focus === 'function') { try { lastFocus.focus(); } catch (e) {} }
+      openId = null;
       activeOpener = null;
     }
 
     function init() {
       ensureOverlay();
+      // Delegated on document, so it survives any drawer content re-render.
       document.addEventListener('click', function (e) {
         var opener = e.target.closest('[data-drawer-open]');
         if (opener) { e.preventDefault(); open(opener.getAttribute('data-drawer-open'), opener); return; }
-        if (e.target.closest('[data-drawer-close]')) { e.preventDefault(); closeAll(); }
+        if (e.target.closest('[data-drawer-close]')) { e.preventDefault(); close(); }
       });
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && openDrawer) closeAll();
-        if (e.key === 'Tab' && openDrawer) trapFocus(openDrawer, e);
+        if (e.key === 'Escape' && openId) { close(); return; }
+        if (e.key === 'Tab' && openId) { var d = currentDrawer(); if (d) trapFocus(d, e); }
       });
     }
 
-    return { init: init, open: open, closeAll: closeAll };
+    return { init: init, open: open, close: close, closeAll: close };
   })();
 
   /* ======================================================================
@@ -229,37 +234,50 @@
       return doc.querySelector(selector);
     }
 
+    // Swap the drawer's inner content from a rendered `cart-drawer` section.
+    // Returns true if the swap happened. The #cart-drawer element itself is
+    // never replaced, so the open state and delegated handlers stay intact.
+    function renderDrawer(sectionHTML) {
+      if (!sectionHTML) return false;
+      var fresh = getSectionHTML(sectionHTML, '#cart-drawer .drawer__wrap');
+      var current = $('#cart-drawer .drawer__wrap');
+      if (fresh && current) { current.innerHTML = fresh.innerHTML; return true; }
+      return false;
+    }
+
+    // Fallback: re-render the drawer via a standalone Section Rendering request.
     function refreshDrawer() {
-      // Re-render the cart drawer via the Section Rendering API `sections=` param.
-      // This works for the cart-drawer section regardless of the current page.
-      return fetch(routes.cart_url + '?sections=cart-drawer', { headers: { 'Accept': 'application/json' } })
+      return fetch(routes.cart_url + '?sections=cart-drawer', { headers: { 'Accept': 'application/json' }, cache: 'no-store' })
         .then(function (r) { return r.json(); })
-        .then(function (data) {
-          var html = data && data['cart-drawer'];
-          if (!html) return;
-          var fresh = getSectionHTML(html, '#cart-drawer .drawer__wrap');
-          var current = $('#cart-drawer .drawer__wrap');
-          if (fresh && current) current.innerHTML = fresh.innerHTML;
-        });
+        .then(function (data) { renderDrawer(data && data['cart-drawer']); })
+        .catch(function () {});
     }
 
     function add(id, quantity, opener) {
       setLoading(true);
+      // Ask Shopify to render the cart-drawer section IN the add response, so the
+      // drawer reflects the new line item atomically — no second fetch, no race.
       return fetch(routes.cart_add_url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ items: [{ id: id, quantity: quantity || 1 }] })
+        body: JSON.stringify({
+          items: [{ id: id, quantity: quantity || 1 }],
+          sections: 'cart-drawer',
+          sections_url: window.location.pathname
+        })
       })
         .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
         .then(function (res) {
           if (!res.ok) { throw res.data; }
-          return refreshDrawer();
+          var ok = renderDrawer(res.data.sections && res.data.sections['cart-drawer']);
+          var ready = ok ? Promise.resolve() : refreshDrawer();
+          // Update the header count from the authoritative cart (add is committed).
+          return ready.then(function () { return fetch(routes.cart_url + '.js', { cache: 'no-store' }).then(function (r) { return r.json(); }); });
         })
-        .then(function () { return fetch(routes.cart_url + '.js').then(function (r) { return r.json(); }); })
         .then(function (cart) {
           updateCount(cart.item_count);
           setLoading(false);
-          Drawers.open('cart-drawer', opener);
+          Drawers.open('cart-drawer', opener); // open AFTER content is in place
         })
         .catch(function (err) {
           setLoading(false);
@@ -270,20 +288,24 @@
 
     function change(key, quantity) {
       setLoading(true);
+      // change.js returns the full cart AND the requested sections in one shot.
       return fetch(routes.cart_change_url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ id: key, quantity: quantity })
+        body: JSON.stringify({
+          id: key,
+          quantity: quantity,
+          sections: 'cart-drawer',
+          sections_url: window.location.pathname
+        })
       })
         .then(function (r) { return r.json(); })
         .then(function (cart) {
           updateCount(cart.item_count);
-          return refreshDrawer().then(function () { return cart; });
-        })
-        .then(function (cart) {
+          var ok = renderDrawer(cart.sections && cart.sections['cart-drawer']);
+          if (!ok) refreshDrawer();
+          reloadCartPage(); // also refresh the cart page if we're on it
           setLoading(false);
-          // If we're on the cart page, reload the section too.
-          reloadCartPage();
           return cart;
         })
         .catch(function () { setLoading(false); });
