@@ -1303,12 +1303,22 @@ p:last-child { margin-bottom: 0; }
 .newsletter-form input::placeholder { color: rgba(233,227,214,0.5); }
 .newsletter-form input:focus-visible { outline: 2px solid var(--brass); outline-offset: 1px; }
 .newsletter-form button {
-  flex: none; padding: 13px 18px;
-  background: var(--on-dark); color: var(--dark); border: 0; border-radius: var(--radius);
-  font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  flex: none;
+  width: 54px;
+  align-self: stretch; /* match the input height */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brass);
+  color: #fff;
+  border: 0;
+  border-radius: var(--radius);
+  cursor: pointer;
   transition: background var(--dur-hover) var(--ease);
 }
-.newsletter-form button:hover { background: var(--brass); }
+.newsletter-form button:hover { background: var(--brass-deep); }
+.newsletter-form button:focus-visible { outline: 2px solid var(--on-dark); outline-offset: 2px; }
+.newsletter-form button svg { width: 19px; height: 19px; }
 .form-note { font-size: 13px; margin-top: 10px; }
 .form-note--success { color: var(--brass); }
 .form-note--error { color: #C46A5A; }
