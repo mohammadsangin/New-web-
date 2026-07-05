@@ -202,6 +202,8 @@
       "continue": "Continue shopping",
       "start_shopping": "Start shopping",
       "empty": "Your bag is empty.",
+      "empty_title": "Your bag is empty",
+      "empty_body": "Nothing curated yet. Explore the collection and add the pieces you love.",
       "add": "Add",
       "complete_the_look": "Complete the look",
       "taxes_note": "Taxes and delivery calculated at checkout.",

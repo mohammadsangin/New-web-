@@ -114,8 +114,9 @@
     {%- else -%}
       <div class="drawer__body">
         <div class="cart-empty">
-          {% render 'icon', name: 'bag', size: 40 %}
-          <p>{{ 'cart.general.empty' | t }}</p>
+          <span class="cart-empty__icon">{% render 'icon', name: 'bag' %}</span>
+          <p class="cart-empty__title">{{ 'cart.general.empty_title' | t }}</p>
+          <p class="cart-empty__text">{{ 'cart.general.empty_body' | t }}</p>
           <a class="btn" href="{{ routes.all_products_collection_url }}" data-drawer-close>{{ 'cart.general.start_shopping' | t }}</a>
         </div>
       </div>
