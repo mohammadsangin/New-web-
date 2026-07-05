@@ -134,7 +134,7 @@
     </nav>
 
     <div class="header__actions">
-      <a class="header__icon header__icon--desktop" href="{{ routes.search_url }}" aria-label="{{ 'general.search.title' | t }}">
+      <a class="header__icon header__icon--desktop" href="{{ routes.search_url }}" data-drawer-open="search-drawer" aria-controls="search-drawer" aria-expanded="false" aria-label="{{ 'general.search.title' | t }}">
         {% render 'icon', name: 'search' %}
       </a>
       <a class="header__icon header__icon--desktop" href="{% if shop.customer_accounts_enabled %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" aria-label="{{ 'customer.account.title' | t }}">
@@ -189,7 +189,7 @@
       <a href="{% if shop.customer_accounts_enabled %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">
         {% render 'icon', name: 'account' %} {{ 'customer.account.title' | t }}
       </a>
-      <a href="{{ routes.search_url }}">{% render 'icon', name: 'search' %} {{ 'general.search.title' | t }}</a>
+      <a href="{{ routes.search_url }}" data-drawer-open="search-drawer" aria-controls="search-drawer">{% render 'icon', name: 'search' %} {{ 'general.search.title' | t }}</a>
       {%- if settings.contact_phone != blank -%}
         <a href="tel:{{ settings.contact_phone | replace: ' ', '' }}">{% render 'icon', name: 'phone' %} {{ settings.contact_phone }}</a>
       {%- endif -%}
