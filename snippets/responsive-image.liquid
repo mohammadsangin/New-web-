@@ -45,6 +45,6 @@
       height="{{ image.height }}"
       {% if priority %}fetchpriority="high" loading="eager" decoding="async"{% else %}loading="lazy" decoding="async"{% endif %}>
   {%- else -%}
-    <div class="media-placeholder">{% render 'icon', name: 'image' %}</div>
+    {% render 'placeholder' %}
   {%- endif -%}
 </div>

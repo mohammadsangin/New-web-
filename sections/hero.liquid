@@ -14,7 +14,7 @@
           width="{{ section.settings.image.width }}" height="{{ section.settings.image.height }}"
           fetchpriority="high" loading="eager" decoding="async">
       {%- else -%}
-        <div class="media-placeholder">{% render 'icon', name: 'image' %}</div>
+        {% render 'placeholder' %}
       {%- endif -%}
     </div>
     <div class="hero__scrim"></div>

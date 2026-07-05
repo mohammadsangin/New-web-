@@ -23,7 +23,7 @@
                   {%- if item.image -%}
                     {% render 'responsive-image', image: item.image, ratio: 'portrait', sizes: '25vw' %}
                   {%- else -%}
-                    <div class="media-placeholder">{% render 'icon', name: 'image' %}</div>
+                    {% render 'placeholder' %}
                   {%- endif -%}
                 </a>
                 <p class="article-card__meta">{{ item.object_type }}</p>

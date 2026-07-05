@@ -12,7 +12,7 @@
             {%- if article.image -%}
               {% render 'responsive-image', image: article.image, ratio: 'square', sizes: '(min-width:990px) 33vw, 100vw', alt: article.title %}
             {%- else -%}
-              <div class="media-placeholder">{% render 'icon', name: 'image' %}</div>
+              {% render 'placeholder' %}
             {%- endif -%}
           </a>
           <p class="article-card__meta">{{ article.published_at | date: '%d %B %Y' }}{% if article.tags.size > 0 %} · {{ article.tags.first }}{% endif %}</p>

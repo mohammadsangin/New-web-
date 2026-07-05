@@ -2,6 +2,7 @@
   "general": {
     "home": "Home",
     "menu": "Menu",
+    "shop": "Shop",
     "breadcrumb": "Breadcrumb",
     "meta": {
       "tags": "Tagged \"{{ tags }}\"",

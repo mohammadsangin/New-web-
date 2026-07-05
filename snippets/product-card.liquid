@@ -28,7 +28,7 @@
           alt="" width="{{ second.width }}" height="{{ second.height }}" loading="lazy" decoding="async">
       {%- endif -%}
     {%- else -%}
-      <div class="media-placeholder">{% render 'icon', name: 'lightbulb' %}</div>
+      {% render 'placeholder' %}
     {%- endif -%}
     {%- unless product.available -%}
       <span class="card__badge card__badge--soldout">{{ 'products.card.sold_out' | t }}</span>

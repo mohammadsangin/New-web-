@@ -36,7 +36,7 @@
       <div class="{{ grid_class }}">
         {%- for i in (1..count) -%}
           <article class="card">
-            <div class="card__media media ratio-portrait"><div class="media-placeholder">{% render 'icon', name: 'lightbulb' %}</div></div>
+            <div class="card__media media ratio-portrait">{% render 'placeholder' %}</div>
             <h3 class="card__title">{{ 'onboarding.product_title' | t }}</h3>
             <div class="card__meta"><span class="price"><span class="price__regular">{{ 550 | times: 100 | money }}</span></span></div>
           </article>

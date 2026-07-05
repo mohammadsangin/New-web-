@@ -47,25 +47,16 @@
                   break
                 endif
               endfor
-              # Collect image blocks for this top-level item
-              assign tile_count = 0
+              # Count promo tiles attached to this top-level item (1 side promo, or 2 side-by-side)
+              assign promo_count = 0
               for block in section.blocks
-                if block.type == 'menu_image' and block.settings.parent == link.title
-                  assign tile_count = tile_count | plus: 1
+                if block.type == 'mega_promo' and block.settings.parent == link.title
+                  assign promo_count = promo_count | plus: 1
                 endif
               endfor
-              assign use_tiles = false
-              if tile_count >= 2
-                assign use_tiles = true
+              if promo_count > 2
+                assign promo_count = 2
               endif
-              # Side promo block for this item
-              assign promo = null
-              for block in section.blocks
-                if block.type == 'menu_promo' and block.settings.parent == link.title
-                  assign promo = block
-                  break
-                endif
-              endfor
             -%}
             <li class="nav__item{% if has_children %} nav__item--has-mega{% endif %}">
               <a class="nav__link" href="{{ link.url }}"
@@ -76,23 +67,9 @@
               </a>
 
               {%- if has_children -%}
-                {%- if use_tiles -%}
-                  <div class="mega mega--tiles">
-                    <div class="mega__inner container">
-                      {%- for block in section.blocks -%}
-                        {%- if block.type == 'menu_image' and block.settings.parent == link.title -%}
-                          <a class="mega-tile" href="{{ block.settings.link | default: link.url }}" {{ block.shopify_attributes }}>
-                            {% render 'responsive-image', image: block.settings.image, ratio: 'portrait', sizes: '260px', alt: block.settings.title %}
-                            <p class="mega-tile__title">{{ block.settings.title | escape }}</p>
-                            {%- if block.settings.subtitle != blank -%}<p class="mega-tile__meta">{{ block.settings.subtitle | escape }}</p>{%- endif -%}
-                          </a>
-                        {%- endif -%}
-                      {%- endfor -%}
-                    </div>
-                  </div>
-                {%- else -%}
-                  <div class="mega mega--columns{% if promo %} has-promo{% endif %}">
-                    <div class="mega__inner container">
+                <div class="mega mega--columns{% if promo_count > 0 %} has-promo{% endif %}">
+                  <div class="mega__inner container">
+                    <div class="mega__cols">
                       {%- if has_grandchildren -%}
                         {%- for child in link.links -%}
                           <div class="mega__col">
@@ -118,19 +95,29 @@
                           </ul>
                         </div>
                       {%- endif -%}
-
-                      {%- if promo -%}
-                        <a class="mega__promo" href="{{ promo.settings.link | default: link.url }}" {{ promo.shopify_attributes }}>
-                          {% render 'responsive-image', image: promo.settings.image, ratio: 'portrait', sizes: '300px', alt: promo.settings.title %}
-                          <span class="mega__promo-caption">
-                            {%- if promo.settings.eyebrow != blank -%}<span class="mega__promo-eyebrow">{{ promo.settings.eyebrow | escape }}</span>{%- endif -%}
-                            <span class="mega__promo-title">{{ promo.settings.title | escape }}</span>
-                          </span>
-                        </a>
-                      {%- endif -%}
                     </div>
+
+                    {%- if promo_count > 0 -%}
+                      <div class="mega__promos mega__promos--{{ promo_count }}">
+                        {%- assign shown_promos = 0 -%}
+                        {%- for block in section.blocks -%}
+                          {%- if block.type == 'mega_promo' and block.settings.parent == link.title and shown_promos < 2 -%}
+                            <a class="mega-promo" href="{{ block.settings.link | default: link.url }}" {{ block.shopify_attributes }}>
+                              {% render 'responsive-image', image: block.settings.image, ratio: 'portrait', sizes: '260px', alt: block.settings.heading %}
+                              <span class="mega-promo__scrim"></span>
+                              <span class="mega-promo__caption">
+                                {%- if block.settings.label != blank -%}<span class="mega-promo__label">{{ block.settings.label | escape }}</span>{%- endif -%}
+                                <span class="mega-promo__title">{{ block.settings.heading | escape }}</span>
+                                <span class="mega-promo__cta">{{ 'general.shop' | t }} {% render 'icon', name: 'arrow-right' %}</span>
+                              </span>
+                            </a>
+                            {%- assign shown_promos = shown_promos | plus: 1 -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      </div>
+                    {%- endif -%}
                   </div>
-                {%- endif -%}
+                </div>
               {%- endif -%}
             </li>
           {%- endfor -%}
@@ -220,27 +207,15 @@
   ],
   "blocks": [
     {
-      "type": "menu_image",
-      "name": "Mega menu image tile",
+      "type": "mega_promo",
+      "name": "Mega menu promo tile",
       "settings": [
-        { "type": "paragraph", "content": "Two or more tiles under the same top-level item switch that menu to an image layout." },
-        { "type": "text", "id": "parent", "label": "Top-level menu item (exact title)", "info": "e.g. Brands" },
-        { "type": "image_picker", "id": "image", "label": "Image" },
-        { "type": "text", "id": "title", "label": "Title" },
-        { "type": "text", "id": "subtitle", "label": "Subtitle" },
-        { "type": "url", "id": "link", "label": "Link" }
-      ]
-    },
-    {
-      "type": "menu_promo",
-      "name": "Mega menu side promo",
-      "settings": [
-        { "type": "paragraph", "content": "A single promo image shown beside a column menu." },
-        { "type": "text", "id": "parent", "label": "Top-level menu item (exact title)" },
-        { "type": "image_picker", "id": "image", "label": "Image" },
-        { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
-        { "type": "text", "id": "title", "label": "Title" },
-        { "type": "url", "id": "link", "label": "Link" }
+        { "type": "paragraph", "content": "An image-led promo tile shown on the right of a mega menu. Add one tile for a single side promo, or two under the same menu item for a side-by-side pair. Link columns stay on the left." },
+        { "type": "text", "id": "parent", "label": "Attach to menu item", "info": "Type the exact top-level menu title, e.g. Indoor. The tile appears in that item's mega menu." },
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Portrait (4:5). A branded placeholder shows until you add one." },
+        { "type": "text", "id": "label", "label": "Small-caps label", "info": "e.g. New in" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Featured" },
+        { "type": "url", "id": "link", "label": "Link", "info": "Where the tile goes — a collection, product or page." }
       ]
     }
   ]
