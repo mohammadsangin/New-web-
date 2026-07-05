@@ -37,6 +37,7 @@
         "t2": {
           "type": "tile",
           "settings": {
+            "image": "shopify://shop_images/mlf363polbrsgl155-grey_60ba92f4-38d6-439e-8d25-f6cce6d0b271.jpg",
             "label": "Ceiling",
             "heading": "Chandeliers",
             "link": ""
