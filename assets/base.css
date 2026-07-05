@@ -800,6 +800,18 @@ p:last-child { margin-bottom: 0; }
 }
 .filter-toggle:hover { border-color: var(--brass); }
 .filter-toggle svg { width: 16px; height: 16px; }
+.filter-toggle__badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px; height: 18px;
+  padding: 0 5px;
+  background: var(--brass-deep);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 999px;
+}
 .coll-count { font-size: 13px; color: var(--muted); letter-spacing: 0.02em; }
 .coll-sort { display: inline-flex; align-items: center; gap: 8px; }
 .coll-sort label { font-size: 13px; color: var(--muted); }
@@ -851,6 +863,13 @@ p:last-child { margin-bottom: 0; }
 .filters__value input { width: 17px; height: 17px; accent-color: var(--brass-deep); flex: none; }
 .filters__value--active { color: var(--ink); font-weight: 600; }
 .filters__count { color: var(--hairline); font-size: 12px; }
+.filters__group-count {
+  display: inline-grid; place-items: center;
+  min-width: 18px; height: 18px; margin-left: 4px;
+  background: var(--brass-deep); color: #fff;
+  font-size: 11px; font-weight: 700; line-height: 1;
+  border-radius: 999px; vertical-align: middle;
+}
 .filters__footer {
   position: sticky; bottom: 0;
   background: var(--surface);
@@ -870,8 +889,12 @@ p:last-child { margin-bottom: 0; }
   font-size: 12px; padding: 5px 12px;
   border: 1px solid var(--hairline); border-radius: 999px;
   color: var(--ink);
+  transition: border-color var(--dur-hover) var(--ease), color var(--dur-hover) var(--ease);
 }
+.active-facet:hover { border-color: var(--brass); color: var(--brass-deep); }
 .active-facet svg { width: 12px; height: 12px; }
+.active-facet--clear { border-style: dashed; color: var(--muted); }
+.active-facet--clear:hover { color: var(--ink); border-color: var(--ink); border-style: solid; }
 
 /* ==========================================================================
    PRODUCT (PDP)

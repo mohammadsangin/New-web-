@@ -162,11 +162,16 @@
       "label": "Sort by"
     },
     "empty": {
-      "title": "Nothing to show here yet",
-      "body": "No pieces match those filters. Adjust or clear them to keep browsing."
+      "title": "Nothing matches those filters",
+      "body": "No pieces match your current selection. Adjust or clear the filters to keep browsing.",
+      "bare_title": "This collection is being curated",
+      "bare_body": "There are no pieces here just yet. Explore the wider collection in the meantime.",
+      "browse_all": "Browse all lighting"
     },
     "filters": {
       "title": "Filter",
+      "active": "Active filters",
+      "remove": "Remove {{ label }}",
       "clear_all": "Clear all",
       "apply": "Apply",
       "min": "Minimum price",

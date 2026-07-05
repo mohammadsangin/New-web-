@@ -11,6 +11,10 @@
     </div>
   {%- endif -%}
 
+  {%- comment -%} Count active facet values across all filters {%- endcomment -%}
+  {%- assign active_count = 0 -%}
+  {%- for filter in collection.filters -%}{%- assign active_count = active_count | plus: filter.active_values.size -%}{%- endfor -%}
+
   {%- comment -%} Sticky toolbar {%- endcomment -%}
   <div class="coll-toolbar">
     <div class="container coll-toolbar__inner" style="display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;">
@@ -18,6 +22,7 @@
         {%- if collection.filters.size > 0 -%}
           <button class="filter-toggle" type="button" data-drawer-open="filters-drawer" aria-controls="filters-drawer" aria-expanded="false">
             {% render 'icon', name: 'filter' %} {{ 'collections.filters.title' | t }}
+            {%- if active_count > 0 -%}<span class="filter-toggle__badge">{{ active_count }}</span>{%- endif -%}
           </button>
         {%- endif -%}
         <span class="coll-count">{{ 'collections.count' | t: count: collection.products_count }}</span>
@@ -37,18 +42,19 @@
     </div>
   </div>
 
-  {%- comment -%} Active facets summary {%- endcomment -%}
-  {%- assign active_count = 0 -%}
-  {%- for filter in collection.filters -%}{%- assign active_count = active_count | plus: filter.active_values.size -%}{%- endfor -%}
+  {%- comment -%} Active facets summary — individual remove + clear all {%- endcomment -%}
   {%- if active_count > 0 -%}
     <div class="container">
-      <div class="active-facets">
+      <div class="active-facets" role="list" aria-label="{{ 'collections.filters.active' | t }}">
         {%- for filter in collection.filters -%}
           {%- for value in filter.active_values -%}
-            <a class="active-facet" href="{{ value.url_to_remove }}">{{ value.label }} {% render 'icon', name: 'close' %}</a>
+            <a class="active-facet" role="listitem" href="{{ value.url_to_remove }}">
+              <span>{{ value.label }}</span>{% render 'icon', name: 'close' %}
+              <span class="visually-hidden">{{ 'collections.filters.remove' | t: label: value.label }}</span>
+            </a>
           {%- endfor -%}
         {%- endfor -%}
-        <a class="active-facet" href="{{ collection.url }}">{{ 'collections.filters.clear_all' | t }}</a>
+        <a class="active-facet active-facet--clear" href="{{ collection.url }}">{{ 'collections.filters.clear_all' | t }}</a>
       </div>
     </div>
   {%- endif -%}
@@ -83,9 +89,15 @@
       {%- endif -%}
     {%- else -%}
       <div class="coll-empty">
-        <h2 class="coll-empty__title">{{ 'collections.empty.title' | t }}</h2>
-        <p class="coll-empty__body">{{ 'collections.empty.body' | t }}</p>
-        <a class="btn" href="{{ collection.url }}">{{ 'collections.filters.clear_all' | t }}</a>
+        {%- if active_count > 0 -%}
+          <h2 class="coll-empty__title">{{ 'collections.empty.title' | t }}</h2>
+          <p class="coll-empty__body">{{ 'collections.empty.body' | t }}</p>
+          <a class="btn" href="{{ collection.url }}">{{ 'collections.filters.clear_all' | t }}</a>
+        {%- else -%}
+          <h2 class="coll-empty__title">{{ 'collections.empty.bare_title' | t }}</h2>
+          <p class="coll-empty__body">{{ 'collections.empty.bare_body' | t }}</p>
+          <a class="btn" href="{{ routes.all_products_collection_url }}">{{ 'collections.empty.browse_all' | t }}</a>
+        {%- endif -%}
       </div>
     {%- endif -%}
   </div>
@@ -104,7 +116,10 @@
       <div class="filters">
         {%- for filter in collection.filters -%}
           <details class="filters__group" open>
-            <summary class="filters__summary">{{ filter.label }}<span class="m-nav__icon">{% render 'icon', name: 'plus' %}</span></summary>
+            <summary class="filters__summary">
+              <span>{{ filter.label }}{% if filter.active_values.size > 0 %} <span class="filters__group-count">{{ filter.active_values.size }}</span>{% endif %}</span>
+              <span class="m-nav__icon">{% render 'icon', name: 'plus' %}</span>
+            </summary>
             {%- case filter.type -%}
               {%- when 'price_range' -%}
                 <div class="filters__price">
