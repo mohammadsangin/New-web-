@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -15,20 +24,62 @@
     },
     "category_tiles": {
       "type": "category-tiles",
+      "blocks": {
+        "t1": {
+          "type": "tile",
+          "settings": {
+            "label": "Ceiling",
+            "heading": "Pendants",
+            "link": ""
+          }
+        },
+        "t2": {
+          "type": "tile",
+          "settings": {
+            "label": "Ceiling",
+            "heading": "Chandeliers",
+            "link": ""
+          }
+        },
+        "t3": {
+          "type": "tile",
+          "settings": {
+            "image": "shopify://shop_images/mlbwl169satbrscl.jpg",
+            "label": "Wall",
+            "heading": "Wall Lights",
+            "link": ""
+          }
+        },
+        "t4": {
+          "type": "tile",
+          "settings": {
+            "label": "Portable",
+            "heading": "Table & Floor",
+            "link": ""
+          }
+        },
+        "t5": {
+          "type": "tile",
+          "settings": {
+            "label": "Exterior",
+            "heading": "Outdoor",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5"
+      ],
       "settings": {
         "eyebrow": "Explore",
         "heading": "Shop by category",
         "link_label": "View all lighting",
         "link_url": "shopify://collections/all"
-      },
-      "blocks": {
-        "t1": { "type": "tile", "settings": { "label": "Ceiling", "heading": "Pendants" } },
-        "t2": { "type": "tile", "settings": { "label": "Ceiling", "heading": "Chandeliers" } },
-        "t3": { "type": "tile", "settings": { "label": "Wall", "heading": "Wall Lights" } },
-        "t4": { "type": "tile", "settings": { "label": "Portable", "heading": "Table & Floor" } },
-        "t5": { "type": "tile", "settings": { "label": "Exterior", "heading": "Outdoor" } }
-      },
-      "block_order": ["t1", "t2", "t3", "t4", "t5"]
+      }
     },
     "featured_1": {
       "type": "featured-collection",
@@ -36,6 +87,7 @@
         "eyebrow": "The collection",
         "heading": "New in brass",
         "body": "Fixtures chosen for their proportion and finish — pieces we would put in our own homes.",
+        "collection": "",
         "products_to_show": 4,
         "columns": "4",
         "show_view_all": true,
@@ -59,6 +111,7 @@
         "eyebrow": "Overhead",
         "heading": "Pendants & chandeliers",
         "body": "Considered ceiling pieces, from single pendants to statement chandeliers.",
+        "collection": "",
         "products_to_show": 4,
         "columns": "4",
         "show_view_all": true,
@@ -68,13 +121,54 @@
     "trust": {
       "type": "trust-band",
       "blocks": {
-        "b1": { "type": "item", "settings": { "icon": "truck", "title": "Free UK delivery", "text": "On all orders over £300, to your door." } },
-        "b2": { "type": "item", "settings": { "icon": "clock", "title": "Made to order", "text": "Cast for you — please allow 3–4 weeks." } },
-        "b3": { "type": "item", "settings": { "icon": "refresh", "title": "30-day returns", "text": "Not quite right? Return within 30 days." } },
-        "b4": { "type": "item", "settings": { "icon": "headset", "title": "Expert advice", "text": "Speak to us on 0333 090 0045." } }
+        "b1": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Free UK delivery",
+            "text": "On all orders over £300, to your door."
+          }
+        },
+        "b2": {
+          "type": "item",
+          "settings": {
+            "icon": "clock",
+            "title": "Made to order",
+            "text": "Cast for you — please allow 3–4 weeks."
+          }
+        },
+        "b3": {
+          "type": "item",
+          "settings": {
+            "icon": "refresh",
+            "title": "30-day returns",
+            "text": "Not quite right? Return within 30 days."
+          }
+        },
+        "b4": {
+          "type": "item",
+          "settings": {
+            "icon": "headset",
+            "title": "Expert advice",
+            "text": "Speak to us on 0333 090 0045."
+          }
+        }
       },
-      "block_order": ["b1", "b2", "b3", "b4"]
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4"
+      ],
+      "settings": {}
     }
   },
-  "order": ["hero", "category_tiles", "featured_1", "shop_the_room", "featured_2", "trust"]
+  "order": [
+    "hero",
+    "category_tiles",
+    "featured_1",
+    "shop_the_room",
+    "featured_2",
+    "trust"
+  ]
 }
