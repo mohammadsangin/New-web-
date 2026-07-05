@@ -18,14 +18,23 @@
     </button>
 
     <a class="header__brand{% unless logo_image %} header__brand--text{% endunless %}" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+      {%- comment -%}
+        Logo sized by CSS height for presence; width follows the ratio, capped
+        just above the merchant's logo width (and by the viewport on mobile).
+        Requests a 2x source for a crisp retina render — final sharpness still
+        depends on the merchant uploading a high-resolution logo file.
+      {%- endcomment -%}
       {%- if logo_image != blank -%}
-        {%- assign logo_w = logo_image.width | default: 300 -%}
-        {%- assign logo_h = settings.logo_width | times: logo_image.height | divided_by: logo_w -%}
-        <img src="{{ logo_image | image_url: width: 400 }}"
-          srcset="{{ logo_image | image_url: width: 200 }} 200w, {{ logo_image | image_url: width: 400 }} 400w"
-          sizes="{{ settings.logo_width }}px"
-          width="{{ settings.logo_width }}" height="{{ logo_h }}"
-          alt="{{ shop.name | escape }}" style="width:{{ settings.logo_width }}px;height:auto;">
+        {%- assign logo_cap = settings.logo_width | times: 130 | divided_by: 100 -%}
+        {%- assign logo_1x = settings.logo_width | at_least: 200 -%}
+        {%- assign logo_2x = logo_1x | times: 2 -%}
+        <img
+          src="{{ logo_image | image_url: width: logo_2x }}"
+          srcset="{{ logo_image | image_url: width: logo_1x }} 1x, {{ logo_image | image_url: width: logo_2x }} 2x"
+          width="{{ logo_image.width }}" height="{{ logo_image.height }}"
+          alt="{{ shop.name | escape }}"
+          style="max-width: min({{ logo_cap }}px, 52vw);"
+          fetchpriority="high" decoding="async">
       {%- else -%}
         {{ shop.name | default: 'KYMRA' }}
       {%- endif -%}

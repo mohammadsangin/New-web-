@@ -43,7 +43,7 @@
   --dur-hover: 180ms;
   --dur-drawer: 300ms;
 
-  --header-height: 72px;
+  --header-height: 84px;
 }
 
 /* ----- Reset (the layout wrapper adds a minimal reset already) ---------- */
@@ -372,7 +372,9 @@ p:last-child { margin-bottom: 0; }
   color: var(--ink);
 }
 .header__brand--text { padding-left: 0.28em; /* optical centring for tracked caps */ }
-.header__brand img { max-height: 40px; width: auto; }
+/* Size the logo by height for a consistent presence; width follows the ratio,
+   bounded by the merchant's logo width (and the viewport on mobile). */
+.header__brand img { display: block; height: clamp(42px, 4.6vw, 56px); width: auto; }
 .header__actions {
   grid-area: actions;
   justify-self: end;
