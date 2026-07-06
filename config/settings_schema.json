@@ -97,7 +97,7 @@
         "type": "collection",
         "id": "cart_cross_sell",
         "label": "Cross-sell collection",
-        "info": "Products offered in the cart drawer under 'Complete the look'."
+        "info": "Products offered in the cart drawer under 'Complete the look' (up to 6, ~3 visible with scroll). Assign a collection to switch the strip on."
       }
     ]
   },

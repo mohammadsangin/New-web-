@@ -123,6 +123,14 @@
               </div>
             </div>
           {%- endif -%}
+        {%- elsif request.design_mode -%}
+          {%- comment -%} Editor-only prompt — never shown on the live storefront. {%- endcomment -%}
+          <div class="cart-cross">
+            <p class="eyebrow">{{ 'cart.general.complete_the_look' | t }}</p>
+            <div class="section-placeholder">
+              <p>Assign a <strong>Cross-sell collection</strong> in Theme settings → Cart (or on this Cart drawer section) to show “Complete the look” here.</p>
+            </div>
+          </div>
         {%- endif -%}
       </div>
 
@@ -154,6 +162,10 @@
 {
   "name": "Cart drawer",
   "settings": [
+    {
+      "type": "paragraph",
+      "content": "‘Complete the look’ shows up to 6 products (about 3 visible, scroll for the rest). Assign the collection here or in Theme settings → Cart. Products already in the bag are hidden automatically."
+    },
     {
       "type": "collection",
       "id": "cross_sell_collection",
