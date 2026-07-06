@@ -40,17 +40,61 @@
   </div>
 
   <div class="container">
-    {%- comment -%} ===== Link columns + newsletter ===== {%- endcomment -%}
-    {%- liquid
-      assign show_contact = false
-      if section.settings.show_contact_column
-        if settings.contact_phone != blank or settings.contact_email != blank
-          assign show_contact = true
-        endif
-      endif
-    -%}
+    {%- comment -%} ===== Company info · quick links · menu columns · newsletter ===== {%- endcomment -%}
     <div class="footer__main">
       <div class="footer__menus">
+
+        {%- comment -%} COLUMN A — Company information (settings-driven, real data defaults) {%- endcomment -%}
+        {%- if section.settings.show_company -%}
+          <div class="footer__col footer__col--company">
+            <p class="footer__col-head">{{ section.settings.company_heading | default: 'Company information' | escape }}</p>
+            <ul class="footer__links footer__links--info">
+              {%- if section.settings.company_name != blank -%}<li>{{ section.settings.company_name | escape }}</li>{%- endif -%}
+              {%- if section.settings.company_number != blank -%}<li>{{ section.settings.company_number | escape }}</li>{%- endif -%}
+              {%- if section.settings.company_dpa != blank -%}<li>{{ section.settings.company_dpa | escape }}</li>{%- endif -%}
+              {%- if section.settings.company_address != blank -%}<li><address class="footer__address-line">{{ section.settings.company_address | escape }}</address></li>{%- endif -%}
+              {%- if settings.contact_phone != blank -%}
+                <li><a href="tel:{{ settings.contact_phone | replace: ' ', '' }}">{{ settings.contact_phone }}</a></li>
+              {%- endif -%}
+              {%- if settings.contact_email != blank -%}
+                <li><a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a></li>
+              {%- endif -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        {%- comment -%}
+          COLUMN B — Quick links. Merchant-editable "Quick link" blocks; when
+          none have been added yet, a sensible default set renders so the
+          footer never reads empty (edit/reorder via blocks in the Customizer).
+        {%- endcomment -%}
+        {%- assign quick_count = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'link' and block.settings.label != blank -%}{%- assign quick_count = quick_count | plus: 1 -%}{%- endif -%}
+        {%- endfor -%}
+        <nav class="footer__col" aria-label="{{ section.settings.quick_links_heading | default: 'Quick links' | escape }}">
+          <p class="footer__col-head">{{ section.settings.quick_links_heading | default: 'Quick links' | escape }}</p>
+          <ul class="footer__links">
+            {%- if quick_count > 0 -%}
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'link' and block.settings.label != blank -%}
+                  <li {{ block.shopify_attributes }}><a href="{{ block.settings.url | default: routes.root_url }}">{{ block.settings.label | escape }}</a></li>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- else -%}
+              <li><a href="{{ routes.search_url }}">Search</a></li>
+              <li><a href="{{ routes.all_products_collection_url }}">Shop All Lighting</a></li>
+              <li><a href="/blogs/news">Blog</a></li>
+              <li><a href="/pages/about">About Us</a></li>
+              <li><a href="/pages/contact">Contact Us</a></li>
+              <li><a href="/pages/reviews">Reviews</a></li>
+              <li><a href="/pages/returns-refunds">Returns &amp; Refunds</a></li>
+              <li><a href="/pages/lighting-designer">Lighting Designer</a></li>
+            {%- endif -%}
+          </ul>
+        </nav>
+
+        {%- comment -%} Optional extra columns from linklists (skipped when empty) {%- endcomment -%}
         {%- for block in section.blocks -%}
           {%- if block.type == 'menu' -%}
             {%- assign fmenu = linklists[block.settings.menu] -%}
@@ -66,21 +110,6 @@
             {%- endif -%}
           {%- endif -%}
         {%- endfor -%}
-
-        {%- comment -%} Contact column — real details, always tidy even before menus are assigned {%- endcomment -%}
-        {%- if show_contact -%}
-          <div class="footer__col">
-            <p class="footer__col-head">{{ 'general.footer.contact' | t }}</p>
-            <ul class="footer__links">
-              {%- if settings.contact_phone != blank -%}
-                <li><a href="tel:{{ settings.contact_phone | replace: ' ', '' }}">{{ settings.contact_phone }}</a></li>
-              {%- endif -%}
-              {%- if settings.contact_email != blank -%}
-                <li><a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a></li>
-              {%- endif -%}
-            </ul>
-          </div>
-        {%- endif -%}
       </div>
 
       {%- for block in section.blocks -%}
@@ -166,13 +195,30 @@
     { "type": "text", "id": "trust_made", "label": "Made to order", "default": "Made to order — allow 3–4 weeks" },
     { "type": "text", "id": "trust_returns", "label": "Returns", "default": "30-day returns" },
     { "type": "text", "id": "trust_advice", "label": "Expert advice", "default": "Expert advice — 0333 090 0045" },
-    { "type": "header", "content": "Link columns" },
-    { "type": "checkbox", "id": "show_contact_column", "label": "Show contact column", "info": "Adds a tidy column with the phone and email from Theme settings → Contact.", "default": true },
+    { "type": "header", "content": "Company information" },
+    { "type": "checkbox", "id": "show_company", "label": "Show company information column", "default": true },
+    { "type": "text", "id": "company_heading", "label": "Heading", "default": "Company information" },
+    { "type": "text", "id": "company_name", "label": "Company name", "default": "Kymra Commerce LTD T/A Kymra Lighting" },
+    { "type": "text", "id": "company_number", "label": "Company number", "default": "Company Number: 16970017" },
+    { "type": "text", "id": "company_dpa", "label": "Data protection registration", "default": "Data Protection Registration: ZC114360" },
+    { "type": "text", "id": "company_address", "label": "Registered office", "info": "The only address ever shown.", "default": "3rd Floor, 86–90 Paul Street, London EC2A 4NE" },
+    { "type": "paragraph", "content": "Phone and email come from Theme settings → Contact." },
+    { "type": "header", "content": "Quick links" },
+    { "type": "text", "id": "quick_links_heading", "label": "Heading", "default": "Quick links" },
+    { "type": "paragraph", "content": "Add \"Quick link\" blocks to control the list. Until you do, a sensible default set is shown." },
     { "type": "header", "content": "Bottom bar" },
     { "type": "checkbox", "id": "show_payments", "label": "Show payment icons", "default": true },
     { "type": "link_list", "id": "policy_menu", "label": "Policy / legal menu", "info": "Shown in the bottom bar." }
   ],
   "blocks": [
+    {
+      "type": "link",
+      "name": "Quick link",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label" },
+        { "type": "url", "id": "url", "label": "Link" }
+      ]
+    },
     {
       "type": "menu",
       "name": "Menu column",
@@ -195,9 +241,14 @@
   ],
   "default": {
     "blocks": [
-      { "type": "menu", "settings": { "heading": "Shop" } },
-      { "type": "menu", "settings": { "heading": "Explore" } },
-      { "type": "menu", "settings": { "heading": "Help" } },
+      { "type": "link", "settings": { "label": "Search", "url": "/search" } },
+      { "type": "link", "settings": { "label": "Shop All Lighting", "url": "/collections/all" } },
+      { "type": "link", "settings": { "label": "Blog", "url": "/blogs/news" } },
+      { "type": "link", "settings": { "label": "About Us", "url": "/pages/about" } },
+      { "type": "link", "settings": { "label": "Contact Us", "url": "/pages/contact" } },
+      { "type": "link", "settings": { "label": "Reviews", "url": "/pages/reviews" } },
+      { "type": "link", "settings": { "label": "Returns & Refunds", "url": "/pages/returns-refunds" } },
+      { "type": "link", "settings": { "label": "Lighting Designer", "url": "/pages/lighting-designer" } },
       { "type": "newsletter" }
     ]
   }
