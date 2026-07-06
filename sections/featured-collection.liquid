@@ -7,44 +7,57 @@
     assign grid_class = 'product-grid product-grid--4'
   endif
 -%}
-<section class="section">
-  <div class="container">
-    <div class="row-head reveal">
-      <div class="row-head__text">
-        {%- if section.settings.eyebrow != blank -%}
-          <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-        {%- endif -%}
-        {%- if section.settings.heading != blank -%}
-          <h2 class="section-head__title">{{ section.settings.heading | escape }}</h2>
-        {%- endif -%}
-        {%- if section.settings.body != blank -%}
-          <p class="section-head__body">{{ section.settings.body | escape }}</p>
+{%- comment -%}
+  Renders real products when a collection is assigned (Collection setting).
+  On the live storefront it outputs nothing until then; in the theme editor it
+  shows a clear prompt so the merchant knows exactly what to set.
+{%- endcomment -%}
+{%- if collection != blank and collection.products.size > 0 -%}
+  <section class="section">
+    <div class="container">
+      <div class="row-head reveal">
+        <div class="row-head__text">
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 class="section-head__title">{{ section.settings.heading | escape }}</h2>
+          {%- endif -%}
+          {%- if section.settings.body != blank -%}
+            <p class="section-head__body">{{ section.settings.body | escape }}</p>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.show_view_all -%}
+          <a class="row-head__link link-underline" href="{{ collection.url }}">{{ section.settings.view_all_label | default: 'View all' | escape }}</a>
         {%- endif -%}
       </div>
-      {%- if section.settings.show_view_all and collection != blank -%}
-        <a class="row-head__link link-underline" href="{{ collection.url }}">{{ section.settings.view_all_label | default: 'View all' | escape }}</a>
-      {%- endif -%}
-    </div>
 
-    {%- if collection != blank and collection.products.size > 0 -%}
       <div class="{{ grid_class }}">
         {%- for product in collection.products limit: count -%}
           {% render 'product-card', product: product %}
         {%- endfor -%}
       </div>
-    {%- else -%}
-      <div class="{{ grid_class }}">
-        {%- for i in (1..count) -%}
-          <article class="card">
-            <div class="card__media media ratio-portrait">{% render 'placeholder' %}</div>
-            <h3 class="card__title">{{ 'onboarding.product_title' | t }}</h3>
-            <div class="card__meta"><span class="price"><span class="price__regular">{{ 550 | times: 100 | money }}</span></span></div>
-          </article>
-        {%- endfor -%}
+    </div>
+  </section>
+{%- elsif request.design_mode -%}
+  <section class="section">
+    <div class="container">
+      <div class="row-head">
+        <div class="row-head__text">
+          {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+          {%- if section.settings.heading != blank -%}<h2 class="section-head__title">{{ section.settings.heading | escape }}</h2>{%- endif -%}
+        </div>
       </div>
-    {%- endif -%}
-  </div>
-</section>
+      <div class="section-placeholder">
+        {%- if collection == blank -%}
+          <p>Assign a collection to this section's <strong>Collection</strong> setting to show products here.</p>
+        {%- else -%}
+          <p>The collection “{{ collection.title | escape }}” has no products yet.</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
 
 {% schema %}
 {

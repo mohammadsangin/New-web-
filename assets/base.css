@@ -762,6 +762,18 @@ p:last-child { margin-bottom: 0; }
 .row-head__text { max-width: 60ch; }
 .row-head__link { flex: none; }
 
+/* Theme-editor prompt shown when a section needs a collection/data assigned */
+.section-placeholder {
+  border: 1px dashed var(--hairline);
+  border-radius: var(--radius);
+  padding: clamp(28px, 5vw, 48px);
+  text-align: center;
+  color: var(--muted);
+  font-size: 15px;
+  background: var(--panel);
+}
+.section-placeholder strong { color: var(--ink); font-weight: 600; }
+
 /* ==========================================================================
    CATEGORY TILES (asymmetric editorial "shop by category")
    ========================================================================== */
