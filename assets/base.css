@@ -468,8 +468,13 @@ p:last-child { margin-bottom: 0; }
   z-index: 55;
 }
 @media (min-width: 990px) {
+  /* .is-open is driven by the JS hover-intent controller (open + ~200ms close
+     delay), which keeps the panel open across the gap between trigger and
+     panel and while the cursor is over EITHER. :hover / :focus-within remain
+     always-on as a safe fallback if JS never runs. */
   .nav__item--has-mega:hover .mega,
-  .nav__item--has-mega:focus-within .mega {
+  .nav__item--has-mega:focus-within .mega,
+  .nav__item--has-mega.is-open .mega {
     opacity: 1;
     visibility: visible;
     transform: none;
@@ -477,6 +482,9 @@ p:last-child { margin-bottom: 0; }
                 transform var(--dur-hover) var(--ease),
                 visibility 0s;
   }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mega { transition: opacity var(--dur-hover) var(--ease), visibility 0s linear var(--dur-hover); transform: none; }
 }
 .mega__inner {
   display: grid;

@@ -689,6 +689,56 @@
     });
   }
 
+  /* ======================================================================
+     MEGA MENU — hover intent. Opens on enter; closes ~200ms after the cursor
+     leaves BOTH the trigger and the panel, so moving down into the panel
+     across the gap keeps it open. Entering an adjacent item closes the others
+     immediately (no double panels). Keyboard focus keeps it open.
+     ====================================================================== */
+  function initMegaMenu() {
+    var items = $all('.nav__item--has-mega');
+    if (!items.length) return;
+    var closeTimer;
+
+    function openItem(item) {
+      clearTimeout(closeTimer);
+      items.forEach(function (o) {
+        o.classList.toggle('is-open', o === item);
+        var link = o.querySelector('.nav__link');
+        if (link && link.hasAttribute('aria-expanded')) link.setAttribute('aria-expanded', o === item ? 'true' : 'false');
+      });
+    }
+    function scheduleClose() {
+      clearTimeout(closeTimer);
+      closeTimer = setTimeout(function () {
+        items.forEach(function (o) {
+          o.classList.remove('is-open');
+          var link = o.querySelector('.nav__link');
+          if (link && link.hasAttribute('aria-expanded')) link.setAttribute('aria-expanded', 'false');
+        });
+      }, 200);
+    }
+
+    items.forEach(function (item) {
+      item.addEventListener('mouseenter', function () { openItem(item); });
+      item.addEventListener('mouseleave', scheduleClose);
+      item.addEventListener('focusin', function () { openItem(item); });
+      item.addEventListener('focusout', function (e) {
+        if (!item.contains(e.relatedTarget)) scheduleClose();
+      });
+    });
+    // Escape closes any open panel and returns focus to its trigger.
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      var open = items.filter(function (o) { return o.classList.contains('is-open'); })[0];
+      if (!open) return;
+      clearTimeout(closeTimer);
+      open.classList.remove('is-open');
+      var link = open.querySelector('.nav__link');
+      if (link) { link.setAttribute('aria-expanded', 'false'); try { link.focus(); } catch (err) {} }
+    });
+  }
+
   function init() {
     Drawers.init();
     Cart.init();
@@ -698,6 +748,7 @@
     initProduct();
     initCollection();
     initAccordions();
+    initMegaMenu();
   }
 
   if (document.readyState === 'loading') {
