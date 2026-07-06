@@ -104,9 +104,12 @@
   {
     "name": "Social",
     "settings": [
+      { "type": "paragraph", "content": "Paste the full profile URLs. The footer social row shows only the icons that have a URL." },
       { "type": "text", "id": "social_instagram", "label": "Instagram URL" },
-      { "type": "text", "id": "social_pinterest", "label": "Pinterest URL" },
-      { "type": "text", "id": "social_facebook", "label": "Facebook URL" }
+      { "type": "text", "id": "social_facebook", "label": "Facebook URL" },
+      { "type": "text", "id": "social_tiktok", "label": "TikTok URL" },
+      { "type": "text", "id": "social_linkedin", "label": "LinkedIn URL" },
+      { "type": "text", "id": "social_pinterest", "label": "Pinterest URL" }
     ]
   },
   {

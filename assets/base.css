@@ -1522,10 +1522,15 @@ p:last-child { margin-bottom: 0; }
 .footer__links a { color: rgba(233, 227, 214, 0.78); font-size: 14.5px; line-height: 1.3; transition: color var(--dur-hover) var(--ease); }
 .footer__links a:hover { color: var(--on-dark); }
 /* Company information column: plain lines + linked phone/email */
+/* Company information — grouped for rhythm, not a flat list */
 .footer__col--company { min-width: 0; }
-.footer__links--info { gap: 9px; }
-.footer__links--info li { color: rgba(233, 227, 214, 0.66); font-size: 13.5px; line-height: 1.5; overflow-wrap: break-word; }
-.footer__address-line { font-style: normal; display: inline; }
+.footer__company { display: flex; flex-direction: column; gap: 16px; }
+.footer__company-name { color: var(--on-dark); font-size: 14px; font-weight: 600; line-height: 1.45; }
+.footer__company-reg { display: flex; flex-direction: column; gap: 2px; color: rgba(233, 227, 214, 0.55); font-size: 12.5px; line-height: 1.5; }
+.footer__company-address { font-style: normal; color: rgba(233, 227, 214, 0.72); font-size: 13.5px; line-height: 1.55; max-width: 30ch; }
+.footer__company-contact { display: flex; flex-direction: column; gap: 6px; }
+.footer__company-contact a { color: rgba(233, 227, 214, 0.82); font-size: 14px; transition: color var(--dur-hover) var(--ease); }
+.footer__company-contact a:hover { color: var(--brass); }
 
 /* Newsletter */
 .footer__newsletter { max-width: 420px; }
@@ -1533,38 +1538,40 @@ p:last-child { margin-bottom: 0; }
 .footer__news-head { font-family: var(--font-display); font-size: clamp(22px, 2.6vw, 27px); margin-bottom: 8px; color: var(--on-dark); }
 .footer__news-body { color: rgba(233, 227, 214, 0.72); font-size: 14.5px; margin-bottom: 18px; }
 
-/* Social + payments */
-.footer__utility {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
+/* Social row */
+.footer__social-row {
   padding-block: 24px;
   border-top: 1px solid rgba(233, 227, 214, 0.14);
 }
-.footer__social { display: flex; gap: 8px; }
+.footer__social { display: flex; flex-wrap: wrap; gap: 8px; }
 .footer__social a { width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid rgba(233, 227, 214, 0.22); border-radius: 999px; color: var(--on-dark); transition: background var(--dur-hover) var(--ease), color var(--dur-hover) var(--ease), border-color var(--dur-hover) var(--ease); }
 .footer__social a:hover { background: var(--brass); border-color: var(--brass); color: var(--dark); }
 .footer__social svg { width: 17px; height: 17px; }
-.footer__payments { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.footer__payments svg { height: 24px; width: auto; border-radius: 3px; }
 
-/* Bottom line */
+/* Bottom bar — copyright (left) · We accept + cards (right) */
 .footer__bottom {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 10px 24px;
+  gap: 14px 24px;
   padding-block: 22px 34px;
   border-top: 1px solid rgba(233, 227, 214, 0.14);
 }
 .footer__legal { font-size: 12.5px; color: rgba(233, 227, 214, 0.6); }
+.footer__legal p { margin: 0; }
 .footer__legal a { text-decoration: underline; text-underline-offset: 2px; transition: color var(--dur-hover) var(--ease); }
 .footer__legal a:hover { color: var(--on-dark); }
 .footer__dot { color: rgba(233, 227, 214, 0.35); }
-.footer__address { font-size: 12.5px; color: rgba(233, 227, 214, 0.6); font-style: normal; }
+.footer__address { font-size: 12.5px; color: rgba(233, 227, 214, 0.55); font-style: normal; margin-top: 6px; }
+.footer__payments { display: flex; align-items: center; gap: 12px; }
+.footer__pay-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(233, 227, 214, 0.6); font-weight: 600; flex: none; }
+.footer__pay-icons { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.footer__pay-icons svg { height: 24px; width: auto; border-radius: 3px; }
+@media (max-width: 600px) {
+  .footer__bottom { flex-direction: column; align-items: flex-start; }
+  .footer__payments { flex-wrap: wrap; }
+}
 
 /* ==========================================================================
    UTILITIES

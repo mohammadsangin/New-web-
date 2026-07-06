@@ -24,7 +24,8 @@
     },
     "footer": {
       "rights": "All rights reserved.",
-      "contact": "Contact"
+      "contact": "Contact",
+      "we_accept": "We accept"
     },
     "pagination": {
       "label": "Pagination",

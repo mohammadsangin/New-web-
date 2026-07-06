@@ -44,22 +44,30 @@
     <div class="footer__main">
       <div class="footer__menus">
 
-        {%- comment -%} COLUMN A — Company information (settings-driven, real data defaults) {%- endcomment -%}
+        {%- comment -%} COLUMN A — Company information (settings-driven, real data defaults), grouped for rhythm {%- endcomment -%}
         {%- if section.settings.show_company -%}
           <div class="footer__col footer__col--company">
             <p class="footer__col-head">{{ section.settings.company_heading | default: 'Company information' | escape }}</p>
-            <ul class="footer__links footer__links--info">
-              {%- if section.settings.company_name != blank -%}<li>{{ section.settings.company_name | escape }}</li>{%- endif -%}
-              {%- if section.settings.company_number != blank -%}<li>{{ section.settings.company_number | escape }}</li>{%- endif -%}
-              {%- if section.settings.company_dpa != blank -%}<li>{{ section.settings.company_dpa | escape }}</li>{%- endif -%}
-              {%- if section.settings.company_address != blank -%}<li><address class="footer__address-line">{{ section.settings.company_address | escape }}</address></li>{%- endif -%}
-              {%- if settings.contact_phone != blank -%}
-                <li><a href="tel:{{ settings.contact_phone | replace: ' ', '' }}">{{ settings.contact_phone }}</a></li>
+            <div class="footer__company">
+              {%- if section.settings.company_name != blank -%}
+                <p class="footer__company-name">{{ section.settings.company_name | escape }}</p>
               {%- endif -%}
-              {%- if settings.contact_email != blank -%}
-                <li><a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a></li>
+              {%- if section.settings.company_number != blank or section.settings.company_dpa != blank -%}
+                <p class="footer__company-reg">
+                  {%- if section.settings.company_number != blank -%}<span>{{ section.settings.company_number | escape }}</span>{%- endif -%}
+                  {%- if section.settings.company_dpa != blank -%}<span>{{ section.settings.company_dpa | escape }}</span>{%- endif -%}
+                </p>
               {%- endif -%}
-            </ul>
+              {%- if section.settings.company_address != blank -%}
+                <address class="footer__company-address">{{ section.settings.company_address | escape }}</address>
+              {%- endif -%}
+              {%- if settings.contact_phone != blank or settings.contact_email != blank -%}
+                <p class="footer__company-contact">
+                  {%- if settings.contact_phone != blank -%}<a href="tel:{{ settings.contact_phone | replace: ' ', '' }}">{{ settings.contact_phone }}</a>{%- endif -%}
+                  {%- if settings.contact_email != blank -%}<a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a>{%- endif -%}
+                </p>
+              {%- endif -%}
+            </div>
           </div>
         {%- endif -%}
 
@@ -134,50 +142,58 @@
       {%- endfor -%}
     </div>
 
-    {%- comment -%} ===== Social + payments ===== {%- endcomment -%}
+    {%- comment -%} ===== Social row — renders any icon that has a URL in Theme settings → Social ===== {%- endcomment -%}
     {%- liquid
       assign has_social = false
-      if settings.social_instagram != blank or settings.social_pinterest != blank or settings.social_facebook != blank
+      if settings.social_instagram != blank or settings.social_facebook != blank or settings.social_tiktok != blank or settings.social_linkedin != blank or settings.social_pinterest != blank
         assign has_social = true
       endif
     -%}
-    {%- if has_social or section.settings.show_payments -%}
-      <div class="footer__utility">
-        {%- if has_social -%}
-          <div class="footer__social">
-            {%- if settings.social_instagram != blank -%}
-              <a href="{{ settings.social_instagram }}" aria-label="Instagram" rel="noopener" target="_blank">{% render 'icon', name: 'instagram' %}</a>
-            {%- endif -%}
-            {%- if settings.social_pinterest != blank -%}
-              <a href="{{ settings.social_pinterest }}" aria-label="Pinterest" rel="noopener" target="_blank">{% render 'icon', name: 'pinterest' %}</a>
-            {%- endif -%}
-            {%- if settings.social_facebook != blank -%}
-              <a href="{{ settings.social_facebook }}" aria-label="Facebook" rel="noopener" target="_blank">{% render 'icon', name: 'facebook' %}</a>
-            {%- endif -%}
-          </div>
+    {%- if has_social -%}
+      <div class="footer__social-row">
+        <div class="footer__social">
+          {%- if settings.social_instagram != blank -%}
+            <a href="{{ settings.social_instagram }}" aria-label="Instagram" rel="noopener" target="_blank">{% render 'icon', name: 'instagram' %}</a>
+          {%- endif -%}
+          {%- if settings.social_facebook != blank -%}
+            <a href="{{ settings.social_facebook }}" aria-label="Facebook" rel="noopener" target="_blank">{% render 'icon', name: 'facebook' %}</a>
+          {%- endif -%}
+          {%- if settings.social_tiktok != blank -%}
+            <a href="{{ settings.social_tiktok }}" aria-label="TikTok" rel="noopener" target="_blank">{% render 'icon', name: 'tiktok' %}</a>
+          {%- endif -%}
+          {%- if settings.social_linkedin != blank -%}
+            <a href="{{ settings.social_linkedin }}" aria-label="LinkedIn" rel="noopener" target="_blank">{% render 'icon', name: 'linkedin' %}</a>
+          {%- endif -%}
+          {%- if settings.social_pinterest != blank -%}
+            <a href="{{ settings.social_pinterest }}" aria-label="Pinterest" rel="noopener" target="_blank">{% render 'icon', name: 'pinterest' %}</a>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} ===== Bottom bar — copyright + address (left) · We accept + cards (right) ===== {%- endcomment -%}
+    <div class="footer__bottom">
+      <div class="footer__legal">
+        <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ 'general.footer.rights' | t }}
+          {%- if section.settings.policy_menu != blank -%}
+            {%- for link in linklists[section.settings.policy_menu].links -%}
+              <span class="footer__dot">&middot;</span> <a href="{{ link.url }}">{{ link.title }}</a>
+            {%- endfor -%}
+          {%- endif -%}
+        </p>
+        {%- if settings.registered_office != blank -%}
+          <address class="footer__address">{{ settings.registered_office | escape }}</address>
         {%- endif -%}
-        {%- if section.settings.show_payments and shop.enabled_payment_types.size > 0 -%}
-          <div class="footer__payments">
+      </div>
+      {%- if section.settings.show_payments and shop.enabled_payment_types.size > 0 -%}
+        <div class="footer__payments">
+          <span class="footer__pay-label">{{ 'general.footer.we_accept' | t }}</span>
+          <div class="footer__pay-icons">
             {%- for type in shop.enabled_payment_types -%}
               {{ type | payment_type_svg_tag: class: 'payment-icon' }}
             {%- endfor -%}
           </div>
-        {%- endif -%}
-      </div>
-    {%- endif -%}
-
-    {%- comment -%} ===== Bottom line: copyright + registered office only ===== {%- endcomment -%}
-    <div class="footer__bottom">
-      <p class="footer__legal">
-        &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ 'general.footer.rights' | t }}
-        {%- if section.settings.policy_menu != blank -%}
-          {%- for link in linklists[section.settings.policy_menu].links -%}
-            <span class="footer__dot">&middot;</span> <a href="{{ link.url }}">{{ link.title }}</a>
-          {%- endfor -%}
-        {%- endif -%}
-      </p>
-      {%- if settings.registered_office != blank -%}
-        <address class="footer__address">{{ settings.registered_office | escape }}</address>
+        </div>
       {%- endif -%}
     </div>
   </div>
