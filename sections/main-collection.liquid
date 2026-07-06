@@ -1,13 +1,30 @@
 {%- comment -%} Collection: banner, sticky toolbar (filter + count + sort), grid, pagination, native facets. {%- endcomment -%}
 {%- paginate collection.products by section.settings.products_per_page -%}
 <section class="main-collection" id="main-collection" data-facets data-section-id="{{ section.id }}">
-  {%- comment -%} Banner {%- endcomment -%}
+  {%- comment -%}
+    Banner — title LEFT, description RIGHT (two-column on desktop; stacked on
+    mobile). Description is muted, smaller, and clamped to ~3 lines with an
+    ellipsis; the full text stays in the DOM for SEO.
+  {%- endcomment -%}
   {%- if section.settings.show_banner -%}
+    {%- liquid
+      assign show_desc = false
+      if collection.description != blank and section.settings.show_description
+        assign show_desc = true
+      endif
+    -%}
     <div class="coll-banner container">
-      <h1 class="coll-banner__title">{{ collection.title }}</h1>
-      {%- if collection.description != blank and section.settings.show_description -%}
-        <div class="coll-banner__desc rte">{{ collection.description }}</div>
-      {%- endif -%}
+      <div class="coll-banner__head{% unless show_desc %} coll-banner__head--single{% endunless %}">
+        <div class="coll-banner__title-wrap">
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+          {%- endif -%}
+          <h1 class="coll-banner__title">{{ collection.title }}</h1>
+        </div>
+        {%- if show_desc -%}
+          <div class="coll-banner__desc rte">{{ collection.description }}</div>
+        {%- endif -%}
+      </div>
     </div>
   {%- endif -%}
 
@@ -162,6 +179,7 @@
   "name": "Collection",
   "settings": [
     { "type": "checkbox", "id": "show_banner", "label": "Show collection banner", "default": true },
+    { "type": "text", "id": "eyebrow", "label": "Banner eyebrow", "info": "Small-caps label above the title. Leave blank to hide.", "default": "Collection" },
     { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": true },
     { "type": "range", "id": "products_per_page", "min": 12, "max": 48, "step": 4, "label": "Products per page", "default": 24 }
   ]

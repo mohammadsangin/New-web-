@@ -882,23 +882,30 @@ p:last-child { margin-bottom: 0; }
 /* ==========================================================================
    COLLECTION TEMPLATE
    ========================================================================== */
-/* Left-aligned, compact header so products peek above the fold */
-.coll-banner { text-align: left; padding-block: clamp(20px, 3vw, 34px) clamp(12px, 1.6vw, 18px); }
-.coll-banner__title { font-size: clamp(28px, 4vw, 40px); }
+/* Compact header: title LEFT / clamped description RIGHT so products peek */
+.coll-banner { text-align: left; padding-block: clamp(20px, 3vw, 36px) clamp(12px, 1.6vw, 20px); }
+.coll-banner__head { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 750px) {
+  .coll-banner__head { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 64px); align-items: end; }
+  .coll-banner__head--single { grid-template-columns: 1fr; }
+}
+.coll-banner__title-wrap .eyebrow { margin-bottom: 10px; }
+.coll-banner__title { font-size: clamp(30px, 4.4vw, 46px); }
 .coll-banner__desc {
   color: var(--muted);
   font-size: 14.5px;
   line-height: 1.6;
-  max-width: 68ch;
-  margin: 10px 0 0;
-  /* Clamp to ~3 lines; full text stays in the DOM for SEO */
+  max-width: 62ch;
+  margin: 0;
+  /* Clamp to ~3 lines with a trailing ellipsis; full text stays in the DOM for SEO */
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+@media (min-width: 750px) { .coll-banner__desc { padding-bottom: 6px; } }
 .coll-banner__desc p { margin: 0; }
-.coll-banner__desc p + p { margin-top: 0.4em; }
+.coll-banner__desc p + p { margin-top: 0.35em; }
 
 .coll-toolbar {
   position: sticky;
