@@ -870,9 +870,23 @@ p:last-child { margin-bottom: 0; }
 /* ==========================================================================
    COLLECTION TEMPLATE
    ========================================================================== */
-.coll-banner { text-align: center; padding-block: clamp(32px, 5vw, 64px) clamp(20px, 3vw, 32px); }
-.coll-banner__title { font-size: var(--fs-h1); }
-.coll-banner__desc { color: var(--muted); font-size: var(--fs-lede); max-width: 60ch; margin: 14px auto 0; }
+/* Left-aligned, compact header so products peek above the fold */
+.coll-banner { text-align: left; padding-block: clamp(20px, 3vw, 34px) clamp(12px, 1.6vw, 18px); }
+.coll-banner__title { font-size: clamp(28px, 4vw, 40px); }
+.coll-banner__desc {
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.6;
+  max-width: 68ch;
+  margin: 10px 0 0;
+  /* Clamp to ~3 lines; full text stays in the DOM for SEO */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.coll-banner__desc p { margin: 0; }
+.coll-banner__desc p + p { margin-top: 0.4em; }
 
 .coll-toolbar {
   position: sticky;
