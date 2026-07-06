@@ -111,7 +111,8 @@
                         {%- assign shown_promos = 0 -%}
                         {%- for block in section.blocks -%}
                           {%- if block.type == 'mega_promo' and block.settings.parent == link.title and shown_promos < 2 -%}
-                            <a class="mega-promo" href="{{ block.settings.link | default: link.url }}" {{ block.shopify_attributes }}>
+                            {%- comment -%} Without an image the tile still reads composed: panel-toned placeholder, ink caption. {%- endcomment -%}
+                            <a class="mega-promo{% if block.settings.image == blank %} mega-promo--empty{% endif %}" href="{{ block.settings.link | default: link.url }}" {{ block.shopify_attributes }}>
                               {% render 'responsive-image', image: block.settings.image, ratio: 'portrait', sizes: '260px', alt: block.settings.heading %}
                               <span class="mega-promo__scrim"></span>
                               <span class="mega-promo__caption">
@@ -125,6 +126,10 @@
                         {%- endfor -%}
                       </div>
                     {%- endif -%}
+                  </div>
+
+                  <div class="mega__footer container">
+                    <a class="link-underline" href="{{ link.url }}">{{ 'general.view_all_title' | t: title: link.title }}</a>
                   </div>
                 </div>
               {%- endif -%}

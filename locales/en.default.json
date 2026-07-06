@@ -12,6 +12,7 @@
     "home": "Home",
     "menu": "Menu",
     "shop": "Shop",
+    "view_all_title": "View all {{ title }}",
     "breadcrumb": "Breadcrumb",
     "announcement": {
       "previous": "Previous announcement",
