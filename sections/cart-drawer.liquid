@@ -75,27 +75,54 @@
           {%- endfor -%}
         </ul>
 
+        {%- comment -%}
+          Cross-sell strip: up to 6 products from the merchant-assigned
+          collection, ~3 visible with smooth vertical scroll for the rest.
+          Whole card links to the product; single-variant products get a
+          quiet quick-add. Renders only when the collection is assigned.
+        {%- endcomment -%}
         {%- if cross_collection and cross_collection.products.size > 0 -%}
-          <div class="cart-cross">
-            <p class="cart-cross__head">{{ 'cart.general.complete_the_look' | t }}</p>
-            <div class="cart-cross__scroll">
-              {%- for product in cross_collection.products limit: 8 -%}
-                {%- unless cart.items | map: 'product_id' | join: ',' contains product.id -%}
-                  {%- assign v = product.selected_or_first_available_variant -%}
-                  <div class="cross-card">
-                    <a href="{{ product.url }}" tabindex="-1" aria-hidden="true">
-                      {% render 'responsive-image', image: product.featured_media, ratio: 'portrait', sizes: '140px' %}
-                    </a>
-                    <p class="cross-card__title"><a href="{{ product.url }}">{{ product.title }}</a></p>
-                    <p class="cross-card__price">{{ product.price | money }}</p>
-                    {%- if v and v.available -%}
-                      <button class="cross-card__add" type="button" data-cart-add="{{ v.id }}">{{ 'cart.general.add' | t }}</button>
-                    {%- endif -%}
-                  </div>
-                {%- endunless -%}
-              {%- endfor -%}
+          {%- liquid
+            assign in_cart_ids = cart.items | map: 'product_id' | join: ','
+            assign in_cart_ids = in_cart_ids | prepend: ',' | append: ','
+            assign cross_shown = 0
+          -%}
+          {%- capture cross_cards -%}
+            {%- for product in cross_collection.products -%}
+              {%- assign needle = product.id | prepend: ',' | append: ',' -%}
+              {%- if in_cart_ids contains needle or cross_shown >= 6 -%}{%- continue -%}{%- endif -%}
+              {%- assign cross_shown = cross_shown | plus: 1 -%}
+              {%- assign v = product.selected_or_first_available_variant -%}
+              <div class="cross-card">
+                <span class="cross-card__media media ratio-square">
+                  {%- if product.featured_media -%}
+                    <img src="{{ product.featured_media | image_url: width: 128 }}"
+                      srcset="{{ product.featured_media | image_url: width: 128 }} 1x, {{ product.featured_media | image_url: width: 256 }} 2x"
+                      alt="" width="64" height="64" loading="lazy" decoding="async">
+                  {%- else -%}
+                    {% render 'placeholder' %}
+                  {%- endif -%}
+                </span>
+                <span class="cross-card__info">
+                  <a class="cross-card__link" href="{{ product.url }}">{{ product.title }}</a>
+                  <span class="cross-card__price">{% render 'price', product: product %}</span>
+                </span>
+                {%- if product.has_only_default_variant and v and v.available -%}
+                  <button class="cross-card__add" type="button" data-cart-add="{{ v.id }}" aria-label="{{ 'cart.general.add_product' | t: title: product.title }}">
+                    {{ 'cart.general.add' | t }} {% render 'icon', name: 'plus' %}
+                  </button>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          {%- endcapture -%}
+          {%- if cross_shown > 0 -%}
+            <div class="cart-cross">
+              <p class="eyebrow">{{ 'cart.general.complete_the_look' | t }}</p>
+              <div class="cart-cross__scroll" tabindex="0" role="group" aria-label="{{ 'cart.general.complete_the_look' | t }}">
+                {{ cross_cards }}
+              </div>
             </div>
-          </div>
+          {%- endif -%}
         {%- endif -%}
       </div>
 

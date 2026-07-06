@@ -214,6 +214,7 @@
       "empty_title": "Your bag is empty",
       "empty_body": "Nothing curated yet. Explore the collection and add the pieces you love.",
       "add": "Add",
+      "add_product": "Add {{ title }} to your bag",
       "complete_the_look": "Complete the look",
       "taxes_note": "Taxes and delivery calculated at checkout.",
       "free_shipping_progress_html": "You're {{ amount }} away from free UK delivery.",

@@ -1186,18 +1186,63 @@ p:last-child { margin-bottom: 0; }
 .cart-empty__text { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 30ch; margin-bottom: 26px; }
 .cart-empty .btn { min-width: 200px; }
 
-.cart-cross { border-top: 1px solid var(--hairline); padding: 16px var(--gutter); }
-.cart-cross__head { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass-deep); font-weight: 600; margin-bottom: 12px; }
-.cart-cross__scroll { display: flex; gap: 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
-.cross-card { flex: none; width: 140px; }
-.cross-card .media { aspect-ratio: 4/5; margin-bottom: 8px; }
-.cross-card__title { font-family: var(--font-display); font-size: 15px; line-height: 1.15; }
-.cross-card__price { font-size: 12.5px; color: var(--muted); margin: 2px 0 8px; }
-.cross-card__add {
-  width: 100%; padding: 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
-  background: none; border: 1px solid var(--hairline); border-radius: var(--radius); color: var(--ink);
-  transition: border-color var(--dur-hover) var(--ease), background var(--dur-hover) var(--ease);
+/* Cross-sell strip — vertical, ~3 rows visible, smooth native scroll */
+.cart-cross { border-top: 1px solid var(--hairline); padding: 18px var(--gutter); }
+.cart-cross .eyebrow { margin-bottom: 14px; }
+.cart-cross__scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 240px; /* ~3 cards; the rest reveal on scroll */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--hairline) transparent;
+  padding-right: 6px;
 }
+.cart-cross__scroll::-webkit-scrollbar { width: 4px; }
+.cart-cross__scroll::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 999px; }
+.cart-cross__scroll::-webkit-scrollbar-track { background: transparent; }
+@media (prefers-reduced-motion: reduce) {
+  .cart-cross__scroll { scroll-behavior: auto; }
+}
+.cross-card {
+  position: relative; /* stretched-link anchor */
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: border-color var(--dur-hover) var(--ease);
+}
+.cross-card:hover { border-color: var(--brass); }
+.cross-card__media { width: 56px; height: 56px; flex: none; border-radius: calc(var(--radius) - 3px); }
+.cross-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.cross-card__info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.cross-card__link { font-family: var(--font-display); font-size: 15.5px; line-height: 1.15; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* whole card is clickable */
+.cross-card__link::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius); }
+.cross-card__link:focus-visible { outline: none; }
+.cross-card:has(.cross-card__link:focus-visible) { outline: 2px solid var(--brass-deep); outline-offset: 2px; }
+.cross-card__price { font-size: 12.5px; color: var(--muted); }
+.cross-card__price .price { font-size: 12.5px; color: var(--muted); }
+.cross-card__add {
+  position: relative;
+  z-index: 1; /* above the stretched link */
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 11px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  background: none; border: 1px solid var(--hairline); border-radius: var(--radius); color: var(--ink);
+  transition: border-color var(--dur-hover) var(--ease), background var(--dur-hover) var(--ease), color var(--dur-hover) var(--ease);
+}
+.cross-card__add svg { width: 12px; height: 12px; }
 .cross-card__add:hover { border-color: var(--ink); background: var(--ink); color: var(--surface); }
 
 .cart-foot {
