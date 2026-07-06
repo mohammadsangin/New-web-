@@ -51,11 +51,16 @@
     </div>
   </section>
 {%- elsif request.design_mode -%}
+  {%- comment -%} Editor-only guidance — never shown on the live storefront. {%- endcomment -%}
   <section class="section">
     <div class="container">
       <div class="section-head--center">
         <p class="eyebrow eyebrow--center">{{ section.settings.eyebrow | default: 'The journal' | escape }}</p>
-        <p class="section-head__body">This Journal section will appear once the selected blog has published articles.</p>
+        {%- if blog_obj == blank -%}
+          <p class="section-head__body">Journal is ready — choose a blog in this section's settings (<strong>Blog</strong>). Its three most recent published articles will appear here on the storefront.</p>
+        {%- else -%}
+          <p class="section-head__body">The blog “{{ blog_obj.title | escape }}” has no published articles yet. Publish articles to it and they'll show here (this notice is only visible in the editor).</p>
+        {%- endif -%}
       </div>
     </div>
   </section>
