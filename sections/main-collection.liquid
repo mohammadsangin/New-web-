@@ -68,14 +68,21 @@
         {%- endfor -%}
       </div>
 
+      {%- comment -%}
+        Pagination is a NORMAL link navigation (no data-facet-link, so the JS
+        does not intercept it). The Section Rendering API does not apply the
+        ?page= param inside {% paginate %}, so AJAX-paging returned an empty
+        grid; a full navigation lets Shopify render the correct page server
+        side. Active facets + sort are already baked into paginate.*.url.
+      {%- endcomment -%}
       {%- if paginate.pages > 1 -%}
         <nav class="pagination" aria-label="{{ 'general.pagination.label' | t }}">
           {%- if paginate.previous -%}
-            <a href="{{ paginate.previous.url }}" aria-label="{{ 'general.pagination.previous' | t }}" data-facet-link>{% render 'icon', name: 'chevron-left' %}</a>
+            <a href="{{ paginate.previous.url }}" aria-label="{{ 'general.pagination.previous' | t }}">{% render 'icon', name: 'chevron-left' %}</a>
           {%- endif -%}
           {%- for part in paginate.parts -%}
             {%- if part.is_link -%}
-              <a href="{{ part.url }}" data-facet-link>{{ part.title }}</a>
+              <a href="{{ part.url }}">{{ part.title }}</a>
             {%- elsif part.title == paginate.current_page -%}
               <span class="is-current" aria-current="page">{{ part.title }}</span>
             {%- else -%}
@@ -83,7 +90,7 @@
             {%- endif -%}
           {%- endfor -%}
           {%- if paginate.next -%}
-            <a href="{{ paginate.next.url }}" aria-label="{{ 'general.pagination.next' | t }}" data-facet-link>{% render 'icon', name: 'chevron-right' %}</a>
+            <a href="{{ paginate.next.url }}" aria-label="{{ 'general.pagination.next' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
           {%- endif -%}
         </nav>
       {%- endif -%}

@@ -652,10 +652,13 @@
       render(url.toString());
     });
 
-    // Chips (remove / clear-all), drawer clear-all, and pagination.
+    // Chips (remove / clear-all) and drawer clear-all apply via AJAX.
+    // Pagination is intentionally NOT intercepted — it navigates normally so
+    // Shopify renders the requested page server-side.
     document.addEventListener('click', function (e) {
       var link = e.target.closest('[data-facet-link]');
       if (!link || !link.getAttribute('href')) return;
+      if (link.closest('.pagination')) return; // let pagination navigate
       e.preventDefault();
       render(link.getAttribute('href'));
     });
