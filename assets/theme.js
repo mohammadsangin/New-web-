@@ -215,10 +215,10 @@
      CART
      ====================================================================== */
   var Cart = (function () {
-    var drawer = null;
 
     function setLoading(state) {
-      drawer = drawer || $('#cart-drawer');
+      // Re-query every time — never trust a cached reference across re-renders.
+      var drawer = $('#cart-drawer');
       if (drawer) drawer.classList.toggle('is-loading', state);
     }
 
@@ -234,6 +234,19 @@
       return doc.querySelector(selector);
     }
 
+    // The `sections` bundle in Cart AJAX responses is keyed by section ID.
+    // We request the filename 'cart-drawer', but be key-mismatch-proof: take
+    // the exact key if present, otherwise the first rendered string value.
+    function pickSectionHTML(sections) {
+      if (!sections) return null;
+      if (typeof sections['cart-drawer'] === 'string') return sections['cart-drawer'];
+      var keys = Object.keys(sections);
+      for (var i = 0; i < keys.length; i++) {
+        if (typeof sections[keys[i]] === 'string') return sections[keys[i]];
+      }
+      return null;
+    }
+
     // Swap the drawer's inner content from a rendered `cart-drawer` section.
     // Returns true if the swap happened. The #cart-drawer element itself is
     // never replaced, so the open state and delegated handlers stay intact.
@@ -241,16 +254,26 @@
       if (!sectionHTML) return false;
       var fresh = getSectionHTML(sectionHTML, '#cart-drawer .drawer__wrap');
       var current = $('#cart-drawer .drawer__wrap');
-      if (fresh && current) { current.innerHTML = fresh.innerHTML; return true; }
+      if (fresh && current) {
+        current.innerHTML = fresh.innerHTML;
+        // If focus was lost with the replaced content, restore it into the drawer.
+        var drawer = $('#cart-drawer');
+        if (drawer && drawer.classList.contains('is-open') && document.activeElement === document.body) {
+          var closeBtn = drawer.querySelector('.drawer__close');
+          if (closeBtn) { try { closeBtn.focus(); } catch (e) {} }
+        }
+        return true;
+      }
       return false;
     }
 
-    // Fallback: re-render the drawer via a standalone Section Rendering request.
+    // Fallback: re-render the drawer via a standalone Section Rendering request
+    // (the bare-HTML `section_id` variant — the most widely supported form).
     function refreshDrawer() {
-      return fetch(routes.cart_url + '?sections=cart-drawer', { headers: { 'Accept': 'application/json' }, cache: 'no-store' })
-        .then(function (r) { return r.json(); })
-        .then(function (data) { renderDrawer(data && data['cart-drawer']); })
-        .catch(function () {});
+      return fetch(routes.cart_url + '?section_id=cart-drawer', { headers: { 'Accept': 'text/html' }, cache: 'no-store' })
+        .then(function (r) { return r.text(); })
+        .then(function (html) { return renderDrawer(html); })
+        .catch(function () { return false; });
     }
 
     function add(id, quantity, opener) {
@@ -269,7 +292,7 @@
         .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
         .then(function (res) {
           if (!res.ok) { throw res.data; }
-          var ok = renderDrawer(res.data.sections && res.data.sections['cart-drawer']);
+          var ok = renderDrawer(pickSectionHTML(res.data.sections));
           var ready = ok ? Promise.resolve() : refreshDrawer();
           // Update the header count from the authoritative cart (add is committed).
           return ready.then(function () { return fetch(routes.cart_url + '.js', { cache: 'no-store' }).then(function (r) { return r.json(); }); });
@@ -299,16 +322,24 @@
           sections_url: window.location.pathname
         })
       })
-        .then(function (r) { return r.json(); })
+        .then(function (r) {
+          if (!r.ok) { throw new Error('cart change failed'); }
+          return r.json();
+        })
         .then(function (cart) {
           updateCount(cart.item_count);
-          var ok = renderDrawer(cart.sections && cart.sections['cart-drawer']);
-          if (!ok) refreshDrawer();
-          reloadCartPage(); // also refresh the cart page if we're on it
-          setLoading(false);
-          return cart;
+          var ok = renderDrawer(pickSectionHTML(cart.sections));
+          var ready = ok ? Promise.resolve(true) : refreshDrawer();
+          return ready.then(function () {
+            reloadCartPage(); // also refresh the cart page if we're on it
+            setLoading(false);
+            return cart;
+          });
         })
-        .catch(function () { setLoading(false); });
+        .catch(function () {
+          // Even on failure, re-sync the drawer with the server's actual cart.
+          refreshDrawer().then(function () { setLoading(false); });
+        });
     }
 
     function reloadCartPage() {
@@ -324,8 +355,6 @@
     }
 
     function init() {
-      drawer = $('#cart-drawer');
-
       // Add to bag (delegated) — product forms + cross-sell buttons.
       document.addEventListener('submit', function (e) {
         var form = e.target.closest('[data-product-form]');
