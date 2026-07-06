@@ -123,6 +123,17 @@
         "view_all_label": "View all"
       }
     },
+    "journal": {
+      "type": "blog-posts",
+      "settings": {
+        "eyebrow": "The journal",
+        "heading": "Notes on light",
+        "blog": "news",
+        "posts_to_show": 3,
+        "show_view_all": true,
+        "view_all_label": "View the journal"
+      }
+    },
     "trust": {
       "type": "trust-band",
       "blocks": {
@@ -174,6 +185,7 @@
     "featured_1",
     "shop_the_room",
     "featured_2",
+    "journal",
     "trust"
   ]
 }

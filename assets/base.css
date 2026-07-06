@@ -1358,7 +1358,10 @@ p:last-child { margin-bottom: 0; }
 .article-grid { display: grid; gap: clamp(24px, 3vw, 40px); grid-template-columns: 1fr; }
 @media (min-width: 700px) { .article-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 990px) { .article-grid { grid-template-columns: repeat(3, 1fr); } }
+.article-card { position: relative; }
 .article-card .media { aspect-ratio: 3/2; margin-bottom: 16px; }
+/* whole journal card is clickable via the title's stretched link */
+.article-card__stretch::after { content: ""; position: absolute; inset: 0; }
 .article-card__meta { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--brass-deep); font-weight: 600; margin-bottom: 8px; }
 .article-card__title { font-family: var(--font-display); font-size: 24px; line-height: 1.15; }
 .article-card__excerpt { color: var(--muted); font-size: 14.5px; margin-top: 8px; }
