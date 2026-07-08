@@ -99,6 +99,30 @@
         "view_all_label": "View all"
       }
     },
+    "17835302186f899900": {
+      "type": "apps",
+      "blocks": {
+        "odyssey_3d_experience_bRT7VV": {
+          "type": "shopify://apps/odyssey/blocks/3d_experience/62a4193c-b86a-4818-9b0a-bb9a1930194f",
+          "settings": {
+            "experience_height": 80,
+            "experience_width": 100,
+            "experience_margin_top": 0,
+            "experience_margin_bottom": 0,
+            "bg_color": "#9c9c9c",
+            "button_text": "Enter Our 3D Experience",
+            "button_text_color": "#ffffff",
+            "button_background_color": "#989796",
+            "button_padding_x": 24,
+            "button_padding_y": 12
+          }
+        }
+      },
+      "block_order": [
+        "odyssey_3d_experience_bRT7VV"
+      ],
+      "settings": {}
+    },
     "shop_the_room": {
       "type": "shop-the-room",
       "settings": {
@@ -172,6 +196,7 @@
     "hero",
     "category_tiles",
     "featured_1",
+    "17835302186f899900",
     "shop_the_room",
     "featured_2",
     "trust"
