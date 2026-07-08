@@ -1298,7 +1298,13 @@ p:last-child { margin-bottom: 0; }
 .cart-empty .btn { min-width: 200px; }
 
 /* "More to love" — image-forward cards, centred text, vertical scroll column */
-.cart-cross { border-top: 1px solid var(--hairline); padding: 22px var(--gutter); }
+.cart-cross {
+  margin-top: 18px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+}
 .cart-cross .eyebrow { margin-bottom: 16px; }
 .cart-cross__scroll {
   display: flex;
