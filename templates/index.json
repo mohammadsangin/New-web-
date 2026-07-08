@@ -83,7 +83,7 @@
         "eyebrow": "Explore",
         "heading": "Shop by category",
         "link_label": "View all lighting",
-        "link_url": "shopify://collections/all"
+        "link_url": "shopify://collections/shop-all-lighting"
       }
     },
     "featured_1": {

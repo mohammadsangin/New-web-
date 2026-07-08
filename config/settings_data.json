@@ -25,8 +25,8 @@
     "card_show_vendor": true,
     "free_shipping_threshold": 300,
     "social_instagram": "",
-    "social_pinterest": "",
     "social_facebook": "",
+    "social_pinterest": "",
     "contact_phone": "0333 090 0045",
     "contact_email": "sales@kymralighting.co.uk",
     "registered_office": "3rd Floor, 86–90 Paul Street, London EC2A 4NE",
@@ -62,7 +62,8 @@
           "announcement-bar-2"
         ],
         "settings": {
-          "rotate_speed": 5
+          "rotate_speed": 5,
+          "show_arrows": true
         }
       },
       "header": {
@@ -92,6 +93,7 @@
           "footer-2": {
             "type": "newsletter",
             "settings": {
+              "eyebrow": "The list",
               "heading": "Join the list",
               "body": "Considered new pieces and interior notes. No noise."
             }
@@ -103,10 +105,68 @@
           "footer-2"
         ],
         "settings": {
-          "brand_name": "KYMRA",
-          "tagline": "Solid brass lighting for considered interiors. Period & Art Deco, made to order in the UK.",
+          "show_company": true,
+          "company_heading": "Company information",
+          "company_name": "Kymra Commerce LTD T/A Kymra Lighting",
+          "company_number": "Company Number: 16970017",
+          "company_dpa": "Data Protection Registration: ZC114360",
+          "company_address": "3rd Floor, 86–90 Paul Street, London EC2A 4NE",
+          "quick_links_heading": "Quick links",
           "show_payments": true,
           "policy_menu": ""
+        }
+      },
+      "cart-drawer": {
+        "type": "cart-drawer",
+        "settings": {
+          "cross_heading": "You may also like"
+        }
+      },
+      "search-drawer": {
+        "type": "search-drawer",
+        "blocks": {
+          "search-drawer-0": {
+            "type": "popular",
+            "settings": {
+              "label": "Chandeliers",
+              "url": ""
+            }
+          },
+          "search-drawer-1": {
+            "type": "popular",
+            "settings": {
+              "label": "Brass Pendants",
+              "url": ""
+            }
+          },
+          "search-drawer-2": {
+            "type": "popular",
+            "settings": {
+              "label": "Wall Lights",
+              "url": ""
+            }
+          },
+          "search-drawer-3": {
+            "type": "popular",
+            "settings": {
+              "label": "Made to Order",
+              "url": ""
+            }
+          }
+        },
+        "block_order": [
+          "search-drawer-0",
+          "search-drawer-1",
+          "search-drawer-2",
+          "search-drawer-3"
+        ],
+        "settings": {
+          "heading": "Search",
+          "placeholder": "Search the collection…",
+          "popular_heading": "Popular searches",
+          "featured_heading": "Featured",
+          "featured_collection": "",
+          "featured_count": 4
         }
       }
     },
