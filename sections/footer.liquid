@@ -1,7 +1,5 @@
 {%- comment -%}
   Footer — editorial, premium. Structure:
-    · optional slim trust strip (delivery / made-to-order / returns / advice)
-    · dark brand band: large KYMRA wordmark + one-line statement + brass hairline
     · link columns (block-driven, graceful when a menu is empty) + newsletter
     · social + payment icons
     · bottom line: copyright + registered office only
@@ -9,36 +7,6 @@
   merchant-saved settings keep rendering.
 {%- endcomment -%}
 <footer class="footer">
-  {%- if section.settings.show_trust_strip -%}
-    <div class="footer-trust">
-      <div class="container footer-trust__grid">
-        {%- if section.settings.trust_delivery != blank -%}
-          <div class="footer-trust__item">{% render 'icon', name: 'truck' %}<span>{{ section.settings.trust_delivery | escape }}</span></div>
-        {%- endif -%}
-        {%- if section.settings.trust_made != blank -%}
-          <div class="footer-trust__item">{% render 'icon', name: 'clock' %}<span>{{ section.settings.trust_made | escape }}</span></div>
-        {%- endif -%}
-        {%- if section.settings.trust_returns != blank -%}
-          <div class="footer-trust__item">{% render 'icon', name: 'refresh' %}<span>{{ section.settings.trust_returns | escape }}</span></div>
-        {%- endif -%}
-        {%- if section.settings.trust_advice != blank -%}
-          <div class="footer-trust__item">{% render 'icon', name: 'headset' %}<span>{{ section.settings.trust_advice | escape }}</span></div>
-        {%- endif -%}
-      </div>
-    </div>
-  {%- endif -%}
-
-  {%- comment -%} ===== Brand band ===== {%- endcomment -%}
-  <div class="footer__brandband">
-    <div class="container footer__brandband-inner">
-      <a class="footer__wordmark" href="{{ routes.root_url }}">{{ section.settings.brand_name | default: shop.name | default: 'KYMRA' }}</a>
-      <span class="footer__hairline" aria-hidden="true"></span>
-      {%- if section.settings.tagline != blank -%}
-        <p class="footer__statement">{{ section.settings.tagline | escape }}</p>
-      {%- endif -%}
-    </div>
-  </div>
-
   <div class="container">
     {%- comment -%} ===== Company info · quick links · menu columns · newsletter ===== {%- endcomment -%}
     <div class="footer__main">
@@ -203,14 +171,6 @@
 {
   "name": "Footer",
   "settings": [
-    { "type": "text", "id": "brand_name", "label": "Brand name", "default": "KYMRA" },
-    { "type": "textarea", "id": "tagline", "label": "Brand statement", "default": "Solid brass lighting for considered interiors. Period & Art Deco, made to order in the UK." },
-    { "type": "header", "content": "Trust strip" },
-    { "type": "checkbox", "id": "show_trust_strip", "label": "Show trust strip", "default": true },
-    { "type": "text", "id": "trust_delivery", "label": "Delivery", "default": "Free UK delivery over £300" },
-    { "type": "text", "id": "trust_made", "label": "Made to order", "default": "Made to order — allow 3–4 weeks" },
-    { "type": "text", "id": "trust_returns", "label": "Returns", "default": "30-day returns" },
-    { "type": "text", "id": "trust_advice", "label": "Expert advice", "default": "Expert advice — 0333 090 0045" },
     { "type": "header", "content": "Company information" },
     { "type": "checkbox", "id": "show_company", "label": "Show company information column", "default": true },
     { "type": "text", "id": "company_heading", "label": "Heading", "default": "Company information" },
