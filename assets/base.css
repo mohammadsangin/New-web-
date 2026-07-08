@@ -1656,7 +1656,7 @@ p:last-child { margin-bottom: 0; }
 .footer__col--company { min-width: 0; }
 .footer__company { display: flex; flex-direction: column; gap: 16px; }
 .footer__company-name { color: var(--on-dark); font-size: 14px; font-weight: 600; line-height: 1.45; }
-.footer__company-reg { display: flex; flex-direction: column; gap: 2px; color: rgba(233, 227, 214, 0.55); font-size: 12.5px; line-height: 1.5; }
+.footer__company-reg { display: flex; flex-direction: column; gap: 2px; color: rgba(233, 227, 214, 0.72); font-size: 13.5px; line-height: 1.55; }
 .footer__company-address { font-style: normal; color: rgba(233, 227, 214, 0.72); font-size: 13.5px; line-height: 1.55; max-width: 30ch; }
 .footer__company-contact { display: flex; flex-direction: column; gap: 6px; }
 .footer__company-contact a { color: rgba(233, 227, 214, 0.82); font-size: 14px; transition: color var(--dur-hover) var(--ease); }
