@@ -71,8 +71,7 @@
         cart_url: {{ routes.cart_url | json }},
         cart_add_url: {{ routes.cart_add_url | json }},
         cart_change_url: {{ routes.cart_change_url | json }},
-        cart_update_url: {{ routes.cart_update_url | json }},
-        product_recommendations_url: {{ routes.product_recommendations_url | json }}
+        cart_update_url: {{ routes.cart_update_url | json }}
       },
       moneyFormat: {{ shop.money_format | json }},
       freeShipThreshold: {{ settings.free_shipping_threshold | default: 0 | times: 100 }},

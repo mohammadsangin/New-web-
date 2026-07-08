@@ -1,18 +1,16 @@
 {%- comment -%}
-  Cart cross-sell cards — the scrollable list of compact product cards used by
-  both the server-side fallback (in cart-drawer) and the recommendations
-  section (cart-recommendations). Single source of the card markup.
+  Cart cross-sell cards — the scrollable list of image-forward product cards
+  used by the cart drawer's "More to love" pools and no-JS fallback. Single
+  source of the card markup.
 
   Each card carries data-product-id and data-vendor so the cart JS can globally
-  dedupe, skip in-bag items, cap per vendor and interleave across cart products.
+  dedupe, skip in-bag items and interleave across the bag's categories.
 
   Params:
-    products       (required) — a product list (recommendations.products or a collection)
-    products_extra (optional) — a second list appended for variety (e.g. the
-                                category collection), deduped against the first
-    cart           (required) — the cart, so items already in the bag are skipped
-    limit          (optional) — max cards to show (default 8)
-    heading        (optional) — used for the scroll region's aria-label
+    products (required) — a product list (a category collection's products)
+    cart     (required) — the cart, so items already in the bag are skipped
+    limit    (optional) — max cards to show (default 8)
+    heading  (optional) — used for the scroll region's aria-label
 {%- endcomment -%}
 {%- liquid
   assign card_limit = limit | default: 8
@@ -28,15 +26,6 @@
     {%- assign shown = shown | plus: 1 -%}
     {% render 'cart-cross-card', product: product %}
   {%- endfor -%}
-  {%- if products_extra -%}
-    {%- for product in products_extra -%}
-      {%- assign needle = product.id | prepend: ',' | append: ',' -%}
-      {%- if in_cart_ids contains needle or seen_ids contains needle or shown >= card_limit -%}{%- continue -%}{%- endif -%}
-      {%- assign seen_ids = seen_ids | append: product.id | append: ',' -%}
-      {%- assign shown = shown | plus: 1 -%}
-      {% render 'cart-cross-card', product: product %}
-    {%- endfor -%}
-  {%- endif -%}
 {%- endcapture -%}
 {%- if shown > 0 -%}
   <div class="cart-cross__scroll" tabindex="0" role="group" aria-label="{{ heading | default: 'You may also like' | escape }}">

@@ -269,25 +269,23 @@
       return false;
     }
 
-    // "More to love" — cover EVERY distinct product in the bag. Fetch related
-    // recommendations once per distinct cart product (in cart order), then
-    // round-robin interleave one candidate from each pool at a time, globally
-    // deduped, capped ~2 per vendor within a pool, evenly split (target 6,
-    // max 8). Re-run on every cart change and drawer open so it stays current.
+    // "More to love" — cover EVERY distinct product in the bag. The drawer
+    // server-renders one same-category candidate pool per distinct cart product
+    // (in cart order) into a <template>; we round-robin interleave one candidate
+    // from each pool at a time, globally deduped, evenly split (target 6, max 8).
+    // Re-run on every cart change and drawer open so it stays current.
     var REC_TARGET = 6, REC_MAX = 8;
 
     // Round-robin selection across pools (arrays of .cross-card nodes, in cart
-    // order). `inCart` = product ids already in the bag, never recommended.
-    function selectInterleaved(pools, inCart) {
+    // order), globally deduped by product id (first placement wins).
+    function selectInterleaved(pools) {
       var n = pools.length;
       if (!n) return [];
       var perProduct = Math.ceil(REC_TARGET / n);
       var totalCap = Math.min(REC_MAX, n * perProduct);
       var used = {};
-      (inCart || []).forEach(function (id) { used[id] = true; });
       var cursor = pools.map(function () { return 0; });      // next candidate index
       var taken = pools.map(function () { return 0; });        // picked from this pool
-      var vendors = pools.map(function () { return {}; });     // per-pool vendor tally
       var picked = [];
       var guard = 0;
       while (picked.length < totalCap && guard++ < 200) {
@@ -298,11 +296,8 @@
           while (cursor[p] < pool.length) {
             var node = pool[cursor[p]++];
             var pid = node.getAttribute('data-product-id');
-            var vendor = node.getAttribute('data-vendor') || '';
             if (!pid || used[pid]) continue;                   // global dedupe / in-bag
-            if (vendor && (vendors[p][vendor] || 0) >= 2) continue; // per-pool vendor cap
             used[pid] = true;
-            if (vendor) vendors[p][vendor] = (vendors[p][vendor] || 0) + 1;
             picked.push(node);
             taken[p]++;
             progressed = true;
@@ -317,41 +312,26 @@
     function refreshRecommendations() {
       var host = $('#cart-drawer [data-cart-rec]');
       if (!host) return;
-      var idsAttr = host.getAttribute('data-rec-product-ids') || host.getAttribute('data-rec-product-id') || '';
-      var ids = idsAttr.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
-      if (!ids.length) return;
-      var base = routes.product_recommendations_url || '/recommendations/products';
-      var token = (host._recToken = (host._recToken || 0) + 1); // ignore stale responses
-      var reqs = ids.map(function (id) {
-        var url = base + (base.indexOf('?') > -1 ? '&' : '?') +
-          'section_id=cart-recommendations&intent=related&limit=10&product_id=' + encodeURIComponent(id);
-        return fetch(url, { headers: { 'Accept': 'text/html' }, cache: 'no-store' })
-          .then(function (r) { return r.text(); })
-          .then(function (html) {
-            var scroll = new DOMParser().parseFromString(html, 'text/html').querySelector('.cart-cross__scroll');
-            return scroll ? $all('.cross-card', scroll) : [];
-          })
-          .catch(function () { return []; });
-      });
-      Promise.all(reqs).then(function (pools) {
-        if (host._recToken !== token) return;                   // a newer refresh won
-        var list = $('[data-cart-rec-list]', host);
-        if (!list) return;
-        var picked = selectInterleaved(pools, ids);
-        if (picked.length) {
-          var scroll = document.createElement('div');
-          scroll.className = 'cart-cross__scroll';
-          scroll.setAttribute('tabindex', '0');
-          scroll.setAttribute('role', 'group');
-          scroll.setAttribute('aria-label', host.getAttribute('data-rec-heading') || 'You may also like');
-          picked.forEach(function (node) { scroll.appendChild(node); });
-          list.innerHTML = '';
-          list.appendChild(scroll);
-          host.hidden = false;
-        } else if (!list.querySelector('.cross-card')) {
-          host.hidden = true;                                   // no recs and no fallback
-        }
-      });
+      var tpl = host.querySelector('template[data-rec-pools]');
+      var list = $('[data-cart-rec-list]', host);
+      if (!tpl || !list) return;
+      // Read the same-category pools (in cart order) from the server-rendered template.
+      var pools = $all('[data-rec-pool]', tpl.content).map(function (el) { return $all('.cross-card', el); });
+      var picked = selectInterleaved(pools);
+      if (picked.length) {
+        var scroll = document.createElement('div');
+        scroll.className = 'cart-cross__scroll';
+        scroll.setAttribute('tabindex', '0');
+        scroll.setAttribute('role', 'group');
+        scroll.setAttribute('aria-label', host.getAttribute('data-rec-heading') || 'You may also like');
+        // Clone so the template stays intact and re-runs stay idempotent.
+        picked.forEach(function (node) { scroll.appendChild(node.cloneNode(true)); });
+        list.innerHTML = '';
+        list.appendChild(scroll);
+        host.hidden = false;
+      } else if (!list.querySelector('.cross-card')) {
+        host.hidden = true;                                     // no candidates at all
+      }
     }
 
     // Fallback: re-render the drawer via a standalone Section Rendering request

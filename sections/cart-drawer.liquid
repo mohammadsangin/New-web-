@@ -8,7 +8,6 @@
 {%- endcomment -%}
 {%- liquid
   assign threshold = settings.free_shipping_threshold | default: 0 | times: 100
-  assign cross_collection = collections[section.settings.cross_sell_collection] | default: collections[settings.cart_cross_sell]
 -%}
 <div class="drawer drawer--right cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="{{ 'cart.general.title' | t }}" aria-hidden="true">
   <div class="drawer__wrap" style="display:flex;flex-direction:column;height:100%;">
@@ -76,27 +75,51 @@
         </ul>
 
         {%- comment -%}
-          "More to love" — Shopify's automatic product recommendations, loaded
-          by theme.js from the recommendations endpoint (needs no collection, so
-          it populates automatically). We render an immediate server-side
-          fallback from the first cart item's own collection so the strip is
-          never empty and works with JS off; JS upgrades it to true
-          recommendations when they're available. Products already in the bag
-          are skipped. Up to 8 cards, ~3–4 visible with the rest on scroll.
+          "More to love" — STRICTLY same-category recommendations. For each
+          distinct product in the bag we find its category collection (matched
+          against the store's real category handles below — never a brand or
+          price collection) and build a candidate pool from ONLY that collection.
+          Pools are emitted (in cart order) into a <template>; theme.js
+          round-robin interleaves them, globally deduped, target 6 / max 8, and
+          renders the visible strip. A server-rendered first pool is shown as a
+          no-JS fallback. Products already in the bag are skipped.
         {%- endcomment -%}
         {%- liquid
-          assign rec_product = cart.items.first.product
-          assign cart_pids = cart.items | map: 'product_id' | uniq | join: ','
+          assign category_handles = 'chandeliers,pendant-lights,ceiling-lights,wall-lights,table-lamps,floor-lamps,bathroom-lights,outdoor-wall-lights,outdoor-ceiling-pendants,garden-landscape-lights,deck-step-lights,outdoor-security-sensor-lights' | split: ','
           assign heading = section.settings.cross_heading
           if heading == blank
             assign heading = 'cart.general.more_to_love' | t
           endif
-          assign fallback_products = rec_product.collections.first.products | default: cross_collection.products
         -%}
-        {%- capture fallback_cards -%}{% render 'cart-cross-cards', products: fallback_products, cart: cart, limit: 8, heading: heading %}{%- endcapture -%}
-        <div class="cart-cross" data-cart-rec data-rec-product-ids="{{ cart_pids }}" data-rec-heading="{{ heading | escape }}"{% unless fallback_cards contains 'cross-card' %} hidden{% endunless %}>
+        {%- assign seen_products = ',' -%}
+        {%- assign first_pool_handle = '' -%}
+        {%- capture rec_pools -%}
+          {%- for item in cart.items -%}
+            {%- assign pneedle = item.product_id | prepend: ',' | append: ',' -%}
+            {%- if seen_products contains pneedle -%}{%- continue -%}{%- endif -%}
+            {%- assign seen_products = seen_products | append: item.product_id | append: ',' -%}
+            {%- comment -%} Match this product to its category collection (whitelist order = priority). {%- endcomment -%}
+            {%- assign matched = false -%}
+            {%- for h in category_handles -%}
+              {%- for c in item.product.collections -%}
+                {%- if c.handle == h -%}{%- assign matched = c -%}{%- break -%}{%- endif -%}
+              {%- endfor -%}
+              {%- if matched -%}{%- break -%}{%- endif -%}
+            {%- endfor -%}
+            {%- if matched -%}
+              {%- capture pool_cards -%}{% render 'cart-cross-cards', products: matched.products, cart: cart, limit: 12, heading: heading %}{%- endcapture -%}
+              {%- if pool_cards contains 'cross-card' -%}
+                {%- if first_pool_handle == '' -%}{%- assign first_pool_handle = matched.handle -%}{%- endif -%}
+                <div class="rec-pool" data-rec-pool>{{ pool_cards }}</div>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endcapture -%}
+        {%- capture fallback_cards -%}{%- if first_pool_handle != '' -%}{% render 'cart-cross-cards', products: collections[first_pool_handle].products, cart: cart, limit: 6, heading: heading %}{%- endif -%}{%- endcapture -%}
+        <div class="cart-cross" data-cart-rec data-rec-heading="{{ heading | escape }}"{% unless rec_pools contains 'cross-card' %} hidden{% endunless %}>
           <p class="eyebrow">{{ heading }}</p>
           <div data-cart-rec-list>{{ fallback_cards }}</div>
+          <template data-rec-pools>{{ rec_pools }}</template>
         </div>
       </div>
 
@@ -130,19 +153,13 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "‘More to love’ shows up to 8 products (about 3–4 visible, scroll for the rest). It uses Shopify’s automatic recommendations — no setup needed. Products already in the bag are hidden automatically."
+      "content": "‘More to love’ shows up to 8 products drawn strictly from each bag item’s own category (wall lights → wall lights, etc.) — no setup needed. Products already in the bag are hidden automatically."
     },
     {
       "type": "text",
       "id": "cross_heading",
       "label": "Recommendations heading",
       "default": "You may also like"
-    },
-    {
-      "type": "collection",
-      "id": "cross_sell_collection",
-      "label": "Fallback collection (optional)",
-      "info": "Only used if a cart item has no collection of its own and automatic recommendations are unavailable."
     }
   ]
 }
