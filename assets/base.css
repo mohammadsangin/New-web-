@@ -1049,10 +1049,11 @@ p:last-child { margin-bottom: 0; }
   .pdp__grid { grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr); align-items: start; }
 }
 
-/* Gallery */
+/* Gallery — sticky on desktop so it stays beside the taller info column */
 .gallery { display: grid; gap: 14px; }
 @media (min-width: 900px) {
   .gallery { grid-template-columns: 76px 1fr; align-self: start; }
+  .gallery--sticky { position: sticky; top: calc(var(--header-height) + 20px); }
 }
 .gallery__main { position: relative; }
 .gallery__main .media { aspect-ratio: 1 / 1; }
@@ -1095,11 +1096,10 @@ p:last-child { margin-bottom: 0; }
 .gallery__thumb .media { aspect-ratio: 1 / 1; border-radius: 0; }
 .gallery__thumb[aria-current="true"] { border-color: var(--brass-deep); }
 
-/* Info column — short buy panel, sticky on desktop */
-.pdp-info { max-width: 520px; }
-@media (min-width: 900px) {
-  .pdp-info--sticky { position: sticky; top: calc(var(--header-height) + 20px); align-self: start; }
-}
+/* Info column — buy panel + description + accordions; scrolls beside the
+   sticky gallery on desktop. */
+.pdp-info { max-width: 560px; }
+@media (max-width: 899px) { .pdp-info { max-width: none; } }
 .pdp-info__vendor { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass-deep); font-weight: 600; margin-bottom: 10px; }
 .pdp-info__title { font-size: var(--fs-h1); margin-bottom: 14px; }
 .pdp-info__price { margin-bottom: 22px; }
@@ -1151,13 +1151,8 @@ p:last-child { margin-bottom: 0; }
 .pdp-trust__item svg { width: 20px; height: 20px; color: var(--brass-deep); flex: none; stroke-width: 1.5; }
 .pdp-trust__item strong { color: var(--ink); font-weight: 600; }
 
-/* Full-width editorial details below the buy panel */
-.pdp__details { max-width: 760px; margin-inline: auto; }
-.pdp__details:first-of-type {
-  margin-top: clamp(40px, 5vw, 72px);
-  padding-top: clamp(32px, 4vw, 48px);
-  border-top: 1px solid var(--hairline);
-}
+/* Editorial details in the right column, below the buy panel */
+.pdp__details { margin-top: clamp(26px, 3.5vw, 40px); }
 
 .pdp-desc { font-size: 16px; line-height: 1.7; color: var(--ink); margin-bottom: 8px; }
 .pdp-desc p { color: var(--muted); }
