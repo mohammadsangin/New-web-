@@ -123,6 +123,39 @@
         "view_all_label": "View all"
       }
     },
+    "brand_partners": {
+      "type": "brand-partners",
+      "blocks": {
+        "bp1": { "type": "brand" },
+        "bp2": { "type": "brand" },
+        "bp3": { "type": "brand" },
+        "bp4": { "type": "brand" },
+        "bp5": { "type": "brand" }
+      },
+      "block_order": ["bp1", "bp2", "bp3", "bp4", "bp5"],
+      "settings": {
+        "eyebrow": "Considered company",
+        "heading": "Brands we carry",
+        "subheading": "A curated group of makers whose craft and finish sit comfortably alongside our own.",
+        "logos_per_row": 5,
+        "monochrome": true
+      }
+    },
+    "reviews_carousel": {
+      "type": "reviews-carousel",
+      "blocks": {
+        "rv1": { "type": "review" },
+        "rv2": { "type": "review" },
+        "rv3": { "type": "review" }
+      },
+      "block_order": ["rv1", "rv2", "rv3"],
+      "settings": {
+        "eyebrow": "In their words",
+        "heading": "What our customers say",
+        "desktop_per_view": "2",
+        "autoplay": false
+      }
+    },
     "journal": {
       "type": "blog-posts",
       "settings": {
@@ -185,6 +218,8 @@
     "featured_1",
     "shop_the_room",
     "featured_2",
+    "brand_partners",
+    "reviews_carousel",
     "journal",
     "trust"
   ]
