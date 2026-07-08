@@ -211,7 +211,7 @@
   </script>
 </section>
 
-{%- comment -%} ===== Complete the look ===== {%- endcomment -%}
+{%- comment -%} ===== Recommended for you ===== {%- endcomment -%}
 {%- if section.settings.show_complete_look -%}
   {%- assign look = product.collections.first -%}
   {%- if look and look.products.size > 1 -%}
@@ -256,7 +256,7 @@
 {
   "name": "Product",
   "settings": [
-    { "type": "checkbox", "id": "show_complete_look", "label": "Show 'Complete the look'", "default": true }
+    { "type": "checkbox", "id": "show_complete_look", "label": "Show 'Recommended for you'", "default": true }
   ],
   "blocks": [
     { "type": "vendor", "name": "Vendor", "limit": 1 },
