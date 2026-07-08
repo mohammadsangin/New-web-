@@ -171,6 +171,48 @@
         "b4"
       ],
       "settings": {}
+    },
+    "brand_partners": {
+      "type": "brand-partners",
+      "blocks": {
+        "brand_1": {
+          "type": "brand",
+          "settings": {}
+        },
+        "brand_2": {
+          "type": "brand",
+          "settings": {}
+        },
+        "brand_3": {
+          "type": "brand",
+          "settings": {}
+        },
+        "brand_4": {
+          "type": "brand",
+          "settings": {}
+        },
+        "brand_5": {
+          "type": "brand",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "brand_1",
+        "brand_2",
+        "brand_3",
+        "brand_4",
+        "brand_5"
+      ],
+      "settings": {
+        "heading": "Brands We Carry"
+      }
+    },
+    "journal": {
+      "type": "journal",
+      "settings": {
+        "blog": "news",
+        "heading": "From the Journal"
+      }
     }
   },
   "order": [
@@ -180,6 +222,8 @@
     "17835302186f899900",
     "shop_the_room",
     "featured_2",
+    "brand_partners",
+    "journal",
     "trust"
   ]
 }
