@@ -44,17 +44,38 @@
           none have been added yet, a sensible default set renders so the
           footer never reads empty (edit/reorder via blocks in the Customizer).
         {%- endcomment -%}
-        {%- assign quick_count = 0 -%}
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'link' and block.settings.label != blank -%}{%- assign quick_count = quick_count | plus: 1 -%}{%- endif -%}
-        {%- endfor -%}
+        {%- comment -%}
+          Priority: (1) a merchant-chosen menu setting, (2) the
+          'footer-quick-links' navigation menu (the working default — edit in
+          Online Store → Navigation), (3) "Quick link" blocks, (4) a hardcoded
+          set so the footer never reads empty. External links open in a new tab.
+        {%- endcomment -%}
+        {%- liquid
+          assign quick_menu = false
+          if section.settings.quick_links_menu != blank and section.settings.quick_links_menu.links.size > 0
+            assign quick_menu = section.settings.quick_links_menu
+          elsif linklists['footer-quick-links'] != blank and linklists['footer-quick-links'].links.size > 0
+            assign quick_menu = linklists['footer-quick-links']
+          endif
+          assign quick_count = 0
+          for block in section.blocks
+            if block.type == 'link' and block.settings.label != blank
+              assign quick_count = quick_count | plus: 1
+            endif
+          endfor
+        -%}
         <nav class="footer__col" aria-label="{{ section.settings.quick_links_heading | default: 'Quick links' | escape }}">
           <p class="footer__col-head">{{ section.settings.quick_links_heading | default: 'Quick links' | escape }}</p>
           <ul class="footer__links">
-            {%- if quick_count > 0 -%}
+            {%- if quick_menu -%}
+              {%- for link in quick_menu.links -%}
+                <li><a href="{{ link.url }}"{% if link.url contains '://' %} target="_blank" rel="noopener"{% endif %}>{{ link.title }}</a></li>
+              {%- endfor -%}
+            {%- elsif quick_count > 0 -%}
               {%- for block in section.blocks -%}
                 {%- if block.type == 'link' and block.settings.label != blank -%}
-                  <li {{ block.shopify_attributes }}><a href="{{ block.settings.url | default: routes.root_url }}">{{ block.settings.label | escape }}</a></li>
+                  {%- assign burl = block.settings.url | default: routes.root_url -%}
+                  <li {{ block.shopify_attributes }}><a href="{{ burl }}"{% if burl contains '://' %} target="_blank" rel="noopener"{% endif %}>{{ block.settings.label | escape }}</a></li>
                 {%- endif -%}
               {%- endfor -%}
             {%- else -%}
@@ -185,7 +206,8 @@
     { "type": "paragraph", "content": "Phone and email come from Theme settings → Contact." },
     { "type": "header", "content": "Quick links" },
     { "type": "text", "id": "quick_links_heading", "label": "Heading", "default": "Quick links" },
-    { "type": "paragraph", "content": "Add \"Quick link\" blocks to control the list. Until you do, a sensible default set is shown." },
+    { "type": "link_list", "id": "quick_links_menu", "label": "Quick links menu", "info": "Defaults to the 'Footer Quick Links' menu." },
+    { "type": "paragraph", "content": "Quick links render from the chosen menu (or the 'Footer Quick Links' navigation menu). \"Quick link\" blocks and a built-in set act as fallbacks if no menu is set." },
     { "type": "header", "content": "Bottom bar" },
     { "type": "checkbox", "id": "show_payments", "label": "Show payment icons", "default": true },
     { "type": "link_list", "id": "policy_menu", "label": "Policy / legal menu", "info": "Shown in the bottom bar." }
