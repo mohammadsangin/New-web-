@@ -59,13 +59,14 @@
               {%- endfor -%}
             {%- else -%}
               <li><a href="{{ routes.search_url }}">Search</a></li>
-              <li><a href="{{ routes.all_products_collection_url }}">Shop All Lighting</a></li>
+              {% # theme-check-disable HardcodedRoutes %}
+              <li><a href="/collections/shop-all-lighting">Shop All Lighting</a></li>
+              {% # theme-check-enable HardcodedRoutes %}
               <li><a href="/blogs/news">Blog</a></li>
-              <li><a href="/pages/about">About Us</a></li>
-              <li><a href="/pages/contact">Contact Us</a></li>
+              <li><a href="/pages/about-us">About Us</a></li>
+              <li><a href="/pages/contact-us">Contact Us</a></li>
               <li><a href="/pages/reviews">Reviews</a></li>
-              <li><a href="/pages/returns-refunds">Returns &amp; Refunds</a></li>
-              <li><a href="/pages/lighting-designer">Lighting Designer</a></li>
+              <li><a href="/pages/returns">Returns</a></li>
             {%- endif -%}
           </ul>
         </nav>
@@ -218,13 +219,12 @@
   "default": {
     "blocks": [
       { "type": "link", "settings": { "label": "Search", "url": "/search" } },
-      { "type": "link", "settings": { "label": "Shop All Lighting", "url": "/collections/all" } },
+      { "type": "link", "settings": { "label": "Shop All Lighting", "url": "/collections/shop-all-lighting" } },
       { "type": "link", "settings": { "label": "Blog", "url": "/blogs/news" } },
-      { "type": "link", "settings": { "label": "About Us", "url": "/pages/about" } },
-      { "type": "link", "settings": { "label": "Contact Us", "url": "/pages/contact" } },
+      { "type": "link", "settings": { "label": "About Us", "url": "/pages/about-us" } },
+      { "type": "link", "settings": { "label": "Contact Us", "url": "/pages/contact-us" } },
       { "type": "link", "settings": { "label": "Reviews", "url": "/pages/reviews" } },
-      { "type": "link", "settings": { "label": "Returns & Refunds", "url": "/pages/returns-refunds" } },
-      { "type": "link", "settings": { "label": "Lighting Designer", "url": "/pages/lighting-designer" } },
+      { "type": "link", "settings": { "label": "Returns", "url": "/pages/returns" } },
       { "type": "newsletter" }
     ]
   }
