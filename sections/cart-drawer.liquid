@@ -86,6 +86,7 @@
         {%- endcomment -%}
         {%- liquid
           assign rec_product = cart.items.first.product
+          assign cart_pids = cart.items | map: 'product_id' | uniq | join: ','
           assign heading = section.settings.cross_heading
           if heading == blank
             assign heading = 'cart.general.more_to_love' | t
@@ -93,7 +94,7 @@
           assign fallback_products = rec_product.collections.first.products | default: cross_collection.products
         -%}
         {%- capture fallback_cards -%}{% render 'cart-cross-cards', products: fallback_products, cart: cart, limit: 8, heading: heading %}{%- endcapture -%}
-        <div class="cart-cross" data-cart-rec data-rec-product-id="{{ rec_product.id }}"{% unless fallback_cards contains 'cross-card' %} hidden{% endunless %}>
+        <div class="cart-cross" data-cart-rec data-rec-product-ids="{{ cart_pids }}" data-rec-heading="{{ heading | escape }}"{% unless fallback_cards contains 'cross-card' %} hidden{% endunless %}>
           <p class="eyebrow">{{ heading }}</p>
           <div data-cart-rec-list>{{ fallback_cards }}</div>
         </div>

@@ -1,15 +1,21 @@
 {%- comment -%}
-  Cart recommendations — Shopify's automatic product recommendations, rendered
-  on demand and injected into the cart drawer's "More to love" strip by theme.js.
+  Cart recommendations — Shopify's automatic product recommendations for ONE
+  cart product, rendered on demand and read by theme.js, which fetches this
+  section once per distinct cart product and interleaves the results.
 
   Fetched via the Product Recommendations endpoint:
-    /recommendations/products?section_id=cart-recommendations&product_id={id}&intent=related&limit=8
-  which populates the `recommendations` object below. Needs NO collection
-  assignment, so it populates automatically. If it comes back empty, the JS
-  keeps the server-rendered collection fallback already in the drawer.
+    /recommendations/products?section_id=cart-recommendations&product_id={id}&intent=related&limit=10
+  which populates the `recommendations` object below. For variety we also append
+  the category collection of the first recommended product — the JS dedupes,
+  caps per vendor and interleaves, so a big candidate pool is fine. Needs NO
+  collection assignment. If it comes back empty, the JS keeps the server-rendered
+  collection fallback already in the drawer.
 {%- endcomment -%}
 {%- if recommendations.performed and recommendations.products_count > 0 -%}
-  {% render 'cart-cross-cards', products: recommendations.products, cart: cart, limit: 8, heading: 'cart.general.more_to_love' | t %}
+  {%- assign category = recommendations.products.first.collections.first -%}
+  {%- assign category_products = category.products -%}
+  {%- assign rec_heading = 'cart.general.more_to_love' | t -%}
+  {% render 'cart-cross-cards', products: recommendations.products, products_extra: category_products, cart: cart, limit: 12, heading: rec_heading %}
 {%- endif -%}
 
 {% schema %}

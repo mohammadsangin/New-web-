@@ -1,0 +1,26 @@
+{%- comment -%}
+  One cart cross-sell card. Carries data-product-id + data-vendor so the cart
+  JS can dedupe, skip in-bag items, cap per vendor and interleave.
+  Param: product (required)
+{%- endcomment -%}
+{%- assign v = product.selected_or_first_available_variant -%}
+<div class="cross-card" data-product-id="{{ product.id }}" data-vendor="{{ product.vendor | escape }}">
+  <span class="cross-card__media media ratio-square">
+    {%- if product.featured_media -%}
+      <img src="{{ product.featured_media | image_url: width: 128 }}"
+        srcset="{{ product.featured_media | image_url: width: 128 }} 1x, {{ product.featured_media | image_url: width: 256 }} 2x"
+        alt="" width="64" height="64" loading="lazy" decoding="async">
+    {%- else -%}
+      {% render 'placeholder' %}
+    {%- endif -%}
+  </span>
+  <span class="cross-card__info">
+    <a class="cross-card__link" href="{{ product.url }}">{{ product.title }}</a>
+    <span class="cross-card__price">{% render 'price', product: product %}</span>
+  </span>
+  {%- if product.has_only_default_variant and v and v.available -%}
+    <button class="cross-card__add" type="button" data-cart-add="{{ v.id }}" aria-label="{{ 'cart.general.add_product' | t: title: product.title }}">
+      {{ 'cart.general.add' | t }} {% render 'icon', name: 'plus' %}
+    </button>
+  {%- endif -%}
+</div>
