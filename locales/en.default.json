@@ -220,6 +220,7 @@
       "add": "Add",
       "add_product": "Add {{ title }} to your bag",
       "complete_the_look": "Complete the look",
+      "more_to_love": "You may also like",
       "taxes_note": "Taxes and delivery calculated at checkout.",
       "free_shipping_progress_html": "You're {{ amount }} away from free UK delivery.",
       "free_shipping_qualified": "You've unlocked free UK delivery.",

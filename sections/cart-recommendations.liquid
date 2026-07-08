@@ -1,0 +1,19 @@
+{%- comment -%}
+  Cart recommendations — Shopify's automatic product recommendations, rendered
+  on demand and injected into the cart drawer's "More to love" strip by theme.js.
+
+  Fetched via the Product Recommendations endpoint:
+    /recommendations/products?section_id=cart-recommendations&product_id={id}&intent=related&limit=8
+  which populates the `recommendations` object below. Needs NO collection
+  assignment, so it populates automatically. If it comes back empty, the JS
+  keeps the server-rendered collection fallback already in the drawer.
+{%- endcomment -%}
+{%- if recommendations.performed and recommendations.products_count > 0 -%}
+  {% render 'cart-cross-cards', products: recommendations.products, cart: cart, limit: 8, heading: 'cart.general.more_to_love' | t %}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Cart recommendations"
+}
+{% endschema %}

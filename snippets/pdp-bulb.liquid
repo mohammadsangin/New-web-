@@ -1,0 +1,57 @@
+{%- comment -%}
+  "You'll need a bulb" module — OPTIONAL, per-product, driven by PRODUCT
+  METAFIELDS (no code needed to configure). Renders in a FIXED position
+  immediately after the Add to Bag button (independent of block order).
+  Renders NOTHING unless the product links a compatible bulb.
+
+  Canonical, locked metafield keys (Settings → Custom data → Products):
+    • custom.compatible_bulb — type "Product" (single product_reference)
+    • custom.bulb_quantity   — type "Integer" (default quantity in stepper)
+
+  Params:
+    product (required)
+    block   (the 'bulbs' schema block — supplies show toggle + labels)
+{%- endcomment -%}
+{%- if block.settings.show_bulbs -%}
+  {%- liquid
+    assign bulb = product.metafields.custom.compatible_bulb.value
+    assign required = product.metafields.custom.bulb_quantity.value | default: 1
+    if required < 1
+      assign required = 1
+    endif
+  -%}
+  {%- if bulb != blank -%}
+    {%- assign bv = bulb.selected_or_first_available_variant -%}
+    <div class="pdp-bulbs" data-bulbs {{ block.shopify_attributes }}>
+      {%- if block.settings.eyebrow != blank -%}<p class="eyebrow">{{ block.settings.eyebrow | escape }}</p>{%- endif -%}
+      {%- if block.settings.heading != blank -%}<p class="pdp-bulbs__head">{{ block.settings.heading | escape }}</p>{%- endif -%}
+      <div class="pdp-bulbs__list">
+        <div class="bulb-card" data-quick-add>
+          <a class="bulb-card__media media ratio-square" href="{{ bulb.url }}" tabindex="-1" aria-hidden="true">
+            {%- if bulb.featured_media -%}
+              <img src="{{ bulb.featured_media | image_url: width: 120 }}" srcset="{{ bulb.featured_media | image_url: width: 120 }} 1x, {{ bulb.featured_media | image_url: width: 240 }} 2x" alt="" width="60" height="60" loading="lazy" decoding="async">
+            {%- else -%}
+              {% render 'placeholder' %}
+            {%- endif -%}
+          </a>
+          <div class="bulb-card__info">
+            <a class="bulb-card__title" href="{{ bulb.url }}">{{ bulb.title }}</a>
+            <span class="bulb-card__price">{% render 'price', product: bulb %}</span>
+          </div>
+          {%- if bv and bv.available -%}
+            <div class="bulb-card__buy">
+              <div class="qty qty--sm">
+                <button type="button" data-qty-step="-1" aria-label="{{ 'cart.general.decrease' | t }}">{% render 'icon', name: 'minus' %}</button>
+                <input type="number" value="{{ required }}" min="1" inputmode="numeric" data-quick-qty aria-label="{{ 'cart.general.quantity' | t }} — {{ bulb.title | escape }}">
+                <button type="button" data-qty-step="1" aria-label="{{ 'cart.general.increase' | t }}">{% render 'icon', name: 'plus' %}</button>
+              </div>
+              <button type="button" class="btn btn--secondary bulb-card__add" data-cart-add="{{ bv.id }}" aria-label="{{ 'cart.general.add_product' | t: title: bulb.title }}">{{ 'products.product.add_bulb' | t }}</button>
+            </div>
+          {%- else -%}
+            <span class="bulb-card__soldout">{{ 'products.card.sold_out' | t }}</span>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+{%- endif -%}

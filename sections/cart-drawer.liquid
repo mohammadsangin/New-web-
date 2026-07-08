@@ -76,62 +76,27 @@
         </ul>
 
         {%- comment -%}
-          Cross-sell strip: up to 6 products from the merchant-assigned
-          collection, ~3 visible with smooth vertical scroll for the rest.
-          Whole card links to the product; single-variant products get a
-          quiet quick-add. Renders only when the collection is assigned.
+          "More to love" — Shopify's automatic product recommendations, loaded
+          by theme.js from the recommendations endpoint (needs no collection, so
+          it populates automatically). We render an immediate server-side
+          fallback from the first cart item's own collection so the strip is
+          never empty and works with JS off; JS upgrades it to true
+          recommendations when they're available. Products already in the bag
+          are skipped. Up to 8 cards, ~3–4 visible with the rest on scroll.
         {%- endcomment -%}
-        {%- if cross_collection and cross_collection.products.size > 0 -%}
-          {%- liquid
-            assign in_cart_ids = cart.items | map: 'product_id' | join: ','
-            assign in_cart_ids = in_cart_ids | prepend: ',' | append: ','
-            assign cross_shown = 0
-          -%}
-          {%- capture cross_cards -%}
-            {%- for product in cross_collection.products -%}
-              {%- assign needle = product.id | prepend: ',' | append: ',' -%}
-              {%- if in_cart_ids contains needle or cross_shown >= 6 -%}{%- continue -%}{%- endif -%}
-              {%- assign cross_shown = cross_shown | plus: 1 -%}
-              {%- assign v = product.selected_or_first_available_variant -%}
-              <div class="cross-card">
-                <span class="cross-card__media media ratio-square">
-                  {%- if product.featured_media -%}
-                    <img src="{{ product.featured_media | image_url: width: 128 }}"
-                      srcset="{{ product.featured_media | image_url: width: 128 }} 1x, {{ product.featured_media | image_url: width: 256 }} 2x"
-                      alt="" width="64" height="64" loading="lazy" decoding="async">
-                  {%- else -%}
-                    {% render 'placeholder' %}
-                  {%- endif -%}
-                </span>
-                <span class="cross-card__info">
-                  <a class="cross-card__link" href="{{ product.url }}">{{ product.title }}</a>
-                  <span class="cross-card__price">{% render 'price', product: product %}</span>
-                </span>
-                {%- if product.has_only_default_variant and v and v.available -%}
-                  <button class="cross-card__add" type="button" data-cart-add="{{ v.id }}" aria-label="{{ 'cart.general.add_product' | t: title: product.title }}">
-                    {{ 'cart.general.add' | t }} {% render 'icon', name: 'plus' %}
-                  </button>
-                {%- endif -%}
-              </div>
-            {%- endfor -%}
-          {%- endcapture -%}
-          {%- if cross_shown > 0 -%}
-            <div class="cart-cross">
-              <p class="eyebrow">{{ 'cart.general.complete_the_look' | t }}</p>
-              <div class="cart-cross__scroll" tabindex="0" role="group" aria-label="{{ 'cart.general.complete_the_look' | t }}">
-                {{ cross_cards }}
-              </div>
-            </div>
-          {%- endif -%}
-        {%- elsif request.design_mode -%}
-          {%- comment -%} Editor-only prompt — never shown on the live storefront. {%- endcomment -%}
-          <div class="cart-cross">
-            <p class="eyebrow">{{ 'cart.general.complete_the_look' | t }}</p>
-            <div class="section-placeholder">
-              <p>Assign a <strong>Cross-sell collection</strong> in Theme settings → Cart (or on this Cart drawer section) to show “Complete the look” here.</p>
-            </div>
-          </div>
-        {%- endif -%}
+        {%- liquid
+          assign rec_product = cart.items.first.product
+          assign heading = section.settings.cross_heading
+          if heading == blank
+            assign heading = 'cart.general.more_to_love' | t
+          endif
+          assign fallback_products = rec_product.collections.first.products | default: cross_collection.products
+        -%}
+        {%- capture fallback_cards -%}{% render 'cart-cross-cards', products: fallback_products, cart: cart, limit: 8, heading: heading %}{%- endcapture -%}
+        <div class="cart-cross" data-cart-rec data-rec-product-id="{{ rec_product.id }}"{% unless fallback_cards contains 'cross-card' %} hidden{% endunless %}>
+          <p class="eyebrow">{{ heading }}</p>
+          <div data-cart-rec-list>{{ fallback_cards }}</div>
+        </div>
       </div>
 
       <div class="cart-foot">
@@ -164,13 +129,19 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "‘Complete the look’ shows up to 6 products (about 3 visible, scroll for the rest). Assign the collection here or in Theme settings → Cart. Products already in the bag are hidden automatically."
+      "content": "‘More to love’ shows up to 8 products (about 3–4 visible, scroll for the rest). It uses Shopify’s automatic recommendations — no setup needed. Products already in the bag are hidden automatically."
+    },
+    {
+      "type": "text",
+      "id": "cross_heading",
+      "label": "Recommendations heading",
+      "default": "You may also like"
     },
     {
       "type": "collection",
       "id": "cross_sell_collection",
-      "label": "Cross-sell collection",
-      "info": "Overrides the theme-level cross-sell collection (Theme settings → Cart)."
+      "label": "Fallback collection (optional)",
+      "info": "Only used if a cart item has no collection of its own and automatic recommendations are unavailable."
     }
   ]
 }

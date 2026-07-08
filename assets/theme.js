@@ -262,9 +262,39 @@
           var closeBtn = drawer.querySelector('.drawer__close');
           if (closeBtn) { try { closeBtn.focus(); } catch (e) {} }
         }
+        // Upgrade the "More to love" strip to live recommendations for the new cart.
+        refreshRecommendations();
         return true;
       }
       return false;
+    }
+
+    // "More to love" — fetch Shopify's automatic recommendations for the first
+    // cart line item and replace the server-rendered fallback cards. If none
+    // come back, the collection fallback already in the drawer stays put.
+    function refreshRecommendations() {
+      var host = $('#cart-drawer [data-cart-rec]');
+      if (!host) return;
+      var pid = host.getAttribute('data-rec-product-id');
+      if (!pid) return;
+      var base = routes.product_recommendations_url || '/recommendations/products';
+      var url = base + (base.indexOf('?') > -1 ? '&' : '?') +
+        'section_id=cart-recommendations&intent=related&limit=8&product_id=' + encodeURIComponent(pid);
+      fetch(url, { headers: { 'Accept': 'text/html' }, cache: 'no-store' })
+        .then(function (r) { return r.text(); })
+        .then(function (html) {
+          var list = $('[data-cart-rec-list]', host);
+          if (!list) return;
+          var scroll = new DOMParser().parseFromString(html, 'text/html').querySelector('.cart-cross__scroll');
+          if (scroll && scroll.querySelector('.cross-card')) {
+            list.innerHTML = '';
+            list.appendChild(scroll);
+            host.hidden = false;
+          } else if (!list.querySelector('.cross-card')) {
+            host.hidden = true;
+          }
+        })
+        .catch(function () {});
     }
 
     // Fallback: re-render the drawer via a standalone Section Rendering request
@@ -355,6 +385,11 @@
     }
 
     function init() {
+      // Load fresh recommendations whenever the cart drawer opens.
+      document.addEventListener('drawer:open', function (e) {
+        if (e.detail && e.detail.id === 'cart-drawer') refreshRecommendations();
+      });
+
       // Add to bag (delegated) — product forms + cross-sell buttons.
       document.addEventListener('submit', function (e) {
         var form = e.target.closest('[data-product-form]');
@@ -519,6 +554,10 @@
       // sticky bar mirror
       var stickyPrice = $('[data-sticky-price]');
       if (stickyPrice && variant.price_html) stickyPrice.innerHTML = variant.price_html;
+      // Switch the gallery to this variant's image (skip the initial render so we
+      // don't fight the server-rendered/preloaded first slide). If a variant has
+      // no dedicated image, leave the current one.
+      if (galleryInit && variant.media_id != null) showSlideByMediaId(variant.media_id);
     }
 
     $all('[data-option-index] input', root).forEach(function (input) {
@@ -528,26 +567,36 @@
 
     /* Gallery: thumbs switch the desktop view and scroll the mobile carousel */
     var galleryMain = $('[data-gallery-main]', root);
+    var galleryInit = false;
     function setActiveThumb(idx) {
       $all('[data-gallery-thumb]', root).forEach(function (t) {
         t.setAttribute('aria-current', parseInt(t.getAttribute('data-gallery-thumb'), 10) === idx ? 'true' : 'false');
       });
     }
+    function showSlideByIndex(idx) {
+      $all('[data-gallery-slide]', root).forEach(function (s) {
+        s.classList.toggle('is-active', parseInt(s.getAttribute('data-gallery-slide'), 10) === idx);
+      });
+      setActiveThumb(idx);
+      if (galleryMain && galleryMain.scrollWidth > galleryMain.clientWidth) {
+        galleryMain.scrollTo({ left: idx * galleryMain.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
+      }
+    }
+    // Activate the slide/thumb whose media id matches a chosen variant.
+    function showSlideByMediaId(mediaId) {
+      var slide = root.querySelector('[data-gallery-slide][data-media-id="' + mediaId + '"]');
+      if (!slide) return; // variant has no dedicated image — leave current
+      showSlideByIndex(parseInt(slide.getAttribute('data-gallery-slide'), 10));
+    }
     $all('[data-gallery-thumb]', root).forEach(function (thumb) {
       thumb.addEventListener('click', function () {
-        var idx = parseInt(thumb.getAttribute('data-gallery-thumb'), 10);
-        $all('[data-gallery-slide]', root).forEach(function (s) {
-          s.classList.toggle('is-active', parseInt(s.getAttribute('data-gallery-slide'), 10) === idx);
-        });
-        setActiveThumb(idx);
-        // Mobile: scroll the swipe carousel to the chosen slide.
-        if (galleryMain && galleryMain.scrollWidth > galleryMain.clientWidth) {
-          galleryMain.scrollTo({ left: idx * galleryMain.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
-        }
+        showSlideByIndex(parseInt(thumb.getAttribute('data-gallery-thumb'), 10));
         // Keep the chosen thumb within the scrollable thumb strip.
         try { thumb.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' }); } catch (e) {}
       });
     });
+    // Gallery wired — allow variant changes to drive image switching from here on.
+    galleryInit = true;
     // Mobile: keep the active thumb in sync as the carousel is swiped.
     if (galleryMain) {
       var galleryTimer;

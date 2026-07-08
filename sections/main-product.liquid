@@ -3,6 +3,16 @@
   assign product = product
   assign current = product.selected_or_first_available_variant
   assign media = product.media
+  comment
+    Locate the 'bulbs' block once so the module can render in a FIXED position
+    (right after Add to Bag) rather than wherever block_order places it.
+  endcomment
+  assign bulb_block = false
+  for b in section.blocks
+    if b.type == 'bulbs'
+      assign bulb_block = b
+    endif
+  endfor
 -%}
 <section class="pdp" data-product>
   <div class="container">
@@ -25,7 +35,7 @@
         {%- if media.size > 1 -%}
           <div class="gallery__thumbs" role="tablist" aria-label="{{ 'products.product.gallery_thumbnails' | t }}">
             {%- for m in media -%}
-              <button class="gallery__thumb" type="button" data-gallery-thumb="{{ forloop.index0 }}"
+              <button class="gallery__thumb" type="button" data-gallery-thumb="{{ forloop.index0 }}" data-media-id="{{ m.id }}"
                 aria-current="{% if forloop.first %}true{% else %}false{% endif %}"
                 aria-label="{{ 'products.product.view_image' | t: number: forloop.index }}">
                 <span class="media ratio-square">
@@ -38,11 +48,11 @@
         <div class="gallery__main" data-gallery-main>
           {%- if media.size > 0 -%}
             {%- for m in media -%}
-              <div class="gallery__slide{% if forloop.first %} is-active{% endif %}" data-gallery-slide="{{ forloop.index0 }}">
+              <div class="gallery__slide{% if forloop.first %} is-active{% endif %}" data-gallery-slide="{{ forloop.index0 }}" data-media-id="{{ m.id }}">
                 <div class="media ratio-square">
                   <img
-                    src="{{ m.preview_image | image_url: width: 1000 }}"
-                    srcset="{{ m.preview_image | image_url: width: 500 }} 500w, {{ m.preview_image | image_url: width: 800 }} 800w, {{ m.preview_image | image_url: width: 1000 }} 1000w, {{ m.preview_image | image_url: width: 1400 }} 1400w"
+                    src="{{ m.preview_image | image_url: width: 800 }}"
+                    srcset="{{ m.preview_image | image_url: width: 400 }} 400w, {{ m.preview_image | image_url: width: 600 }} 600w, {{ m.preview_image | image_url: width: 800 }} 800w, {{ m.preview_image | image_url: width: 1000 }} 1000w, {{ m.preview_image | image_url: width: 1200 }} 1200w, {{ m.preview_image | image_url: width: 1600 }} 1600w"
                     sizes="(min-width: 900px) 55vw, 100vw"
                     alt="{{ m.preview_image.alt | escape }}"
                     width="{{ m.preview_image.width }}" height="{{ m.preview_image.height }}"
@@ -122,6 +132,8 @@
                       <span data-add-label>{% if current.available %}{{ 'products.product.add_to_bag' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
                     </button>
                   </div>
+                  {%- comment -%} Bulb module — fixed position, directly under Add to Bag {%- endcomment -%}
+                  {%- if bulb_block -%}{% render 'pdp-bulb', block: bulb_block, product: product %}{%- endif -%}
                 </div>
 
               {%- when 'trust' -%}
@@ -137,65 +149,12 @@
                   {%- endif -%}
                 </div>
 
-              {%- when 'bulbs' -%}
-                {%- comment -%}
-                  "You'll need a bulb" module — OPTIONAL, per-product, driven by
-                  PRODUCT METAFIELDS (no code needed to configure). It renders
-                  NOTHING unless the product links a compatible bulb.
-
-                  Canonical, locked metafield keys (Settings → Custom data →
-                  Products → Add definition):
-                    • custom.compatible_bulb
-                      type: "Product" (single product_reference) — the bulb this
-                      fitting takes.
-                    • custom.bulb_quantity
-                      type: "Integer" (number_integer) — how many the fitting needs;
-                      becomes the default quantity in the stepper (falls back to 1).
-                  Then, on each product, link the bulb product and set the count.
-                {%- endcomment -%}
-                {%- if block.settings.show_bulbs -%}
-                  {%- liquid
-                    assign bulb = product.metafields.custom.compatible_bulb.value
-                    assign required = product.metafields.custom.bulb_quantity.value | default: 1
-                    if required < 1
-                      assign required = 1
-                    endif
-                  -%}
-                  {%- if bulb != blank -%}
-                    {%- assign bv = bulb.selected_or_first_available_variant -%}
-                    <div class="pdp-bulbs" data-bulbs {{ block.shopify_attributes }}>
-                      {%- if block.settings.eyebrow != blank -%}<p class="eyebrow">{{ block.settings.eyebrow | escape }}</p>{%- endif -%}
-                      {%- if block.settings.heading != blank -%}<p class="pdp-bulbs__head">{{ block.settings.heading | escape }}</p>{%- endif -%}
-                      <div class="pdp-bulbs__list">
-                        <div class="bulb-card">
-                          <a class="bulb-card__media media ratio-square" href="{{ bulb.url }}" tabindex="-1" aria-hidden="true">
-                            {%- if bulb.featured_media -%}
-                              <img src="{{ bulb.featured_media | image_url: width: 120 }}" srcset="{{ bulb.featured_media | image_url: width: 120 }} 1x, {{ bulb.featured_media | image_url: width: 240 }} 2x" alt="" width="60" height="60" loading="lazy" decoding="async">
-                            {%- else -%}
-                              {% render 'placeholder' %}
-                            {%- endif -%}
-                          </a>
-                          <div class="bulb-card__info">
-                            <a class="bulb-card__title" href="{{ bulb.url }}">{{ bulb.title }}</a>
-                            <span class="bulb-card__price">{% render 'price', product: bulb %}</span>
-                          </div>
-                          {%- if bv and bv.available -%}
-                            <div class="bulb-card__buy">
-                              <div class="qty qty--sm">
-                                <button type="button" data-qty-step="-1" aria-label="{{ 'cart.general.decrease' | t }}">{% render 'icon', name: 'minus' %}</button>
-                                <input type="number" value="{{ required }}" min="1" inputmode="numeric" data-quick-qty aria-label="{{ 'cart.general.quantity' | t }} — {{ bulb.title | escape }}">
-                                <button type="button" data-qty-step="1" aria-label="{{ 'cart.general.increase' | t }}">{% render 'icon', name: 'plus' %}</button>
-                              </div>
-                              <button type="button" class="btn btn--secondary bulb-card__add" data-cart-add="{{ bv.id }}" aria-label="{{ 'cart.general.add_product' | t: title: bulb.title }}">{{ 'products.product.add_bulb' | t }}</button>
-                            </div>
-                          {%- else -%}
-                            <span class="bulb-card__soldout">{{ 'products.card.sold_out' | t }}</span>
-                          {%- endif -%}
-                        </div>
-                      </div>
-                    </div>
-                  {%- endif -%}
-                {%- endif -%}
+              {%- comment -%}
+                'bulbs' block is intentionally NOT rendered here — the module is
+                rendered in a fixed position under Add to Bag (see buy_buttons
+                above via snippets/pdp-bulb.liquid). The block stays in the
+                schema so merchants can toggle/relabel it.
+              {%- endcomment -%}
 
             {%- endcase -%}
           {%- endfor -%}
@@ -264,6 +223,7 @@
           "id": {{ variant.id }},
           "available": {{ variant.available }},
           "options": {{ variant.options | json }},
+          "media_id": {% if variant.featured_media %}{{ variant.featured_media.id | json }}{% else %}null{% endif %},
           "price_html": {% capture ph %}{% render 'price', product: product, variant: variant %}{% endcapture %}{{ ph | strip_newlines | json }}
         }{% unless forloop.last %},{% endunless %}
       {%- endfor -%}

@@ -46,6 +46,21 @@
     }
   </style>
 
+  {%- comment -%} Preload the PDP hero (LCP) image — matches the first gallery slide {%- endcomment -%}
+  {%- if request.page_type == 'product' and product.media.first -%}
+    {%- assign lcp_img = product.media.first.preview_image -%}
+    {%- if lcp_img != blank -%}
+      {%- comment -%} Hand-authored responsive image preload in the head — the image_tag preload arg emits an <img>, not a head <link>, so it doesn't apply here. {%- endcomment -%}
+      {% # theme-check-disable AssetPreload %}
+      <link rel="preload" as="image"
+        href="{{ lcp_img | image_url: width: 800 }}"
+        imagesrcset="{{ lcp_img | image_url: width: 400 }} 400w, {{ lcp_img | image_url: width: 600 }} 600w, {{ lcp_img | image_url: width: 800 }} 800w, {{ lcp_img | image_url: width: 1000 }} 1000w, {{ lcp_img | image_url: width: 1200 }} 1200w, {{ lcp_img | image_url: width: 1600 }} 1600w"
+        imagesizes="(min-width: 900px) 55vw, 100vw"
+        fetchpriority="high">
+      {% # theme-check-enable AssetPreload %}
+    {%- endif -%}
+  {%- endif -%}
+
   {{ content_for_header }}
 
   <script>
@@ -56,7 +71,8 @@
         cart_url: {{ routes.cart_url | json }},
         cart_add_url: {{ routes.cart_add_url | json }},
         cart_change_url: {{ routes.cart_change_url | json }},
-        cart_update_url: {{ routes.cart_update_url | json }}
+        cart_update_url: {{ routes.cart_update_url | json }},
+        product_recommendations_url: {{ routes.product_recommendations_url | json }}
       },
       moneyFormat: {{ shop.money_format | json }},
       freeShipThreshold: {{ settings.free_shipping_threshold | default: 0 | times: 100 }},
