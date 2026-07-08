@@ -16,6 +16,8 @@
   </span>
   <span class="cross-card__info">
     <a class="cross-card__link" href="{{ product.url }}">{{ product.title }}</a>
+    {%- assign descriptor = product.type | default: product.vendor -%}
+    {%- if descriptor != blank -%}<span class="cross-card__type">{{ descriptor }}</span>{%- endif -%}
     <span class="cross-card__price">{% render 'price', product: product %}</span>
   </span>
   {%- if product.has_only_default_variant and v and v.available -%}
