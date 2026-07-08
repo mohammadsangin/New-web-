@@ -167,6 +167,58 @@
         "view_all_label": "View the journal"
       }
     },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Do your fixtures include a bulb?",
+            "answer": "<p>Some of our fixtures include the recommended bulb. Where a bulb is required separately, the product page shows the exact type and quantity, so you can add the right one to your bag alongside your fitting.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Are your pieces made to order?",
+            "answer": "<p>Many of our solid brass and period pieces are finished to order. Estimated dispatch times are shown on each product page.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Which fixtures are suitable for bathrooms or outdoors?",
+            "answer": "<p>Fixtures rated for damp or exterior use carry an IP rating, listed on the product page. For bathroom zones and outdoor installations, please choose a fixture with the appropriate rating and consult a qualified electrician.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Do you offer installation?",
+            "answer": "<p>We recommend all hardwired fixtures are installed by a qualified electrician. Fitting specifications are provided with every product.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "How do I care for solid brass?",
+            "answer": "<p>Solid brass develops a natural, living patina over time. To maintain a polished finish, wipe gently with a soft, dry cloth and avoid abrasive cleaners, which can damage the lacquer.</p>"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "What are your delivery and returns options?",
+            "answer": "<p>Full delivery and returns details are set out on our Delivery and Returns pages.</p>"
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5", "q6"],
+      "settings": {
+        "eyebrow": "Good to know",
+        "heading": "Frequently asked questions"
+      }
+    },
     "trust": {
       "type": "trust-band",
       "blocks": {
@@ -221,6 +273,7 @@
     "brand_partners",
     "reviews_carousel",
     "journal",
+    "faq",
     "trust"
   ]
 }
