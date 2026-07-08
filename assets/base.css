@@ -1175,6 +1175,42 @@ p:last-child { margin-bottom: 0; }
 .pdp-trust__item svg { width: 20px; height: 20px; color: var(--brass-deep); flex: none; stroke-width: 1.5; }
 .pdp-trust__item strong { color: var(--ink); font-weight: 600; }
 
+/* "You'll need a bulb" module — hairline panel, brass accents */
+.pdp-bulbs {
+  margin-top: clamp(20px, 3vw, 28px);
+  padding: clamp(16px, 2.4vw, 22px);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.pdp-bulbs .eyebrow { margin-bottom: 8px; }
+.pdp-bulbs__head { font-family: var(--font-display); font-size: 20px; margin-bottom: 14px; color: var(--ink); }
+.pdp-bulbs__list { display: flex; flex-direction: column; gap: 12px; }
+.bulb-card {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 10px 12px;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hairline);
+}
+.bulb-card:last-child { border-bottom: 0; padding-bottom: 0; }
+.bulb-card[hidden] { display: none; }
+.bulb-card__media { width: 56px; height: 56px; flex: none; border-radius: calc(var(--radius) - 3px); }
+.bulb-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.bulb-card__info { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.bulb-card__title { font-family: var(--font-display); font-size: 16px; line-height: 1.2; color: var(--ink); transition: color var(--dur-hover) var(--ease); }
+.bulb-card__title:hover { color: var(--brass-deep); }
+.bulb-card__price { font-size: 13px; color: var(--muted); }
+.bulb-card__price .price { font-size: 13px; }
+.bulb-card__buy { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.bulb-card__add { flex: 1; min-width: 128px; padding: 11px 16px; }
+.bulb-card__soldout { grid-column: 1 / -1; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.pdp-bulbs__more { margin-top: 14px; background: none; border: 0; padding: 0; cursor: pointer; }
+/* Compact quantity stepper for quick-add rows */
+.qty--sm button { min-height: 40px; width: 38px; font-size: 16px; }
+.qty--sm input { width: 36px; }
+
 /* Editorial details in the right column, below the buy panel */
 .pdp__details { margin-top: clamp(26px, 3.5vw, 40px); }
 

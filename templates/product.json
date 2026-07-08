@@ -20,6 +20,7 @@
             "line_3": "Made to order — allow 3–4 weeks"
           }
         },
+        "bulbs": { "type": "bulbs" },
         "description": { "type": "description" },
         "accordions": {
           "type": "accordions",
@@ -33,7 +34,7 @@
           }
         }
       },
-      "block_order": ["vendor", "title", "price", "lede", "variant_picker", "buy_buttons", "trust", "description", "accordions"]
+      "block_order": ["vendor", "title", "price", "lede", "variant_picker", "buy_buttons", "trust", "bulbs", "description", "accordions"]
     }
   },
   "order": ["main"]

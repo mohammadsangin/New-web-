@@ -167,7 +167,9 @@
       "view_image": "View image {{ number }}",
       "complete_look_eyebrow": "Considered together",
       "complete_look": "Recommended for you",
-      "view_collection": "View collection"
+      "view_collection": "View collection",
+      "add_bulb": "Add to bag",
+      "show_more_bulbs": "Show more bulbs"
     }
   },
   "collections": {

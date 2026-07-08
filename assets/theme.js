@@ -374,7 +374,14 @@
         var addBtn = e.target.closest('[data-cart-add]');
         if (addBtn) {
           e.preventDefault();
-          add(addBtn.getAttribute('data-cart-add'), 1, addBtn);
+          // Optional quantity from a quick-add group (e.g. the bulbs module).
+          var qty = 1;
+          var wrap = addBtn.closest('[data-quick-add]');
+          if (wrap) {
+            var qi = wrap.querySelector('[data-quick-qty]');
+            if (qi) qty = Math.max(1, parseInt(qi.value, 10) || 1);
+          }
+          add(addBtn.getAttribute('data-cart-add'), qty, addBtn);
           return;
         }
         var remove = e.target.closest('[data-cart-remove]');
@@ -741,6 +748,21 @@
     });
   }
 
+  /* ======================================================================
+     BULBS MODULE — "Show more" reveals the remaining linked bulbs.
+     ====================================================================== */
+  function initBulbs() {
+    $all('[data-bulbs-more]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var module = btn.closest('[data-bulbs]');
+        if (!module) return;
+        $all('.bulb-card--extra', module).forEach(function (card) { card.hidden = false; });
+        btn.setAttribute('aria-expanded', 'true');
+        btn.hidden = true;
+      });
+    });
+  }
+
   function init() {
     Drawers.init();
     Cart.init();
@@ -751,6 +773,7 @@
     initCollection();
     initAccordions();
     initMegaMenu();
+    initBulbs();
   }
 
   if (document.readyState === 'loading') {
