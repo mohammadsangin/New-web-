@@ -886,7 +886,7 @@ p:last-child { margin-bottom: 0; }
 .coll-banner { text-align: left; padding-block: clamp(20px, 3vw, 36px) clamp(12px, 1.6vw, 20px); }
 .coll-banner__head { display: grid; grid-template-columns: 1fr; gap: 12px; }
 @media (min-width: 750px) {
-  .coll-banner__head { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 64px); align-items: end; }
+  .coll-banner__head { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 64px); align-items: start; }
   .coll-banner__head--single { grid-template-columns: 1fr; }
 }
 .coll-banner__title-wrap .eyebrow { margin-bottom: 10px; }
@@ -897,11 +897,7 @@ p:last-child { margin-bottom: 0; }
   line-height: 1.6;
   max-width: 62ch;
   margin: 0;
-  /* Clamp to ~3 lines with a trailing ellipsis; full text stays in the DOM for SEO */
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  /* Full description shown — no clamp/ellipsis */
 }
 @media (min-width: 750px) { .coll-banner__desc { padding-bottom: 6px; } }
 .coll-banner__desc p { margin: 0; }
