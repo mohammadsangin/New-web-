@@ -106,6 +106,7 @@
     "shop_the_room": {
       "type": "shop-the-room",
       "settings": {
+        "image": "shopify://shop_images/mlbwl161satbrs_5.jpg",
         "image_side": "left",
         "eyebrow": "Shop the room",
         "heading": "The Dean, at home",
