@@ -1,7 +1,8 @@
 {%- comment -%}
-  Journal — the 3 most recent articles from a merchant-selected blog.
+  Journal — the most recent articles from a merchant-selected blog.
   Reuses the article-card pattern. If the blog has no articles yet, nothing
   renders on the storefront; a calm note shows in the theme editor only.
+  Preset "Journal" (Add section). Behaviour unchanged.
 {%- endcomment -%}
 {%- liquid
   assign blog_obj = blogs[section.settings.blog]
