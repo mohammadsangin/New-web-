@@ -10,116 +10,121 @@
   assign threshold = settings.free_shipping_threshold | default: 0 | times: 100
 -%}
 <div class="drawer drawer--right cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="{{ 'cart.general.title' | t }}" aria-hidden="true">
-  <div class="drawer__wrap" style="display:flex;flex-direction:column;height:100%;">
-    <div class="drawer__header">
-      <span class="drawer__title">{{ 'cart.general.title' | t }} <span data-cart-count-inline>({{ cart.item_count }})</span></span>
-      <button class="drawer__close" type="button" data-drawer-close aria-label="{{ 'accessibility.close' | t }}" data-drawer-focus>
-        {% render 'icon', name: 'close' %}
-      </button>
-    </div>
-
+  <div class="drawer__wrap">
     {%- if cart.item_count > 0 -%}
-      <div class="drawer__body">
-        {%- if threshold > 0 -%}
-          {%- liquid
-            assign remaining = threshold | minus: cart.total_price
-            assign pct = cart.total_price | times: 100.0 | divided_by: threshold
-            if pct > 100
-              assign pct = 100
-            endif
-          -%}
-          <div class="cart-progress">
-            {%- if remaining > 0 -%}
-              <p class="cart-progress__text">{{ 'cart.general.free_shipping_progress_html' | t: amount: remaining | money }}</p>
-            {%- else -%}
-              <p class="cart-progress__text">{{ 'cart.general.free_shipping_qualified' | t }}</p>
-            {%- endif -%}
-            <div class="cart-progress__bar"><div class="cart-progress__fill" style="width: {{ pct }}%"></div></div>
-          </div>
-        {%- endif -%}
-
-        <ul class="cart-items">
-          {%- for item in cart.items -%}
-            <li class="cart-item" data-cart-line="{{ forloop.index }}">
-              <a class="cart-item__media" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
-                {%- if item.image -%}
-                  <img src="{{ item.image | image_url: width: 160 }}" alt="{{ item.image.alt | escape }}" width="72" height="90" loading="lazy">
-                {%- endif -%}
-              </a>
-              <div class="cart-item__info">
-                <div class="cart-item__top">
-                  <div>
-                    <p class="cart-item__title"><a href="{{ item.url }}">{{ item.product.title }}</a></p>
-                    {%- unless item.product.has_only_default_variant -%}
-                      <p class="cart-item__variant">{{ item.variant.title }}</p>
-                    {%- endunless -%}
-                    {%- if item.selling_plan_allocation -%}
-                      <p class="cart-item__variant">{{ item.selling_plan_allocation.selling_plan.name }}</p>
-                    {%- endif -%}
-                  </div>
-                  <button class="cart-item__remove" type="button" data-cart-remove="{{ item.key }}" aria-label="{{ 'cart.general.remove' | t }} {{ item.product.title | escape }}">
-                    {% render 'icon', name: 'close' %}
-                  </button>
-                </div>
-                <div class="cart-item__bottom">
-                  <div class="qty">
-                    <button type="button" data-cart-step="-1" data-cart-key="{{ item.key }}" aria-label="{{ 'cart.general.decrease' | t }}">{% render 'icon', name: 'minus' %}</button>
-                    <input type="number" value="{{ item.quantity }}" min="0" inputmode="numeric" data-cart-qty data-cart-key="{{ item.key }}" aria-label="{{ 'cart.general.quantity' | t }}">
-                    <button type="button" data-cart-step="1" data-cart-key="{{ item.key }}" aria-label="{{ 'cart.general.increase' | t }}">{% render 'icon', name: 'plus' %}</button>
-                  </div>
-                  <span class="cart-item__price">{{ item.final_line_price | money }}</span>
-                </div>
-              </div>
-            </li>
-          {%- endfor -%}
-        </ul>
-
-        {%- comment -%}
-          "More to love" — STRICTLY same-category recommendations. For each
-          distinct product in the bag we find its category collection (matched
-          against the store's real category handles below — never a brand or
-          price collection) and build a candidate pool from ONLY that collection.
-          Pools are emitted (in cart order) into a <template>; theme.js
-          round-robin interleaves them, globally deduped, target 6 / max 8, and
-          renders the visible strip. A server-rendered first pool is shown as a
-          no-JS fallback. Products already in the bag are skipped.
-        {%- endcomment -%}
-        {%- liquid
-          assign category_handles = 'chandeliers,pendant-lights,ceiling-lights,wall-lights,table-lamps,floor-lamps,bathroom-lights,outdoor-wall-lights,outdoor-ceiling-pendants,garden-landscape-lights,deck-step-lights,outdoor-security-sensor-lights' | split: ','
-          assign heading = section.settings.cross_heading
-          if heading == blank
-            assign heading = 'cart.general.more_to_love' | t
-          endif
-        -%}
-        {%- assign seen_products = ',' -%}
-        {%- assign first_pool_handle = '' -%}
-        {%- capture rec_pools -%}
-          {%- for item in cart.items -%}
-            {%- assign pneedle = item.product_id | prepend: ',' | append: ',' -%}
-            {%- if seen_products contains pneedle -%}{%- continue -%}{%- endif -%}
-            {%- assign seen_products = seen_products | append: item.product_id | append: ',' -%}
-            {%- comment -%} Match this product to its category collection (whitelist order = priority). {%- endcomment -%}
-            {%- assign matched = false -%}
-            {%- for h in category_handles -%}
-              {%- for c in item.product.collections -%}
-                {%- if c.handle == h -%}{%- assign matched = c -%}{%- break -%}{%- endif -%}
-              {%- endfor -%}
-              {%- if matched -%}{%- break -%}{%- endif -%}
+      {%- comment -%}
+        "More to love" — STRICTLY same-category recommendations. For each
+        distinct product in the bag we find its category collection (matched
+        against the store's real category handles below — never a brand or
+        price collection) and build a candidate pool from ONLY that collection.
+        Pools are emitted (in cart order) into a <template>; theme.js
+        round-robin interleaves them, globally deduped, target 6 / max 8, and
+        renders the strip. Rendered as its own left panel on desktop; on mobile
+        it stacks below the bag items. If no pool has products, the whole panel
+        is omitted and the cart shows at its normal single-panel width.
+      {%- endcomment -%}
+      {%- liquid
+        assign category_handles = 'chandeliers,pendant-lights,ceiling-lights,wall-lights,table-lamps,floor-lamps,bathroom-lights,outdoor-wall-lights,outdoor-ceiling-pendants,garden-landscape-lights,deck-step-lights,outdoor-security-sensor-lights' | split: ','
+        assign heading = section.settings.cross_heading
+        if heading == blank
+          assign heading = 'cart.general.more_to_love' | t
+        endif
+      -%}
+      {%- assign seen_products = ',' -%}
+      {%- assign first_pool_handle = '' -%}
+      {%- capture rec_pools -%}
+        {%- for item in cart.items -%}
+          {%- assign pneedle = item.product_id | prepend: ',' | append: ',' -%}
+          {%- if seen_products contains pneedle -%}{%- continue -%}{%- endif -%}
+          {%- assign seen_products = seen_products | append: item.product_id | append: ',' -%}
+          {%- comment -%} Match this product to its category collection (whitelist order = priority). {%- endcomment -%}
+          {%- assign matched = false -%}
+          {%- for h in category_handles -%}
+            {%- for c in item.product.collections -%}
+              {%- if c.handle == h -%}{%- assign matched = c -%}{%- break -%}{%- endif -%}
             {%- endfor -%}
-            {%- if matched -%}
-              {%- capture pool_cards -%}{% render 'cart-cross-cards', products: matched.products, cart: cart, limit: 12, heading: heading %}{%- endcapture -%}
-              {%- if pool_cards contains 'cross-card' -%}
-                {%- if first_pool_handle == '' -%}{%- assign first_pool_handle = matched.handle -%}{%- endif -%}
-                <div class="rec-pool" data-rec-pool>{{ pool_cards }}</div>
-              {%- endif -%}
-            {%- endif -%}
+            {%- if matched -%}{%- break -%}{%- endif -%}
           {%- endfor -%}
-        {%- endcapture -%}
-        {%- capture fallback_cards -%}{%- if first_pool_handle != '' -%}{% render 'cart-cross-cards', products: collections[first_pool_handle].products, cart: cart, limit: 6, heading: heading %}{%- endif -%}{%- endcapture -%}
-        <div class="cart-cross" data-cart-rec data-rec-heading="{{ heading | escape }}"{% unless rec_pools contains 'cross-card' %} hidden{% endunless %}>
-          <p class="eyebrow">{{ heading }}</p>
-          <div data-cart-rec-list>{{ fallback_cards }}</div>
+          {%- if matched -%}
+            {%- capture pool_cards -%}{% render 'cart-cross-cards', products: matched.products, cart: cart, limit: 12, heading: heading %}{%- endcapture -%}
+            {%- if pool_cards contains 'cross-card' -%}
+              {%- if first_pool_handle == '' -%}{%- assign first_pool_handle = matched.handle -%}{%- endif -%}
+              <div class="rec-pool" data-rec-pool>{{ pool_cards }}</div>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endcapture -%}
+      {%- capture fallback_cards -%}{%- if first_pool_handle != '' -%}{% render 'cart-cross-cards', products: collections[first_pool_handle].products, cart: cart, limit: 8, heading: heading %}{%- endif -%}{%- endcapture -%}
+
+      {%- if rec_pools contains 'cross-card' -%}
+        <aside class="cart-recs" data-cart-rec data-rec-heading="{{ heading | escape }}" aria-label="{{ heading | escape }}">
+          <p class="cart-recs__title">{{ heading }}</p>
+          <div class="cart-recs__list" data-cart-rec-list>{{ fallback_cards }}</div>
           <template data-rec-pools>{{ rec_pools }}</template>
+        </aside>
+      {%- endif -%}
+
+      <div class="cart-main">
+        <div class="drawer__header">
+          <span class="drawer__title">{{ 'cart.general.title' | t }} <span data-cart-count-inline>({{ cart.item_count }})</span></span>
+          <button class="drawer__close" type="button" data-drawer-close aria-label="{{ 'accessibility.close' | t }}" data-drawer-focus>
+            {% render 'icon', name: 'close' %}
+          </button>
+        </div>
+        <div class="drawer__body">
+          {%- if threshold > 0 -%}
+            {%- liquid
+              assign remaining = threshold | minus: cart.total_price
+              assign pct = cart.total_price | times: 100.0 | divided_by: threshold
+              if pct > 100
+                assign pct = 100
+              endif
+            -%}
+            <div class="cart-progress">
+              {%- if remaining > 0 -%}
+                <p class="cart-progress__text">{{ 'cart.general.free_shipping_progress_html' | t: amount: remaining | money }}</p>
+              {%- else -%}
+                <p class="cart-progress__text">{{ 'cart.general.free_shipping_qualified' | t }}</p>
+              {%- endif -%}
+              <div class="cart-progress__bar"><div class="cart-progress__fill" style="width: {{ pct }}%"></div></div>
+            </div>
+          {%- endif -%}
+
+          <ul class="cart-items">
+            {%- for item in cart.items -%}
+              <li class="cart-item" data-cart-line="{{ forloop.index }}">
+                <a class="cart-item__media" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+                  {%- if item.image -%}
+                    <img src="{{ item.image | image_url: width: 160 }}" alt="{{ item.image.alt | escape }}" width="72" height="90" loading="lazy">
+                  {%- endif -%}
+                </a>
+                <div class="cart-item__info">
+                  <div class="cart-item__top">
+                    <div>
+                      <p class="cart-item__title"><a href="{{ item.url }}">{{ item.product.title }}</a></p>
+                      {%- unless item.product.has_only_default_variant -%}
+                        <p class="cart-item__variant">{{ item.variant.title }}</p>
+                      {%- endunless -%}
+                      {%- if item.selling_plan_allocation -%}
+                        <p class="cart-item__variant">{{ item.selling_plan_allocation.selling_plan.name }}</p>
+                      {%- endif -%}
+                    </div>
+                    <button class="cart-item__remove" type="button" data-cart-remove="{{ item.key }}" aria-label="{{ 'cart.general.remove' | t }} {{ item.product.title | escape }}">
+                      {% render 'icon', name: 'close' %}
+                    </button>
+                  </div>
+                  <div class="cart-item__bottom">
+                    <div class="qty">
+                      <button type="button" data-cart-step="-1" data-cart-key="{{ item.key }}" aria-label="{{ 'cart.general.decrease' | t }}">{% render 'icon', name: 'minus' %}</button>
+                      <input type="number" value="{{ item.quantity }}" min="0" inputmode="numeric" data-cart-qty data-cart-key="{{ item.key }}" aria-label="{{ 'cart.general.quantity' | t }}">
+                      <button type="button" data-cart-step="1" data-cart-key="{{ item.key }}" aria-label="{{ 'cart.general.increase' | t }}">{% render 'icon', name: 'plus' %}</button>
+                    </div>
+                    <span class="cart-item__price">{{ item.final_line_price | money }}</span>
+                  </div>
+                </div>
+              </li>
+            {%- endfor -%}
+          </ul>
         </div>
       </div>
 
@@ -135,12 +140,20 @@
         <a class="cart-foot__continue link-underline" href="{{ routes.all_products_collection_url }}" data-drawer-close>{{ 'cart.general.continue' | t }}</a>
       </div>
     {%- else -%}
-      <div class="drawer__body">
-        <div class="cart-empty">
-          <span class="cart-empty__icon">{% render 'icon', name: 'bag' %}</span>
-          <p class="cart-empty__title">{{ 'cart.general.empty_title' | t }}</p>
-          <p class="cart-empty__text">{{ 'cart.general.empty_body' | t }}</p>
-          <a class="btn" href="{{ routes.all_products_collection_url }}" data-drawer-close>{{ 'cart.general.start_shopping' | t }}</a>
+      <div class="cart-main">
+        <div class="drawer__header">
+          <span class="drawer__title">{{ 'cart.general.title' | t }} <span data-cart-count-inline>({{ cart.item_count }})</span></span>
+          <button class="drawer__close" type="button" data-drawer-close aria-label="{{ 'accessibility.close' | t }}" data-drawer-focus>
+            {% render 'icon', name: 'close' %}
+          </button>
+        </div>
+        <div class="drawer__body">
+          <div class="cart-empty">
+            <span class="cart-empty__icon">{% render 'icon', name: 'bag' %}</span>
+            <p class="cart-empty__title">{{ 'cart.general.empty_title' | t }}</p>
+            <p class="cart-empty__text">{{ 'cart.general.empty_body' | t }}</p>
+            <a class="btn" href="{{ routes.all_products_collection_url }}" data-drawer-close>{{ 'cart.general.start_shopping' | t }}</a>
+          </div>
         </div>
       </div>
     {%- endif -%}

@@ -1261,6 +1261,48 @@ p:last-child { margin-bottom: 0; }
    CART DRAWER
    ========================================================================== */
 .cart-drawer .drawer__body { display: flex; flex-direction: column; padding: 0; }
+
+/* ---- Two-panel layout: "More to love" (left) beside the bag (right) ---- */
+.cart-drawer .drawer__wrap { display: flex; flex-direction: column; height: 100%; }
+/* Bag column: header (fixed) + scrollable body */
+.cart-main { display: flex; flex-direction: column; min-height: 0; flex: 1 1 auto; }
+.cart-main .drawer__body { flex: 1 1 auto; min-height: 0; }
+/* Recommendations panel */
+.cart-recs { display: flex; flex-direction: column; min-height: 0; background: var(--surface); }
+.cart-recs__title {
+  flex: none;
+  text-align: center;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--brass-deep);
+  padding: 20px var(--gutter) 14px;
+}
+.cart-recs__list { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 6px 20px; }
+
+/* Mobile / single column: recs stack BELOW the bag items, before checkout */
+.cart-recs { order: 2; flex: none; max-height: 44vh; border-top: 1px solid var(--hairline); }
+.cart-main { order: 1; }
+.cart-foot { order: 3; }
+
+/* Desktop: two independent columns side by side */
+@media (min-width: 800px) {
+  .cart-drawer:has(.cart-recs) { width: min(680px, 96vw); }
+  .cart-drawer .drawer__wrap:has(.cart-recs) {
+    display: grid;
+    grid-template-columns: 292px minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "recs main"
+      "recs foot";
+  }
+  .drawer__wrap:has(.cart-recs) .cart-recs {
+    grid-area: recs;
+    max-height: none;
+    border-top: 0;
+    border-right: 1px solid var(--hairline);
+  }
+  .drawer__wrap:has(.cart-recs) .cart-main { grid-area: main; }
+  .drawer__wrap:has(.cart-recs) .cart-foot { grid-area: foot; }
+}
 .cart-progress { padding: 16px var(--gutter); border-bottom: 1px solid var(--hairline); }
 .cart-progress__text { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
 .cart-progress__text strong { color: var(--ink); font-weight: 600; }
@@ -1297,35 +1339,20 @@ p:last-child { margin-bottom: 0; }
 .cart-empty__text { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 30ch; margin-bottom: 26px; }
 .cart-empty .btn { min-width: 200px; }
 
-/* "More to love" — image-forward cards, centred text, vertical scroll column */
-.cart-cross {
-  margin-top: 18px;
-  padding: 20px;
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-lg);
+/* "More to love" — image-forward cards, centred text, vertical list */
+.cart-recs__list { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  .cart-recs__list { scroll-behavior: auto; }
 }
-/* Centred, dash-less heading to match the reference */
-.cart-cross .eyebrow { justify-content: center; text-align: center; margin-bottom: 20px; }
-.cart-cross .eyebrow::before { display: none; }
+.cart-recs__list::-webkit-scrollbar { width: 4px; }
+.cart-recs__list::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 999px; }
+.cart-recs__list::-webkit-scrollbar-track { background: transparent; }
 .cart-cross__scroll {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 26px;
-  max-height: 460px; /* ~2–3 compact cards; the rest reveal on scroll */
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: var(--hairline) transparent;
-  padding: 2px 6px 8px;
-}
-.cart-cross__scroll::-webkit-scrollbar { width: 4px; }
-.cart-cross__scroll::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 999px; }
-.cart-cross__scroll::-webkit-scrollbar-track { background: transparent; }
-@media (prefers-reduced-motion: reduce) {
-  .cart-cross__scroll { scroll-behavior: auto; }
+  padding-top: 2px;
 }
 /* Compact, fully centred cards — no borders, no boxes, generous whitespace */
 .cross-card {
