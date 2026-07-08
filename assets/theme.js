@@ -537,6 +537,8 @@
         if (galleryMain && galleryMain.scrollWidth > galleryMain.clientWidth) {
           galleryMain.scrollTo({ left: idx * galleryMain.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
         }
+        // Keep the chosen thumb within the scrollable thumb strip.
+        try { thumb.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' }); } catch (e) {}
       });
     });
     // Mobile: keep the active thumb in sync as the carousel is swiped.
