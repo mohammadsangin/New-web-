@@ -83,7 +83,7 @@
         "eyebrow": "Explore",
         "heading": "Shop by category",
         "link_label": "View all lighting",
-        "link_url": "shopify://collections/shop-all-lighting"
+        "link_url": "shopify://collections/all"
       }
     },
     "featured_1": {
@@ -112,7 +112,7 @@
         "heading": "The Dean, at home",
         "body": "Seen here in a period drawing room — solid brass, hand-finished, and quietly at ease among the details that matter.",
         "cta_label": "Shop this look",
-        "cta_link": "shopify://collections/shop-all-lighting"
+        "cta_link": "shopify://collections/all"
       }
     },
     "featured_2": {
