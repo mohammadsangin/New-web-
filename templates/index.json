@@ -106,7 +106,6 @@
     "shop_the_room": {
       "type": "shop-the-room",
       "settings": {
-        "image": "shopify://shop_images/mlf317polbrscl_1.jpg",
         "image_side": "left",
         "eyebrow": "Shop the room",
         "heading": "The Dean, at home",
