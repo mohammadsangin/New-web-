@@ -76,6 +76,17 @@
       "footer": {
         "type": "footer",
         "blocks": {
+          "social_8GgyEJ": {
+            "type": "social",
+            "settings": {
+              "instagram": "https://www.instagram.com/kymralighting/",
+              "facebook": "https://www.facebook.com/people/Kymra-Lighting/61587319074346/",
+              "tiktok": "https://www.tiktok.com/@kymralighting",
+              "linkedin": "https://www.linkedin.com/in/salim-sangin-2126533a8/",
+              "pinterest": "",
+              "youtube": ""
+            }
+          },
           "footer-0": {
             "type": "menu",
             "settings": {
@@ -100,6 +111,7 @@
           }
         },
         "block_order": [
+          "social_8GgyEJ",
           "footer-0",
           "footer-1",
           "footer-2"
