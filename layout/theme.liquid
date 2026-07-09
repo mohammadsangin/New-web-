@@ -106,5 +106,16 @@
 
   {%- comment -%} Live region for AJAX cart announcements {%- endcomment -%}
   <div aria-live="polite" role="status" class="visually-hidden" data-cart-live></div>
+  <script>
+    /* The mobile menu drawer is rendered inside the sticky .header-group
+       stacking context (z-index:60), which traps it BELOW the body-level
+       overlay (z-index:90) so its links cannot be tapped. Relocate it to the
+       body — a sibling of the overlay, like the cart and search drawers — so
+       it layers above the overlay and is fully interactive on mobile. */
+    (function () {
+      var d = document.getElementById("menu-drawer");
+      if (d && d.parentNode !== document.body) document.body.appendChild(d);
+    })();
+  </script>
 </body>
 </html>
