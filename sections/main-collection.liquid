@@ -79,7 +79,21 @@
   {%- comment -%} Grid {%- endcomment -%}
   <div class="coll-layout container" data-facet-results>
     {%- if collection.products.size > 0 -%}
-      <div class="product-grid product-grid--4">
+      {%- comment -%}
+        Sparse results render larger with the full fixture shown (uncropped):
+        ≤2 products → two roomy columns; 3 → three roomy columns; 4+ → the
+        normal four-up grid. Keeps fuller collections exactly as before.
+      {%- endcomment -%}
+      {%- liquid
+        assign shown = collection.products.size
+        assign grid_class = 'product-grid product-grid--4'
+        if shown <= 2
+          assign grid_class = 'product-grid product-grid--2 product-grid--roomy'
+        elsif shown <= 3
+          assign grid_class = 'product-grid product-grid--roomy'
+        endif
+      -%}
+      <div class="{{ grid_class }}">
         {%- for product in collection.products -%}
           {% render 'product-card', product: product %}
         {%- endfor -%}

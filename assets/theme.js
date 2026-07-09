@@ -675,11 +675,14 @@
     var sectionId = root.getAttribute('data-section-id');
     var debounceTimer;
 
-    function swapRegion(doc, selector) {
+    function swapRegion(doc, selector, keepIfMissing) {
       var fresh = doc.querySelector(selector);
       var current = $(selector);
       if (current && fresh) current.innerHTML = fresh.innerHTML;
-      else if (current && !fresh) current.innerHTML = '';
+      // Only blank a region when the fresh fragment is genuinely absent AND the
+      // caller allows it. The grid passes keepIfMissing so a partial/failed
+      // render never wipes the products.
+      else if (current && !fresh && !keepIfMissing) current.innerHTML = '';
     }
 
     function render(url, addToHistory) {
@@ -693,11 +696,17 @@
         })
         .then(function (html) {
           var doc = new DOMParser().parseFromString(html, 'text/html');
-          swapRegion(doc, '[data-facet-results]');
+          swapRegion(doc, '[data-facet-results]', true); // never blank the grid on a partial render
           swapRegion(doc, '[data-facet-count]');
           swapRegion(doc, '[data-facet-summary]');
           swapRegion(doc, '[data-facet-badge]');
           swapRegion(doc, '[data-facet-filters]');
+          // Freshly swapped-in cards carry .reveal (opacity:0 until observed).
+          // initReveal only watched the original nodes, so reveal the new ones
+          // immediately — otherwise the grid reads empty after Clear all / Sort
+          // until a manual refresh.
+          var results = $('[data-facet-results]');
+          if (results) $all('.reveal', results).forEach(function (el) { el.classList.add('is-visible'); });
           root.classList.remove('is-loading');
           if (addToHistory !== false) {
             var clean = new URL(url, window.location.origin);

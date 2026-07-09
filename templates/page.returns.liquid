@@ -1,0 +1,82 @@
+{%- comment -%}
+  Returns & Refunds — branded policy page. Self-contained: the copy is
+  hardcoded here so it renders even though the page body is empty. The page in
+  admin is assigned Template = "returns", so it picks this up automatically.
+  Copy is kept in clearly separated blocks below for easy wording tweaks.
+{%- endcomment -%}
+{%- style -%}
+  #returns-page .returns__intro { max-width: 60ch; margin-inline: auto; color: var(--muted, #6A6459); font-size: 17px; line-height: 1.7; text-align: center; }
+  #returns-page .returns__body { max-width: 760px; margin-inline: auto; margin-top: clamp(40px, 6vw, 72px); display: flex; flex-direction: column; gap: clamp(32px, 5vw, 52px); }
+  #returns-page .returns__block { border-top: 1px solid var(--hairline, #DED7C7); padding-top: clamp(24px, 4vw, 36px); }
+  #returns-page .returns__block:first-child { border-top: 0; padding-top: 0; }
+  #returns-page .returns__heading { font-family: var(--font-display, Georgia, serif); font-size: clamp(22px, 2.4vw, 28px); line-height: 1.2; color: var(--ink, #1F1D18); margin: 0 0 14px; }
+  #returns-page .returns__text { color: var(--muted, #6A6459); font-size: 16px; line-height: 1.75; }
+  #returns-page .returns__text p { margin: 0 0 12px; }
+  #returns-page .returns__text p:last-child { margin-bottom: 0; }
+  #returns-page .returns__text a { color: var(--brass-deep, #8A6E37); }
+  #returns-page .returns__cta { margin-top: 20px; }
+  #returns-page .returns__address { font-style: normal; color: var(--ink, #1F1D18); font-size: 16px; line-height: 1.7; }
+{%- endstyle -%}
+
+<div id="returns-page">
+  <div class="page-hero container">
+    <p class="eyebrow eyebrow--center">Returns &amp; refunds</p>
+    <h1 class="page-hero__title">Returns &amp; Refunds</h1>
+  </div>
+
+  <div class="section container">
+    <p class="returns__intro">
+      We want you to be entirely happy with your pieces. If something isn’t right, you have
+      <strong>30 days</strong> from receiving your order to arrange a return.
+    </p>
+
+    <div class="returns__body">
+
+      {%- comment -%} ===== How to start a return ===== {%- endcomment -%}
+      <section class="returns__block">
+        <h2 class="returns__heading">How to start a return</h2>
+        <div class="returns__text">
+          <p>Email us at <a href="mailto:sales@kymralighting.co.uk">sales@kymralighting.co.uk</a> or call <a href="tel:03330900045">0333 090 0045</a>, quoting your order number. We’ll confirm the details and guide you through the next steps.</p>
+        </div>
+        <div class="returns__cta">
+          <a class="btn btn--lg" href="mailto:sales@kymralighting.co.uk?subject=Return%20request">Start a return</a>
+        </div>
+      </section>
+
+      {%- comment -%} ===== Condition ===== {%- endcomment -%}
+      <section class="returns__block">
+        <h2 class="returns__heading">Condition</h2>
+        <div class="returns__text">
+          <p>To be accepted, items should be returned unused and in their original packaging, with any fittings and protective materials included. Please take care when repacking so pieces arrive back with us safely.</p>
+        </div>
+      </section>
+
+      {%- comment -%} ===== Made-to-order pieces ===== {%- endcomment -%}
+      <section class="returns__block">
+        <h2 class="returns__heading">Made-to-order pieces</h2>
+        <div class="returns__text">
+          <p>Many of our fixtures are made to order — finished individually for you — and the lead time is shown on each product page.</p>
+          <p>You’re welcome to cancel a made-to-order piece before it enters production; just contact us as soon as possible and we’ll arrange a full refund. Once a made-to-order piece has been finished it falls outside the standard return window, but if it arrives faulty or not as described we’ll always put it right. If you’re ever unsure, talk to us — we’ll do our best to help.</p>
+        </div>
+      </section>
+
+      {%- comment -%} ===== Refunds ===== {%- endcomment -%}
+      <section class="returns__block">
+        <h2 class="returns__heading">Refunds</h2>
+        <div class="returns__text">
+          <p>Once your return reaches us and has been checked, we’ll process your refund within <strong>5 working days</strong>, to your original payment method. Your bank may take a little longer to show the funds.</p>
+        </div>
+      </section>
+
+      {%- comment -%} ===== Returns correspondence address ===== {%- endcomment -%}
+      <section class="returns__block">
+        <h2 class="returns__heading">Returns correspondence address</h2>
+        <div class="returns__text">
+          <p>Please contact us before sending anything back so we can confirm the correct return details. Our registered office is:</p>
+          <address class="returns__address">3rd Floor, 86–90 Paul Street, London EC2A 4NE</address>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>

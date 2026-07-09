@@ -707,6 +707,17 @@ p:last-child { margin-bottom: 0; }
 @media (min-width: 750px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 990px) { .product-grid--4 { grid-template-columns: repeat(4, 1fr); } }
 
+/* Sparse results: fewer, larger cards. --roomy shows the whole fixture
+   (landscape-friendly, uncropped) on a soft panel instead of a portrait crop. */
+.product-grid--2 { grid-template-columns: 1fr; max-width: 560px; margin-inline: auto; }
+@media (min-width: 750px) { .product-grid--2 { grid-template-columns: repeat(2, 1fr); max-width: 920px; } }
+.product-grid--roomy .card__media {
+  aspect-ratio: 4 / 3;
+  background: var(--panel);
+  border-radius: var(--radius);
+}
+.product-grid--roomy .card__media > img { object-fit: contain; }
+
 .card { position: relative; display: flex; flex-direction: column; }
 .card__media { aspect-ratio: 4 / 5; margin-bottom: 14px; }
 .card__media img { transition: transform 300ms var(--ease), opacity 300ms var(--ease); }

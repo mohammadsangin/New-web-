@@ -1,0 +1,36 @@
+{%- comment -%}
+  Reviews — branded intro + Judge.me's all-reviews widget. The empty
+  <div class="jdgm-all-reviews-widget"> is Judge.me's documented hook; their
+  core script (loaded by the Judge.me theme app-embed) hydrates it with every
+  published store review. If the app-embed isn't enabled the div stays empty —
+  no faked reviews. Assign this page's admin Template to "reviews" to use it.
+{%- endcomment -%}
+{%- style -%}
+  #reviews-page .reviews__intro { max-width: 60ch; margin-inline: auto; color: var(--muted, #6A6459); font-size: 17px; line-height: 1.7; text-align: center; }
+  #reviews-page .reviews__widget { max-width: 900px; margin-inline: auto; margin-top: clamp(40px, 6vw, 72px); }
+  /* Light brand restyle — font, colour and spacing only; Judge.me keeps its
+     own structural classes and behaviour untouched. */
+  #reviews-page .jdgm-all-reviews-widget { font-family: var(--font-body, inherit); color: var(--ink, #1F1D18); }
+  #reviews-page .jdgm-rev__author, #reviews-page .jdgm-rev__title { color: var(--ink, #1F1D18); }
+  #reviews-page .jdgm-rev__body, #reviews-page .jdgm-rev__timestamp, #reviews-page .jdgm-rev__location { color: var(--muted, #6A6459); }
+  #reviews-page .jdgm-rev { border-color: var(--hairline, #DED7C7); }
+{%- endstyle -%}
+
+<div id="reviews-page">
+  <div class="page-hero container">
+    <p class="eyebrow eyebrow--center">Kind words</p>
+    <h1 class="page-hero__title">Reviews</h1>
+    <p class="reviews__intro">What our customers say about their pieces — read every review from across the collection.</p>
+  </div>
+
+  <div class="section container">
+    {%- if page.content != blank -%}
+      <div class="rte" style="max-width:760px;margin-inline:auto;margin-bottom:clamp(32px,5vw,56px);">{{ page.content }}</div>
+    {%- endif -%}
+
+    <div class="reviews__widget">
+      {%- comment -%} Judge.me — All reviews widget (hydrated by the app-embed script). {%- endcomment -%}
+      <div class='jdgm-all-reviews-widget'></div>
+    </div>
+  </div>
+</div>
