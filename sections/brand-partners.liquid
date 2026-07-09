@@ -1,19 +1,16 @@
 {%- comment -%}
-  Brand Partners — a premium, editorial "brands we carry" logo strip.
-  Block-driven: each block is one brand (logo + name + optional link/caption).
-  Logos sit uncropped (object-fit: contain) at their natural aspect ratio,
-  with explicit width/height so there is no CLS. Optional monochrome treatment
-  fades to full colour on hover/focus (disabled under reduced motion).
-
-  Live storefront: renders nothing until the merchant adds brand blocks with a
-  logo. In the theme editor an honest placeholder tells them what to add.
+  Brand Partners — a "brands we carry" logo strip.
+  Logos upload DIRECTLY in this section's settings (Logo 1–8) — no nested blocks.
+  Empty slots are skipped. Renders nothing on the live storefront until at least
+  one logo is set; shows an honest hint in the theme editor.
 {%- endcomment -%}
 
 {%- liquid
   assign per_row = section.settings.logos_per_row | default: 5
   assign has_logos = false
-  for block in section.blocks
-    if block.settings.logo != blank
+  for i in (1..8)
+    assign lkey = 'logo_' | append: i
+    if section.settings[lkey] != blank
       assign has_logos = true
       break
     endif
@@ -50,13 +47,10 @@
   }
   #shopify-section-{{ section.id }} .brand-partners__link {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
     width: 100%;
     text-decoration: none;
-    color: var(--muted, #6A6459);
   }
   #shopify-section-{{ section.id }} .brand-partners__logo {
     display: block;
@@ -65,12 +59,6 @@
     max-width: 100%;
     max-height: 56px;
     object-fit: contain;
-  }
-  #shopify-section-{{ section.id }} .brand-partners__caption {
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    text-align: center;
-    color: var(--muted, #6A6459);
   }
   {%- if section.settings.monochrome -%}
   #shopify-section-{{ section.id }} .brand-partners__logo {
@@ -107,16 +95,19 @@
       {%- endif -%}
 
       <div class="brand-partners__grid reveal">
-        {%- for block in section.blocks -%}
-          {%- if block.settings.logo != blank -%}
+        {%- for i in (1..8) -%}
+          {%- assign lkey = 'logo_' | append: i -%}
+          {%- assign ukey = 'link_' | append: i -%}
+          {%- assign logo = section.settings[lkey] -%}
+          {%- assign url = section.settings[ukey] -%}
+          {%- if logo != blank -%}
             {%- liquid
-              assign brand_name = block.settings.name | default: block.settings.logo.alt
-              assign logo = block.settings.logo
               assign logo_w = 240
               if logo.width < logo_w
                 assign logo_w = logo.width
               endif
               assign logo_h = logo.height | times: logo_w | divided_by: logo.width
+              assign brand_name = logo.alt | default: 'Brand'
             -%}
             {%- capture logo_img -%}
               <img
@@ -129,21 +120,11 @@
                 loading="lazy"
                 decoding="async">
             {%- endcapture -%}
-            <div class="brand-partners__item" {{ block.shopify_attributes }}>
-              {%- if block.settings.url != blank -%}
-                <a class="brand-partners__link" href="{{ block.settings.url }}" aria-label="{{ brand_name | escape }}">
-                  {{ logo_img }}
-                  {%- if block.settings.caption != blank -%}
-                    <span class="brand-partners__caption">{{ block.settings.caption | escape }}</span>
-                  {%- endif -%}
-                </a>
+            <div class="brand-partners__item">
+              {%- if url != blank -%}
+                <a class="brand-partners__link" href="{{ url }}" aria-label="{{ brand_name | escape }}">{{ logo_img }}</a>
               {%- else -%}
-                <span class="brand-partners__link">
-                  {{ logo_img }}
-                  {%- if block.settings.caption != blank -%}
-                    <span class="brand-partners__caption">{{ block.settings.caption | escape }}</span>
-                  {%- endif -%}
-                </span>
+                <span class="brand-partners__link">{{ logo_img }}</span>
               {%- endif -%}
             </div>
           {%- endif -%}
@@ -159,7 +140,7 @@
         {%- if section.settings.heading != blank -%}<h2 class="section-head__title">{{ section.settings.heading | escape }}</h2>{%- endif -%}
       </div>
       <div class="section-placeholder">
-        <p>Add a <strong>Brand</strong> block for each logo, then upload the logo image. Brands with no logo won’t appear on your live storefront.</p>
+        <p>Scroll down in this section's settings to <strong>Logo 1, Logo 2, Logo 3…</strong> and upload a logo into each. Empty slots are skipped, and the section stays hidden on your live store until at least one logo is added.</p>
       </div>
     </div>
   </section>
@@ -173,38 +154,33 @@
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Considered company" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Brands we carry" },
     { "type": "textarea", "id": "subheading", "label": "Subtext", "default": "A curated group of makers whose craft and finish sit comfortably alongside our own." },
+    { "type": "header", "content": "Brand logos", "info": "Upload a logo into each slot. A transparent PNG or SVG works best. Empty slots are ignored." },
+    { "type": "image_picker", "id": "logo_1", "label": "Logo 1" },
+    { "type": "url", "id": "link_1", "label": "Logo 1 link (optional)" },
+    { "type": "image_picker", "id": "logo_2", "label": "Logo 2" },
+    { "type": "url", "id": "link_2", "label": "Logo 2 link (optional)" },
+    { "type": "image_picker", "id": "logo_3", "label": "Logo 3" },
+    { "type": "url", "id": "link_3", "label": "Logo 3 link (optional)" },
+    { "type": "image_picker", "id": "logo_4", "label": "Logo 4" },
+    { "type": "url", "id": "link_4", "label": "Logo 4 link (optional)" },
+    { "type": "image_picker", "id": "logo_5", "label": "Logo 5" },
+    { "type": "url", "id": "link_5", "label": "Logo 5 link (optional)" },
+    { "type": "image_picker", "id": "logo_6", "label": "Logo 6" },
+    { "type": "url", "id": "link_6", "label": "Logo 6 link (optional)" },
+    { "type": "image_picker", "id": "logo_7", "label": "Logo 7" },
+    { "type": "url", "id": "link_7", "label": "Logo 7 link (optional)" },
+    { "type": "image_picker", "id": "logo_8", "label": "Logo 8" },
+    { "type": "url", "id": "link_8", "label": "Logo 8 link (optional)" },
     { "type": "header", "content": "Layout" },
     { "type": "range", "id": "logos_per_row", "min": 2, "max": 6, "step": 1, "label": "Logos per row (desktop)", "default": 5 },
     { "type": "checkbox", "id": "monochrome", "label": "Monochrome logos", "info": "Show logos in muted greyscale, returning to full colour on hover or focus.", "default": true },
     { "type": "header", "content": "Section spacing" },
     { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Top padding", "default": 64 },
     { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Bottom padding", "default": 64 },
-    { "type": "color", "id": "background", "label": "Background", "info": "Leave blank to use the theme’s default page tone." }
+    { "type": "color", "id": "background", "label": "Background", "info": "Leave blank to use the theme's default page tone." }
   ],
-  "blocks": [
-    {
-      "type": "brand",
-      "name": "Brand",
-      "settings": [
-        { "type": "image_picker", "id": "logo", "label": "Logo", "info": "A transparent PNG or SVG works best." },
-        { "type": "text", "id": "name", "label": "Brand name", "info": "Used for the logo’s alt text and link label." },
-        { "type": "text", "id": "caption", "label": "Caption (optional)", "info": "A short line shown beneath the logo." },
-        { "type": "url", "id": "url", "label": "Link (optional)" }
-      ]
-    }
-  ],
-  "max_blocks": 20,
   "presets": [
-    {
-      "name": "Brand Partners",
-      "blocks": [
-        { "type": "brand" },
-        { "type": "brand" },
-        { "type": "brand" },
-        { "type": "brand" },
-        { "type": "brand" }
-      ]
-    }
+    { "name": "Brand Partners" }
   ]
 }
 {% endschema %}
