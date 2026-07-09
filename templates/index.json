@@ -144,8 +144,7 @@
         "link_6": "",
         "link_7": "",
         "link_8": "",
-        "logos_per_row": 5,
-        "monochrome": true,
+        "monochrome": false,
         "padding_top": 64,
         "padding_bottom": 64,
         "background": ""
