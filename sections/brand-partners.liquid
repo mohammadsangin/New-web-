@@ -1,12 +1,12 @@
 {%- comment -%}
   Brand Partners — a "brands we carry" logo strip.
   Logos upload DIRECTLY in this section's settings (Logo 1–8) — no nested blocks.
-  Empty slots are skipped. Renders nothing on the live storefront until at least
-  one logo is set; shows an honest hint in the theme editor.
+  Large, evenly spaced logos: centred when there are a few, and the row scrolls
+  horizontally once there are more than fit. Empty slots are skipped. Renders
+  nothing on the live storefront until at least one logo is set.
 {%- endcomment -%}
 
 {%- liquid
-  assign per_row = section.settings.logos_per_row | default: 5
   assign has_logos = false
   for i in (1..8)
     assign lkey = 'logo_' | append: i
@@ -22,42 +22,40 @@
     padding-block: {{ section.settings.padding_top }}px {{ section.settings.padding_bottom }}px;
     {% if section.settings.background != blank %}background: {{ section.settings.background }};{% else %}background: var(--bg, #F5F1E9);{% endif %}
   }
-  #shopify-section-{{ section.id }} .brand-partners__grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(20px, 4vw, 44px) clamp(16px, 3vw, 40px);
-    align-items: center;
+  #shopify-section-{{ section.id }} .brand-partners__scroller {
+    display: flex;
+    overflow-x: auto;
     margin-top: clamp(28px, 4vw, 48px);
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
   }
-  @media (min-width: 600px) {
-    #shopify-section-{{ section.id }} .brand-partners__grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  @media (min-width: 990px) {
-    #shopify-section-{{ section.id }} .brand-partners__grid {
-      grid-template-columns: repeat({{ per_row }}, minmax(0, 1fr));
-    }
+  #shopify-section-{{ section.id }} .brand-partners__grid {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: clamp(36px, 6vw, 88px);
+    margin: 0 auto;
+    padding-inline: clamp(16px, 4vw, 40px);
   }
   #shopify-section-{{ section.id }} .brand-partners__item {
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 64px;
   }
   #shopify-section-{{ section.id }} .brand-partners__link {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
     text-decoration: none;
   }
   #shopify-section-{{ section.id }} .brand-partners__logo {
     display: block;
     width: auto;
     height: auto;
-    max-width: 100%;
-    max-height: 56px;
+    max-height: clamp(72px, 8vw, 96px);
+    max-width: 280px;
     object-fit: contain;
   }
   {%- if section.settings.monochrome -%}
@@ -94,41 +92,43 @@
         </div>
       {%- endif -%}
 
-      <div class="brand-partners__grid reveal">
-        {%- for i in (1..8) -%}
-          {%- assign lkey = 'logo_' | append: i -%}
-          {%- assign ukey = 'link_' | append: i -%}
-          {%- assign logo = section.settings[lkey] -%}
-          {%- assign url = section.settings[ukey] -%}
-          {%- if logo != blank -%}
-            {%- liquid
-              assign logo_w = 240
-              if logo.width < logo_w
-                assign logo_w = logo.width
-              endif
-              assign logo_h = logo.height | times: logo_w | divided_by: logo.width
-              assign brand_name = logo.alt | default: 'Brand'
-            -%}
-            {%- capture logo_img -%}
-              <img
-                class="brand-partners__logo"
-                src="{{ logo | image_url: width: logo_w }}"
-                srcset="{{ logo | image_url: width: logo_w }} 1x, {{ logo | image_url: width: 480 }} 2x"
-                alt="{{ brand_name | escape }}"
-                width="{{ logo_w }}"
-                height="{{ logo_h }}"
-                loading="lazy"
-                decoding="async">
-            {%- endcapture -%}
-            <div class="brand-partners__item">
-              {%- if url != blank -%}
-                <a class="brand-partners__link" href="{{ url }}" aria-label="{{ brand_name | escape }}">{{ logo_img }}</a>
-              {%- else -%}
-                <span class="brand-partners__link">{{ logo_img }}</span>
-              {%- endif -%}
-            </div>
-          {%- endif -%}
-        {%- endfor -%}
+      <div class="brand-partners__scroller reveal">
+        <div class="brand-partners__grid">
+          {%- for i in (1..8) -%}
+            {%- assign lkey = 'logo_' | append: i -%}
+            {%- assign ukey = 'link_' | append: i -%}
+            {%- assign logo = section.settings[lkey] -%}
+            {%- assign url = section.settings[ukey] -%}
+            {%- if logo != blank -%}
+              {%- liquid
+                assign logo_w = 360
+                if logo.width < logo_w
+                  assign logo_w = logo.width
+                endif
+                assign logo_h = logo.height | times: logo_w | divided_by: logo.width
+                assign brand_name = logo.alt | default: 'Brand'
+              -%}
+              {%- capture logo_img -%}
+                <img
+                  class="brand-partners__logo"
+                  src="{{ logo | image_url: width: logo_w }}"
+                  srcset="{{ logo | image_url: width: logo_w }} 1x, {{ logo | image_url: width: 720 }} 2x"
+                  alt="{{ brand_name | escape }}"
+                  width="{{ logo_w }}"
+                  height="{{ logo_h }}"
+                  loading="lazy"
+                  decoding="async">
+              {%- endcapture -%}
+              <div class="brand-partners__item">
+                {%- if url != blank -%}
+                  <a class="brand-partners__link" href="{{ url }}" aria-label="{{ brand_name | escape }}">{{ logo_img }}</a>
+                {%- else -%}
+                  <span class="brand-partners__link">{{ logo_img }}</span>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
       </div>
     </div>
   </section>
@@ -154,7 +154,7 @@
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Considered company" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Brands we carry" },
     { "type": "textarea", "id": "subheading", "label": "Subtext", "default": "A curated group of makers whose craft and finish sit comfortably alongside our own." },
-    { "type": "header", "content": "Brand logos", "info": "Upload a logo into each slot. A transparent PNG or SVG works best. Empty slots are ignored." },
+    { "type": "header", "content": "Brand logos", "info": "Upload a logo into each slot. A transparent PNG or SVG works best. Empty slots are ignored, and the row scrolls sideways when there are more than fit." },
     { "type": "image_picker", "id": "logo_1", "label": "Logo 1" },
     { "type": "url", "id": "link_1", "label": "Logo 1 link (optional)" },
     { "type": "image_picker", "id": "logo_2", "label": "Logo 2" },
@@ -171,9 +171,8 @@
     { "type": "url", "id": "link_7", "label": "Logo 7 link (optional)" },
     { "type": "image_picker", "id": "logo_8", "label": "Logo 8" },
     { "type": "url", "id": "link_8", "label": "Logo 8 link (optional)" },
-    { "type": "header", "content": "Layout" },
-    { "type": "range", "id": "logos_per_row", "min": 2, "max": 6, "step": 1, "label": "Logos per row (desktop)", "default": 5 },
-    { "type": "checkbox", "id": "monochrome", "label": "Monochrome logos", "info": "Show logos in muted greyscale, returning to full colour on hover or focus.", "default": true },
+    { "type": "header", "content": "Appearance" },
+    { "type": "checkbox", "id": "monochrome", "label": "Monochrome logos", "info": "Show logos in muted greyscale, returning to full colour on hover. Off = full colour always.", "default": false },
     { "type": "header", "content": "Section spacing" },
     { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Top padding", "default": 64 },
     { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Bottom padding", "default": 64 },
