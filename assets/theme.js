@@ -825,27 +825,35 @@
       }, 200);
     }
 
+    // The whole toggle system is DESKTOP-ONLY. Below 990px the desktop nav is
+    // display:none and navigation happens in the separate mobile drawer
+    // (#menu-drawer), so these handlers must never fire or preventDefault there.
+    var desktop = window.matchMedia('(min-width: 990px)');
+
     items.forEach(function (item) {
-      item.addEventListener('mouseenter', function () { openItem(item); });
+      item.addEventListener('mouseenter', function () { if (desktop.matches) openItem(item); });
       item.addEventListener('mouseleave', scheduleClose);
-      item.addEventListener('focusin', function () { openItem(item); });
+      item.addEventListener('focusin', function () { if (desktop.matches) openItem(item); });
       item.addEventListener('focusout', function (e) {
         if (!item.contains(e.relatedTarget)) scheduleClose();
       });
 
-      // A parent WITH a dropdown toggles the panel instead of navigating.
-      // The "View all …" link inside the panel is how you reach the collection.
+      // Desktop: a parent WITH a dropdown toggles the panel instead of
+      // navigating. The "View all …" link inside the panel reaches the
+      // collection. On other layouts the link navigates normally.
       var trigger = item.querySelector('.nav__link');
       if (trigger) {
         var wasOpen = false;
         trigger.addEventListener('pointerdown', function () {
-          wasOpen = item.classList.contains('is-open');
+          if (desktop.matches) wasOpen = item.classList.contains('is-open');
         });
         trigger.addEventListener('click', function (e) {
+          if (!desktop.matches) return; // mobile drawer / small screens navigate
           e.preventDefault();
           if (wasOpen) closeItem(item); else openItem(item);
         });
         trigger.addEventListener('keydown', function (e) {
+          if (!desktop.matches) return;
           if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
             e.preventDefault();
             if (item.classList.contains('is-open')) closeItem(item); else openItem(item);
@@ -854,9 +862,12 @@
       }
     });
 
-    // Click/tap outside any dropdown closes them (touch has no mouseleave).
+    // Desktop only: a click genuinely OUTSIDE the nav closes open panels. Never
+    // runs on mobile, and always ignores taps inside any drawer, so nothing in
+    // the mobile menu drawer is disturbed or has its default cancelled.
     document.addEventListener('click', function (e) {
-      if (e.target.closest('.nav__item--has-mega')) return;
+      if (!desktop.matches) return;
+      if (e.target.closest('.nav__item--has-mega') || e.target.closest('.drawer')) return;
       items.forEach(closeItem);
     });
     // Escape closes any open panel and returns focus to its trigger.

@@ -643,24 +643,33 @@ p:last-child { margin-bottom: 0; }
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 16px 0;
+  min-height: 48px;
+  padding: 14px 0;
   font-size: 17px;
   font-weight: 500;
   color: var(--ink);
   background: none; border: 0;
   text-align: left;
   font-family: inherit;
+  -webkit-tap-highlight-color: rgba(168, 137, 79, 0.12);
 }
 .m-nav__summary { list-style: none; cursor: pointer; }
 .m-nav__summary::-webkit-details-marker { display: none; }
-.m-nav__icon { width: 16px; height: 16px; color: var(--brass-deep); transition: transform var(--dur-hover) var(--ease); flex: none; }
+/* Obvious tap affordance on expandable parents: a bordered + that rotates. */
+.m-nav__icon {
+  width: 30px; height: 30px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--hairline); border-radius: 999px;
+  color: var(--brass-deep); transition: transform var(--dur-hover) var(--ease);
+}
+.m-nav__icon svg { width: 15px; height: 15px; }
 .m-nav__group[open] > .m-nav__summary .m-nav__icon { transform: rotate(45deg); }
 .m-nav__sub { padding: 2px 0 14px 2px; display: grid; gap: 2px; }
 .m-nav__sub-head { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass-deep); margin: 12px 0 4px; }
-.m-nav__sub-link { display: flex; gap: 8px; align-items: center; padding: 9px 0; color: var(--muted); font-size: 15px; }
+.m-nav__sub-link { display: flex; gap: 8px; align-items: center; min-height: 44px; padding: 10px 0; color: var(--muted); font-size: 15px; -webkit-tap-highlight-color: rgba(168, 137, 79, 0.12); }
 .m-nav__sub-link--all { color: var(--brass-deep); font-weight: 600; letter-spacing: 0.02em; }
 .m-nav__utility { padding: 4px var(--gutter) 28px; display: grid; gap: 2px; }
-.m-nav__utility a { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--hairline); color: var(--ink); font-size: 15px; }
+.m-nav__utility a { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 12px 0; border-bottom: 1px solid var(--hairline); color: var(--ink); font-size: 15px; -webkit-tap-highlight-color: rgba(168, 137, 79, 0.12); }
 .m-nav__utility svg { width: 19px; height: 19px; color: var(--brass-deep); }
 
 /* ==========================================================================
