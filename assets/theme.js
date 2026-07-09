@@ -812,14 +812,16 @@
         if (link && link.hasAttribute('aria-expanded')) link.setAttribute('aria-expanded', o === item ? 'true' : 'false');
       });
     }
+    function closeItem(item) {
+      clearTimeout(closeTimer);
+      item.classList.remove('is-open');
+      var link = item.querySelector('.nav__link');
+      if (link && link.hasAttribute('aria-expanded')) link.setAttribute('aria-expanded', 'false');
+    }
     function scheduleClose() {
       clearTimeout(closeTimer);
       closeTimer = setTimeout(function () {
-        items.forEach(function (o) {
-          o.classList.remove('is-open');
-          var link = o.querySelector('.nav__link');
-          if (link && link.hasAttribute('aria-expanded')) link.setAttribute('aria-expanded', 'false');
-        });
+        items.forEach(closeItem);
       }, 200);
     }
 
@@ -830,6 +832,32 @@
       item.addEventListener('focusout', function (e) {
         if (!item.contains(e.relatedTarget)) scheduleClose();
       });
+
+      // A parent WITH a dropdown toggles the panel instead of navigating.
+      // The "View all …" link inside the panel is how you reach the collection.
+      var trigger = item.querySelector('.nav__link');
+      if (trigger) {
+        var wasOpen = false;
+        trigger.addEventListener('pointerdown', function () {
+          wasOpen = item.classList.contains('is-open');
+        });
+        trigger.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (wasOpen) closeItem(item); else openItem(item);
+        });
+        trigger.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+            e.preventDefault();
+            if (item.classList.contains('is-open')) closeItem(item); else openItem(item);
+          }
+        });
+      }
+    });
+
+    // Click/tap outside any dropdown closes them (touch has no mouseleave).
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('.nav__item--has-mega')) return;
+      items.forEach(closeItem);
     });
     // Escape closes any open panel and returns focus to its trigger.
     document.addEventListener('keydown', function (e) {

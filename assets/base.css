@@ -658,6 +658,7 @@ p:last-child { margin-bottom: 0; }
 .m-nav__sub { padding: 2px 0 14px 2px; display: grid; gap: 2px; }
 .m-nav__sub-head { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass-deep); margin: 12px 0 4px; }
 .m-nav__sub-link { display: flex; gap: 8px; align-items: center; padding: 9px 0; color: var(--muted); font-size: 15px; }
+.m-nav__sub-link--all { color: var(--brass-deep); font-weight: 600; letter-spacing: 0.02em; }
 .m-nav__utility { padding: 4px var(--gutter) 28px; display: grid; gap: 2px; }
 .m-nav__utility a { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--hairline); color: var(--ink); font-size: 15px; }
 .m-nav__utility svg { width: 19px; height: 19px; color: var(--brass-deep); }

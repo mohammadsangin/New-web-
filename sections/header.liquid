@@ -172,6 +172,7 @@
                 <span class="m-nav__icon">{% render 'icon', name: 'plus' %}</span>
               </summary>
               <div class="m-nav__sub">
+                <a class="m-nav__sub-link m-nav__sub-link--all" href="{{ link.url }}">{{ 'general.view_all_title' | t: title: link.title }}</a>
                 {%- for child in link.links -%}
                   {%- if child.links.size > 0 -%}
                     <p class="m-nav__sub-head">{{ child.title }}</p>
