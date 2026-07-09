@@ -1,0 +1,44 @@
+{%- comment -%}
+  About Us — branded editorial page that preserves and styles the existing
+  page copy. Assign this page's admin Template to "about" to use it.
+{%- endcomment -%}
+{%- style -%}
+  #about-page .about__prose { max-width: 680px; margin-inline: auto; color: var(--muted, #6A6459); font-size: 17px; line-height: 1.8; }
+  #about-page .about__prose > :first-child { margin-top: 0; }
+  #about-page .about__prose > :last-child { margin-bottom: 0; }
+  #about-page .about__prose h2, #about-page .about__prose h3 { font-family: var(--font-display, Georgia, serif); color: var(--ink, #1F1D18); line-height: 1.25; margin: 1.6em 0 0.5em; }
+  #about-page .about__prose h2 { font-size: clamp(22px, 2.4vw, 28px); }
+  #about-page .about__prose h3 { font-size: clamp(19px, 2vw, 22px); }
+  #about-page .about__prose p { margin: 0 0 1.1em; }
+  #about-page .about__prose a { color: var(--brass-deep, #8A6E37); }
+  #about-page .about__prose strong { color: var(--ink, #1F1D18); }
+  #about-page .about__closing { margin-top: clamp(48px, 7vw, 84px); text-align: center; }
+  #about-page .about__values { list-style: none; margin: 0 auto; padding: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px clamp(20px, 4vw, 40px); color: var(--brass-deep, #8A6E37); font-family: var(--font-display, Georgia, serif); font-size: clamp(18px, 2vw, 22px); }
+  #about-page .about__values li { display: inline-flex; align-items: center; gap: clamp(20px, 4vw, 40px); }
+  #about-page .about__values li + li::before { content: "·"; color: var(--hairline, #DED7C7); }
+  #about-page .about__cta { margin-top: clamp(28px, 4vw, 40px); }
+{%- endstyle -%}
+
+<div id="about-page">
+  <div class="page-hero container">
+    <p class="eyebrow eyebrow--center">Our story</p>
+    <h1 class="page-hero__title">{{ page.title }}</h1>
+  </div>
+
+  <div class="section container">
+    {%- if page.content != blank -%}
+      <div class="about__prose rte reveal">{{ page.content }}</div>
+    {%- endif -%}
+
+    <div class="about__closing reveal">
+      <ul class="about__values">
+        <li>Solid brass</li>
+        <li>Made to order</li>
+        <li>Considered design</li>
+      </ul>
+      <div class="about__cta">
+        <a class="btn btn--lg" href="{{ routes.all_products_collection_url }}">Explore the collection</a>
+      </div>
+    </div>
+  </div>
+</div>

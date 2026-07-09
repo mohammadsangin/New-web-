@@ -1,59 +1,90 @@
-<div class="page-hero container">
-  <p class="eyebrow eyebrow--center">{{ 'contact.eyebrow' | t }}</p>
-  <h1 class="page-hero__title">{{ page.title }}</h1>
-  <p class="page-hero__lede">{{ 'contact.lede' | t }}</p>
-</div>
+{%- comment -%}
+  Contact Us — premium contact page. Designed layout supplies the details, so
+  the raw page body is intentionally NOT rendered (it would duplicate the phone
+  and email). Suffix is already "contact", so this renders once synced.
+{%- endcomment -%}
+{%- style -%}
+  #contact-page .contact__grid { display: grid; gap: clamp(36px, 6vw, 72px); grid-template-columns: 1fr; max-width: 1000px; margin-inline: auto; align-items: start; }
+  @media (min-width: 800px) { #contact-page .contact__grid { grid-template-columns: 0.85fr 1.15fr; } }
+  #contact-page .contact__details { display: flex; flex-direction: column; gap: clamp(24px, 3vw, 34px); }
+  #contact-page .contact__label { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass-deep, #8A6E37); margin: 0 0 8px; }
+  #contact-page .contact__value { font-size: 17px; line-height: 1.6; color: var(--ink, #1F1D18); }
+  #contact-page .contact__value a { color: var(--ink, #1F1D18); text-decoration: none; border-bottom: 1px solid var(--hairline, #DED7C7); transition: border-color var(--dur-hover, 180ms) var(--ease, ease); }
+  #contact-page .contact__value a:hover { border-color: var(--brass, #A8894F); }
+  #contact-page .contact__note { display: block; font-size: 14px; color: var(--muted, #6A6459); margin-top: 4px; }
+  #contact-page .contact__address { font-style: normal; font-size: 17px; line-height: 1.6; color: var(--ink, #1F1D18); }
+  #contact-page .contact__form { background: var(--surface, #FEFDFB); border: 1px solid var(--hairline, #DED7C7); border-radius: var(--radius-lg, 14px); padding: clamp(24px, 4vw, 40px); }
+{%- endstyle -%}
 
-<div class="section container">
-  <div style="display:grid;gap:clamp(32px,5vw,64px);grid-template-columns:1fr;max-width:960px;margin-inline:auto;">
-    <div class="rte" style="margin:0;">{{ page.content }}</div>
+<div id="contact-page">
+  <div class="page-hero container">
+    <p class="eyebrow eyebrow--center">Get in touch</p>
+    <h1 class="page-hero__title">Contact Us</h1>
+    <p class="page-hero__lede">Speak to our team for advice on finishes, fittings and made-to-order pieces.</p>
+  </div>
 
-    <div style="display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
-      {%- if settings.contact_phone != blank -%}
-        <div>
-          <p class="footer__col-head" style="color:var(--brass-deep);">{{ 'contact.call' | t }}</p>
-          <a class="link-underline" style="text-transform:none;letter-spacing:0;font-size:16px;" href="tel:{{ settings.contact_phone | replace: ' ', '' }}">{{ settings.contact_phone }}</a>
-        </div>
-      {%- endif -%}
-      {%- if settings.contact_email != blank -%}
-        <div>
-          <p class="footer__col-head" style="color:var(--brass-deep);">{{ 'contact.email' | t }}</p>
-          <a class="link-underline" style="text-transform:none;letter-spacing:0;font-size:16px;" href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a>
-        </div>
-      {%- endif -%}
-      {%- if settings.registered_office != blank -%}
-        <div>
-          <p class="footer__col-head" style="color:var(--brass-deep);">{{ 'contact.office' | t }}</p>
-          <address style="font-style:normal;color:var(--muted);">{{ settings.registered_office | escape }}</address>
-        </div>
-      {%- endif -%}
-    </div>
+  <div class="section container">
+    <div class="contact__grid">
 
-    <div style="max-width:560px;">
-      {%- form 'contact', class: 'contact-form' -%}
-        {%- if form.posted_successfully? -%}
-          <p class="form-note form-note--success" style="margin-bottom:20px;">{{ 'contact.success' | t }}</p>
-        {%- elsif form.errors -%}
-          <p class="form-note form-note--error" style="margin-bottom:20px;">{{ form.errors | default_errors }}</p>
-        {%- endif -%}
-        <div class="field">
-          <label for="contact-name">{{ 'contact.name' | t }}</label>
-          <input type="text" id="contact-name" name="contact[name]" value="{{ form.name }}" autocomplete="name" required>
+      {%- comment -%} ===== Left — details ===== {%- endcomment -%}
+      <div class="contact__details reveal">
+        <div>
+          <p class="contact__label">Call</p>
+          <p class="contact__value">
+            <a href="tel:03330900045">0333 090 0045</a>
+            <span class="contact__note">Mon–Fri, 9am–6pm</span>
+          </p>
         </div>
-        <div class="field">
-          <label for="contact-email">{{ 'contact.email' | t }}</label>
-          <input type="email" id="contact-email" name="contact[email]" value="{{ form.email }}" autocomplete="email" required>
+        <div>
+          <p class="contact__label">Email</p>
+          <p class="contact__value"><a href="mailto:sales@kymralighting.co.uk">sales@kymralighting.co.uk</a></p>
         </div>
-        <div class="field">
-          <label for="contact-phone">{{ 'contact.phone' | t }}</label>
-          <input type="tel" id="contact-phone" name="contact[phone]" value="{{ form.phone }}" autocomplete="tel">
+        <div>
+          <p class="contact__label">Registered office</p>
+          <address class="contact__address">3rd Floor, 86–90 Paul Street,<br>London EC2A 4NE</address>
         </div>
-        <div class="field">
-          <label for="contact-body">{{ 'contact.message' | t }}</label>
-          <textarea id="contact-body" name="contact[body]" required>{{ form.body }}</textarea>
-        </div>
-        <button type="submit" class="btn btn--lg">{{ 'contact.send' | t }}</button>
-      {%- endform -%}
+      </div>
+
+      {%- comment -%} ===== Right — form ===== {%- endcomment -%}
+      <div class="contact__form reveal">
+        {%- form 'contact', class: 'contact-form' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="form-note form-note--success" role="status" style="margin-bottom:20px;font-size:15px;">{{ 'contact.success' | t }}</p>
+          {%- elsif form.errors -%}
+            <p class="form-note form-note--error" role="alert" style="margin-bottom:20px;font-size:15px;">{{ form.errors | default_errors }}</p>
+          {%- endif -%}
+
+          <div class="field">
+            <label for="contact-name">{{ 'contact.name' | t }}</label>
+            <input type="text" id="contact-name" name="contact[name]" value="{{ form.name }}" autocomplete="name" required>
+          </div>
+
+          <div class="field">
+            <label for="contact-email">{{ 'contact.email' | t }}</label>
+            <input
+              type="email" id="contact-email" name="contact[email]" value="{{ form.email }}"
+              autocomplete="email" required
+              aria-required="true"
+              {% if form.errors contains 'email' %}aria-invalid="true" aria-describedby="contact-email-error"{% endif %}>
+            {%- if form.errors contains 'email' -%}
+              <span id="contact-email-error" class="form-note form-note--error">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</span>
+            {%- endif -%}
+          </div>
+
+          <div class="field">
+            <label for="contact-phone">{{ 'contact.phone' | t }}</label>
+            <input type="tel" id="contact-phone" name="contact[phone]" value="{{ form.phone }}" autocomplete="tel">
+          </div>
+
+          <div class="field">
+            <label for="contact-body">{{ 'contact.message' | t }}</label>
+            <textarea id="contact-body" name="contact[body]" required aria-required="true">{{ form.body }}</textarea>
+          </div>
+
+          <button type="submit" class="btn btn--lg">{{ 'contact.send' | t }}</button>
+        {%- endform -%}
+      </div>
+
     </div>
   </div>
 </div>
