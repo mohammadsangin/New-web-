@@ -99,10 +99,6 @@
         "view_all_label": "View all"
       }
     },
-    "17835302186f899900": {
-      "type": "apps",
-      "settings": {}
-    },
     "shop_the_room": {
       "type": "shop-the-room",
       "settings": {
@@ -210,7 +206,6 @@
     "hero",
     "category_tiles",
     "featured_1",
-    "17835302186f899900",
     "shop_the_room",
     "featured_2",
     "brand_partners",
