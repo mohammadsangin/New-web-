@@ -6,13 +6,24 @@
   <div class="hero__media">
     <div class="media ratio-hero">
       {%- if section.settings.image != blank -%}
-        <img
-          src="{{ section.settings.image | image_url: width: 2000 }}"
-          srcset="{{ section.settings.image | image_url: width: 800 }} 800w, {{ section.settings.image | image_url: width: 1200 }} 1200w, {{ section.settings.image | image_url: width: 1600 }} 1600w, {{ section.settings.image | image_url: width: 2000 }} 2000w, {{ section.settings.image | image_url: width: 2600 }} 2600w"
-          sizes="100vw"
-          alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}"
-          width="{{ section.settings.image.width }}" height="{{ section.settings.image.height }}"
-          fetchpriority="high" loading="eager" decoding="async">
+        {%- assign mobile_image = section.settings.mobile_image -%}
+        <picture>
+          {%- if mobile_image != blank -%}
+            {%- comment -%} Phones (<=749px) use the portrait mobile image when set. {%- endcomment -%}
+            <source
+              media="(max-width: 749px)"
+              srcset="{{ mobile_image | image_url: width: 640 }} 640w, {{ mobile_image | image_url: width: 828 }} 828w, {{ mobile_image | image_url: width: 1080 }} 1080w, {{ mobile_image | image_url: width: 1280 }} 1280w"
+              sizes="100vw"
+              width="{{ mobile_image.width }}" height="{{ mobile_image.height }}">
+          {%- endif -%}
+          <img
+            src="{{ section.settings.image | image_url: width: 2000 }}"
+            srcset="{{ section.settings.image | image_url: width: 800 }} 800w, {{ section.settings.image | image_url: width: 1200 }} 1200w, {{ section.settings.image | image_url: width: 1600 }} 1600w, {{ section.settings.image | image_url: width: 2000 }} 2000w, {{ section.settings.image | image_url: width: 2600 }} 2600w"
+            sizes="100vw"
+            alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}"
+            width="{{ section.settings.image.width }}" height="{{ section.settings.image.height }}"
+            fetchpriority="high" loading="eager" decoding="async">
+        </picture>
       {%- else -%}
         {% render 'placeholder' %}
       {%- endif -%}
@@ -47,6 +58,7 @@
   "name": "Hero",
   "settings": [
     { "type": "image_picker", "id": "image", "label": "Background image", "info": "21:9 desktop, 4:5 mobile. Calm lit interior or brass fixture." },
+    { "type": "image_picker", "id": "mobile_image", "label": "Mobile image", "info": "Optional. A portrait image shown on phones (<=749px). Falls back to the main image if left empty." },
     {
       "type": "select", "id": "alignment", "label": "Content alignment", "default": "left",
       "options": [

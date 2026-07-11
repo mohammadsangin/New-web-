@@ -924,6 +924,32 @@ p:last-child { margin-bottom: 0; }
 @media (min-width: 750px) { .coll-banner__desc { padding-bottom: 6px; } }
 .coll-banner__desc p { margin: 0; }
 .coll-banner__desc p + p { margin-top: 0.35em; }
+/* "Read more" toggle — mobile only; JS unhides it when the text overflows. */
+.coll-banner__desc-toggle {
+  display: inline-block;
+  margin-top: 8px;
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--brass-deep);
+  cursor: pointer;
+}
+.coll-banner__desc-toggle:hover { color: var(--brass); }
+/* Mobile: clamp to 3 lines until expanded. Desktop is completely unchanged. */
+@media (max-width: 749px) {
+  .coll-banner__desc-wrap:not(.is-expanded) .coll-banner__desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+@media (min-width: 750px) {
+  .coll-banner__desc-toggle { display: none !important; }
+}
 
 .coll-toolbar {
   position: sticky;

@@ -22,7 +22,16 @@
           <h1 class="coll-banner__title">{{ collection.title }}</h1>
         </div>
         {%- if show_desc -%}
-          <div class="coll-banner__desc rte">{{ collection.description }}</div>
+          {%- comment -%}
+            Full description always in the DOM (SEO). On mobile (<=749px) it is
+            visually clamped to 3 lines with a "Read more" toggle; desktop shows
+            it in full, unchanged. The toggle is revealed by JS only when the
+            clamped text actually overflows.
+          {%- endcomment -%}
+          <div class="coll-banner__desc-wrap" data-desc>
+            <div class="coll-banner__desc rte" data-desc-text>{{ collection.description }}</div>
+            <button type="button" class="coll-banner__desc-toggle" data-desc-toggle aria-expanded="false" hidden>Read more</button>
+          </div>
         {%- endif -%}
       </div>
     </div>

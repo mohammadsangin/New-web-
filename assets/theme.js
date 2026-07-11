@@ -883,6 +883,48 @@
   }
 
   /* ======================================================================
+     COLLECTION DESCRIPTION — mobile "Read more". The full text is always in
+     the DOM; on <=749px it is CSS-clamped to 3 lines and this reveals a toggle
+     only when the text actually overflows. Desktop is untouched.
+     ====================================================================== */
+  function initCollectionDesc() {
+    var wraps = $all('[data-desc]');
+    if (!wraps.length) return;
+    var mq = window.matchMedia('(max-width: 749px)');
+    wraps.forEach(function (wrap) {
+      var text = $('[data-desc-text]', wrap);
+      var toggle = $('[data-desc-toggle]', wrap);
+      if (!text || !toggle) return;
+
+      function evaluate() {
+        if (!mq.matches) {
+          // Desktop: no clamp, no toggle.
+          wrap.classList.remove('is-expanded');
+          toggle.hidden = true;
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.textContent = 'Read more';
+          return;
+        }
+        // Mobile: only offer the toggle when the clamped text overflows.
+        if (!wrap.classList.contains('is-expanded')) {
+          toggle.hidden = text.scrollHeight <= text.clientHeight + 2;
+        }
+      }
+
+      toggle.addEventListener('click', function () {
+        var expanded = wrap.classList.toggle('is-expanded');
+        toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        toggle.textContent = expanded ? 'Read less' : 'Read more';
+      });
+
+      evaluate();
+      if (mq.addEventListener) mq.addEventListener('change', evaluate);
+      else if (mq.addListener) mq.addListener(evaluate);
+      window.addEventListener('resize', evaluate);
+    });
+  }
+
+  /* ======================================================================
      BULBS MODULE — "Show more" reveals the remaining linked bulbs.
      ====================================================================== */
   function initBulbs() {
@@ -905,6 +947,7 @@
     initQtySteppers();
     initProduct();
     initCollection();
+    initCollectionDesc();
     initAccordions();
     initMegaMenu();
     initBulbs();
