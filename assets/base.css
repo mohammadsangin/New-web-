@@ -1464,9 +1464,12 @@ p:last-child { margin-bottom: 0; }
      in the bag (its .drawer__body scrolls internally only if truly too long),
      while .cart-recs sits at its natural content height, clamped between a
      one-row minimum (140px) and a maximum (240px) so it can't balloon. */
-  /* round 32: bag grows, recs fixed compact — re-sync nudge (round 33) */
-  .drawer__wrap:has(.cart-recs) .cart-main { flex: 1 1 auto; min-height: 0; }
-  .cart-recs { flex: 0 1 auto; min-height: 140px; max-height: 240px; }
+  /* Bag ALWAYS fills the leftover height: flex-basis:0 means .cart-main sizes
+     purely from flex-grow, independent of its own content. .cart-recs is a
+     fixed, non-growing/non-shrinking strip (<=190px) that can never expand to
+     crowd the bag, no matter how many items are in it. */
+  .drawer__wrap:has(.cart-recs) .cart-main { flex: 1 1 0; min-height: 0; }
+  .cart-recs { flex: 0 0 auto; min-height: 140px; max-height: 190px; }
 
   /* Breathing room between the bag item(s) and the recs section. */
   .cart-recs { margin-top: 12px; }
