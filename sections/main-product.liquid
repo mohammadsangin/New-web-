@@ -171,7 +171,10 @@
         {%- for block in section.blocks -%}
           {%- if block.type == 'description' and product.description != blank -%}{%- assign has_details = true -%}{%- endif -%}
           {%- if block.type == 'accordions' -%}
-            {%- if block.settings.details != blank or block.settings.dimensions != blank or block.settings.delivery != blank -%}{%- assign has_details = true -%}{%- endif -%}
+            {%- assign has_details_content = product.metafields.custom.details_html | default: block.settings.details -%}
+            {%- assign has_dimensions_content = product.metafields.custom.dimensions_html | default: block.settings.dimensions -%}
+            {%- assign has_delivery_content = product.metafields.custom.delivery_html | default: block.settings.delivery -%}
+            {%- if has_details_content != blank or has_dimensions_content != blank or has_delivery_content != blank -%}{%- assign has_details = true -%}{%- endif -%}
           {%- endif -%}
         {%- endfor -%}
 
@@ -188,22 +191,25 @@
                       </details>
                     {%- endif -%}
                   {%- when 'accordions' -%}
-                    {%- if block.settings.details != blank -%}
+                    {%- assign details_content = product.metafields.custom.details_html | default: block.settings.details -%}
+                    {%- if details_content != blank -%}
                       <details class="accordion" {{ block.shopify_attributes }}>
                         <summary class="accordion__summary">{{ block.settings.details_title | default: 'Details' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
-                        <div class="accordion__body rte">{{ block.settings.details }}</div>
+                        <div class="accordion__body rte">{{ details_content }}</div>
                       </details>
                     {%- endif -%}
-                    {%- if block.settings.dimensions != blank -%}
+                    {%- assign dimensions_content = product.metafields.custom.dimensions_html | default: block.settings.dimensions -%}
+                    {%- if dimensions_content != blank -%}
                       <details class="accordion" {{ block.shopify_attributes }}>
                         <summary class="accordion__summary">{{ block.settings.dimensions_title | default: 'Dimensions' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
-                        <div class="accordion__body rte">{{ block.settings.dimensions }}</div>
+                        <div class="accordion__body rte">{{ dimensions_content }}</div>
                       </details>
                     {%- endif -%}
-                    {%- if block.settings.delivery != blank -%}
+                    {%- assign delivery_content = product.metafields.custom.delivery_html | default: block.settings.delivery -%}
+                    {%- if delivery_content != blank -%}
                       <details class="accordion" {{ block.shopify_attributes }}>
                         <summary class="accordion__summary">{{ block.settings.delivery_title | default: 'Delivery & returns' | escape }}<span class="accordion__icon">{% render 'icon', name: 'plus' %}</span></summary>
-                        <div class="accordion__body rte">{{ block.settings.delivery }}</div>
+                        <div class="accordion__body rte">{{ delivery_content }}</div>
                       </details>
                     {%- endif -%}
                 {%- endcase -%}
@@ -315,6 +321,8 @@
     {
       "type": "accordions", "name": "Accordions", "limit": 1,
       "settings": [
+        { "type": "paragraph", "content": "For distinct content per product, set these metafields in Settings → Custom data → Products (same place as the bulb metafields): 'custom.details_html', 'custom.dimensions_html' and 'custom.delivery_html' — each of type 'Multi-line text' (or 'Rich text' if your plan supports it)." },
+        { "type": "paragraph", "content": "When a product has one of those metafields filled in, it takes priority over the matching richtext field below. The richtext fields are a shared fallback for every product using this template — leave them empty unless you want the same text on all products. An accordion row simply doesn't appear when both its metafield and its richtext field are empty." },
         { "type": "text", "id": "details_title", "label": "Details title", "default": "Details" },
         { "type": "richtext", "id": "details", "label": "Details content" },
         { "type": "text", "id": "dimensions_title", "label": "Dimensions title", "default": "Dimensions" },
