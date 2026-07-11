@@ -1464,6 +1464,7 @@ p:last-child { margin-bottom: 0; }
      in the bag (its .drawer__body scrolls internally only if truly too long),
      while .cart-recs sits at its natural content height, clamped between a
      one-row minimum (140px) and a maximum (240px) so it can't balloon. */
+  /* round 32: bag grows, recs fixed compact — re-sync nudge (round 33) */
   .drawer__wrap:has(.cart-recs) .cart-main { flex: 1 1 auto; min-height: 0; }
   .cart-recs { flex: 0 1 auto; min-height: 140px; max-height: 240px; }
 
