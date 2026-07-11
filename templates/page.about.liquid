@@ -15,7 +15,7 @@
   #about-page .about__closing { margin-top: clamp(48px, 7vw, 84px); text-align: center; }
   #about-page .about__values { list-style: none; margin: 0 auto; padding: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px clamp(20px, 4vw, 40px); color: var(--brass-deep, #8A6E37); font-family: var(--font-display, Georgia, serif); font-size: clamp(18px, 2vw, 22px); }
   #about-page .about__values li { display: inline-flex; align-items: center; gap: clamp(20px, 4vw, 40px); }
-  #about-page .about__values li + li::before { content: "·"; color: var(--hairline, #DED7C7); }
+  #about-page .about__values li + li::before { content: "\00B7"; color: var(--hairline, #DED7C7); }
   #about-page .about__cta { margin-top: clamp(28px, 4vw, 40px); }
 {%- endstyle -%}
 
@@ -37,7 +37,7 @@
         <li>Considered design</li>
       </ul>
       <div class="about__cta">
-        <a class="btn btn--lg" href="{{ routes.all_products_collection_url }}">Explore the collection</a>
+        <a class="btn btn--lg" href="{{ routes.root_url }}collections/shop-all-lighting">Explore the collection</a>
       </div>
     </div>
   </div>
