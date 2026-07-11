@@ -48,10 +48,17 @@
               "link": ""
             }
           },
+          "message_w6wbEr": {
+            "type": "message",
+            "settings": {
+              "text": "Free UK delivery on orders over £300",
+              "link": ""
+            }
+          },
           "announcement-bar-2": {
             "type": "message",
             "settings": {
-              "text": "AI advisor — +44 7863 771703",
+              "text": "24/7 AI advisor — +44 7863 771703",
               "link": ""
             }
           }
@@ -59,6 +66,7 @@
         "block_order": [
           "announcement-bar-0",
           "announcement-bar-1",
+          "message_w6wbEr",
           "announcement-bar-2"
         ],
         "settings": {
@@ -163,7 +171,7 @@
             "type": "popular",
             "settings": {
               "label": "Made to Order",
-              "url": "shopify://collections/made-to-order"
+              "url": ""
             }
           }
         },
