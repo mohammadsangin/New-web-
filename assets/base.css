@@ -1314,56 +1314,47 @@ p:last-child { margin-bottom: 0; }
    ========================================================================== */
 .cart-drawer .drawer__body { display: flex; flex-direction: column; padding: 0; }
 
-/* ---- Cart layout — MOBILE-FIRST (round 37: re-trigger theme sync) --------
-   The DEFAULT (no media query) is the single-column phone layout: the bag on
-   top taking all leftover height, and "You may also like" as a fixed, compact
-   HORIZONTAL strip below it. This is deliberate: because it's the base — not a
-   max-width override — it renders correctly in EVERY context that isn't the
-   explicit >=800px desktop sidebar (real phones, the Shopify editor's mobile
-   preview whatever width it uses, narrow windows). The old design had this in
-   a max-width query, so any context where that query didn't match fell back to
-   an oversized vertical stack — that failure mode is now impossible.
-   `min-height: 0` at every level keeps the nested flex columns distributing. */
+/* ---- Two-panel layout: "More to love" (left) beside the bag (right) ---- */
 .cart-drawer .drawer__wrap { display: flex; flex-direction: column; height: 100%; min-height: 0; }
-
-/* Bag ALWAYS wins the leftover height (flex-basis:0 => size comes purely from
-   flex-grow, independent of its own content). Scrolls internally if very long. */
-.cart-main { display: flex; flex-direction: column; min-height: 0; order: 1; flex: 1 1 0; }
+/* Bag column: header (fixed) + scrollable body. Bag ALWAYS wins the leftover
+   height (flex-basis:0 means its size comes purely from flex-grow, never from
+   its own content), so it never depends on media-query matching to behave. */
+.cart-main { display: flex; flex-direction: column; min-height: 0; flex: 1 1 0; order: 1; }
 .cart-main .drawer__body { flex: 1 1 auto; min-height: 0; }
-.cart-foot { order: 3; }
-
-/* Recs — fixed, compact strip below the bag; can never grow to crowd it. */
+/* Recommendations panel — a small, fixed, non-growing strip below the bag by
+   default (mobile-first). It can never expand to crowd the bag, regardless of
+   viewport or how many items are in the bag. */
 .cart-recs {
-  order: 2;
   display: flex; flex-direction: column;
-  flex: 0 0 auto;
-  min-height: 140px; max-height: 190px;
+  flex: 0 0 auto; min-height: 140px; max-height: 190px;
+  background: var(--surface);
+  order: 2;
   margin-top: 12px;
   border-top: 1px solid var(--hairline);
-  background: var(--surface);
 }
 .cart-recs__title {
   flex: none;
   text-align: center;
   font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--brass-deep);
-  padding: 22px var(--gutter) 12px;
+  padding-top: 22px; padding-bottom: 12px; padding-inline: var(--gutter);
 }
+/* Compact horizontal swipeable row by default (mobile-first) */
 .cart-recs__list {
   flex: 1 1 auto; min-height: 0;
   display: flex; flex-direction: row; align-items: flex-start;
-  gap: 14px;
   overflow-x: auto; overflow-y: hidden;
+  gap: 14px;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x proximity;
   padding: 2px var(--gutter) 16px;
   scrollbar-width: none;
 }
 .cart-recs__list::-webkit-scrollbar { display: none; }
+.cart-foot { order: 3; }
 
-/* Desktop (>=800px): two-panel sidebar — recs become a vertical scrolling
-   column beside the bag. This is the ONLY layout override, gated to a real
-   desktop width. */
+/* Desktop: the ONLY override — restores the two-column sidebar layout with
+   larger, vertically-stacked cards. Everything above is the safe default. */
 @media (min-width: 800px) {
   .cart-drawer:has(.cart-recs) { width: min(680px, 96vw); }
   .cart-drawer .drawer__wrap:has(.cart-recs) {
@@ -1376,19 +1367,17 @@ p:last-child { margin-bottom: 0; }
   }
   .drawer__wrap:has(.cart-recs) .cart-recs {
     grid-area: recs;
-    min-height: 0; max-height: none;
+    min-height: 0;
+    max-height: none;
     margin-top: 0;
     border-top: 0;
     border-right: 1px solid var(--hairline);
   }
   .drawer__wrap:has(.cart-recs) .cart-main { grid-area: main; }
   .drawer__wrap:has(.cart-recs) .cart-foot { grid-area: foot; }
-  /* Recs list back to a centred, vertical scrolling column. */
-  .cart-recs__title { padding: 20px var(--gutter) 14px; }
   .cart-recs__list {
-    flex-direction: column; align-items: stretch;
-    gap: 0;
-    overflow-x: hidden; overflow-y: auto;
+    display: block;
+    overflow-x: visible; overflow-y: auto;
     padding: 0 6px 20px;
   }
 }
@@ -1428,14 +1417,14 @@ p:last-child { margin-bottom: 0; }
 .cart-empty__text { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 30ch; margin-bottom: 26px; }
 .cart-empty .btn { min-width: 200px; }
 
-/* "More to love" — image-forward cards, centred text, vertical list */
+/* "More to love" — image-forward cards, centred text */
 .cart-recs__list { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
   .cart-recs__list { scroll-behavior: auto; }
 }
-/* Scrollbar stays hidden at both breakpoints (base .cart-recs__list already
-   sets scrollbar-width:none + ::-webkit-scrollbar{display:none}). */
-/* Card row — MOBILE-FIRST: a horizontal sequence of compact cards. */
+.cart-recs__list::-webkit-scrollbar { width: 4px; }
+.cart-recs__list::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 999px; }
+.cart-recs__list::-webkit-scrollbar-track { background: transparent; }
 .cart-cross__scroll {
   display: flex;
   flex-direction: row;
@@ -1443,24 +1432,24 @@ p:last-child { margin-bottom: 0; }
   gap: 14px;
   padding-top: 2px;
 }
-/* Compact, fully centred cards (internal image-over-text layout is shared by
-   both breakpoints; only the outer width/flow differs). */
+/* Compact, fully centred cards — no borders, no boxes, generous whitespace.
+   Mobile-first default: compact horizontal row. */
 .cross-card {
   position: relative; /* stretched-link anchor */
   flex: 0 0 auto;
   width: 104px;
   max-width: 104px;
-  scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 12px;
+  scroll-snap-align: start;
 }
 .cross-card__media {
   width: 88px;
   max-width: 100%;
-  aspect-ratio: 1 / 1; /* image can never dictate the row height */
+  aspect-ratio: 1 / 1;
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--surface);
@@ -1486,7 +1475,7 @@ p:last-child { margin-bottom: 0; }
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 6px 15px;
+  padding: 6px 12px;
   font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
   background: none; border: 1px solid var(--hairline); border-radius: 999px; color: var(--muted);
   transition: border-color var(--dur-hover) var(--ease), background var(--dur-hover) var(--ease), color var(--dur-hover) var(--ease);
@@ -1494,12 +1483,12 @@ p:last-child { margin-bottom: 0; }
 .cross-card__add svg { width: 10px; height: 10px; }
 .cross-card__add:hover { border-color: var(--ink); background: var(--ink); color: var(--surface); }
 
-/* Desktop (>=800px): restore the sidebar's vertical, centred card column.
-   Placed AFTER the mobile-first card defaults so it wins by source order at
-   desktop widths; every non-desktop context keeps the compact horizontal row. */
+/* Desktop: restore the larger, vertically-stacked card presentation inside
+   the narrow sidebar column (the single min-width:800px override above
+   already switched .cart-recs__list back to a vertical scrolling block). */
 @media (min-width: 800px) {
-  .cart-cross__scroll { flex-direction: column; align-items: center; gap: 26px; }
-  .cross-card { flex: none; width: 100%; max-width: 150px; scroll-snap-align: none; }
+  .cart-cross__scroll { flex-direction: column; align-items: center; gap: 26px; padding-top: 2px; }
+  .cross-card { width: 100%; max-width: 150px; }
   .cross-card__media { width: 116px; }
 }
 
