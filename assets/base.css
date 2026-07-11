@@ -1319,14 +1319,22 @@ p:last-child { margin-bottom: 0; }
 /* Bag column: header (fixed) + scrollable body. Bag ALWAYS wins the leftover
    height (flex-basis:0 means its size comes purely from flex-grow, never from
    its own content), so it never depends on media-query matching to behave. */
-.cart-main { display: flex; flex-direction: column; min-height: 0; flex: 1 1 0; order: 1; }
+/* The bag grows to claim leftover space (flex-grow:1). It CAN shrink, but with
+   a shrink factor of just 1 against .cart-recs' factor of 100 below, recs gives
+   way almost entirely before the bag compresses at all — so for 1–3 typical
+   items the bag never has to scroll. If a bag is genuinely too long even after
+   recs has collapsed, the bag shrinks and its own .drawer__body scrolls as the
+   last resort, which keeps the checkout footer pinned and reachable (a bag that
+   refused to shrink would instead push checkout off-screen). */
+.cart-main { display: flex; flex-direction: column; min-height: 0; flex: 1 1 auto; order: 1; }
 .cart-main .drawer__body { flex: 1 1 auto; min-height: 0; }
-/* Recommendations panel — a small, fixed, non-growing strip below the bag by
-   default (mobile-first). It can never expand to crowd the bag, regardless of
-   viewport or how many items are in the bag. */
+/* Recommendations panel — a compact strip below the bag (mobile-first). High
+   flex-shrink (100) + no min floor means it is the FIRST thing to give way and
+   compresses toward nothing (its horizontal card row simply scrolls in a
+   smaller strip) before the bag's items are ever touched. */
 .cart-recs {
   display: flex; flex-direction: column;
-  flex: 0 0 auto; min-height: 140px; max-height: 190px;
+  flex: 0 100 auto; min-height: 0; max-height: 150px;
   background: var(--surface);
   order: 2;
   margin-top: 12px;
@@ -1380,8 +1388,13 @@ p:last-child { margin-bottom: 0; }
     overflow-x: visible; overflow-y: auto;
     padding: 0 6px 20px;
   }
+  /* Desktop keeps the original roomier chrome padding (mobile-only tightening). */
+  .cart-progress { padding: 16px var(--gutter); }
+  .cart-foot { padding-top: 18px; }
 }
-.cart-progress { padding: 16px var(--gutter); border-bottom: 1px solid var(--hairline); }
+/* Tighter by default (mobile) to reclaim vertical room for the bag; desktop
+   restores the roomier padding in the >=800px block below. */
+.cart-progress { padding: 12px var(--gutter); border-bottom: 1px solid var(--hairline); }
 .cart-progress__text { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
 .cart-progress__text strong { color: var(--ink); font-weight: 600; }
 .cart-progress__bar { height: 4px; background: var(--panel); border-radius: 999px; overflow: hidden; }
@@ -1494,7 +1507,8 @@ p:last-child { margin-bottom: 0; }
 
 .cart-foot {
   border-top: 1px solid var(--hairline);
-  padding: 18px var(--gutter) calc(18px + env(safe-area-inset-bottom));
+  /* Tighter top by default (mobile); desktop restores 18px in the >=800px block. */
+  padding: 14px var(--gutter) calc(18px + env(safe-area-inset-bottom));
   flex: none;
   background: var(--surface);
 }
