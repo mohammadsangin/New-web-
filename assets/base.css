@@ -1450,6 +1450,36 @@ p:last-child { margin-bottom: 0; }
 .cross-card__add svg { width: 10px; height: 10px; }
 .cross-card__add:hover { border-color: var(--ink); background: var(--ink); color: var(--surface); }
 
+/* Mobile only: "More to love" becomes ONE continuous horizontal, swipeable row
+   (cards peek at the edge to invite scrolling) instead of a cramped vertical
+   stack. Desktop (>=800px) keeps its narrow vertical sidebar list untouched. */
+@media (max-width: 799px) {
+  .cart-recs__list {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 16px;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    padding: 2px var(--gutter) 16px;
+    scrollbar-width: none;
+  }
+  .cart-recs__list::-webkit-scrollbar { display: none; }
+  .cart-cross__scroll {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .cross-card {
+    flex: 0 0 auto;
+    width: 132px;
+    max-width: 132px;
+    scroll-snap-align: start;
+  }
+}
+
 .cart-foot {
   border-top: 1px solid var(--hairline);
   padding: 18px var(--gutter) calc(18px + env(safe-area-inset-bottom));
