@@ -1459,6 +1459,13 @@ p:last-child { margin-bottom: 0; }
    stack, clearly separated from the bag above and sized as a compact secondary
    row. Desktop (>=800px) keeps its narrow vertical sidebar list untouched. */
 @media (max-width: 799px) {
+  /* Bag items get priority space; recs flex into whatever's left (never the
+     reverse). The bag takes its natural height (scrolling internally if very
+     long); the recs region fills the remainder down to a one-row minimum. The
+     fixed 44vh cap is removed so a long item title is never squeezed. */
+  .drawer__wrap:has(.cart-recs) .cart-main { flex: 0 1 auto; min-height: 0; }
+  .cart-recs { flex: 1 1 auto; min-height: 140px; max-height: none; }
+
   /* Breathing room between the bag item(s) and the recs section. */
   .cart-recs { margin-top: 12px; }
   .cart-recs__title { padding-top: 22px; padding-bottom: 12px; }
