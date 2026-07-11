@@ -13,6 +13,7 @@
       "type": "hero",
       "settings": {
         "image": "shopify://shop_images/ChatGPT_Image_Jul_5_2026_05_44_07_PM_c1d6ef33-db43-4104-9494-ae60a9cbbb0f.png",
+        "mobile_image": "shopify://shop_images/a9a75883-a097-49aa-8725-d95c014938e2.png",
         "alignment": "left",
         "eyebrow": "Solid brass, made to order",
         "heading": "Lighting with a considered hand",
