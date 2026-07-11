@@ -51,7 +51,7 @@
           "announcement-bar-2": {
             "type": "message",
             "settings": {
-              "text": "Expert advice — 0333 090 0045",
+              "text": "AI advisor — +44 7863 771703",
               "link": ""
             }
           }
@@ -163,7 +163,7 @@
             "type": "popular",
             "settings": {
               "label": "Made to Order",
-              "url": ""
+              "url": "shopify://collections/made-to-order"
             }
           }
         },
