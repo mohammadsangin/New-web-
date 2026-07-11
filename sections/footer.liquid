@@ -29,12 +29,23 @@
               {%- if section.settings.company_address != blank -%}
                 <address class="footer__company-address">{{ section.settings.company_address | escape }}</address>
               {%- endif -%}
-              {%- if settings.contact_phone != blank or settings.contact_email != blank -%}
-                <p class="footer__company-contact">
-                  {%- if settings.contact_phone != blank -%}<a href="tel:{{ settings.contact_phone | replace: ' ', '' }}">{{ settings.contact_phone }}</a>{%- endif -%}
-                  {%- if settings.contact_email != blank -%}<a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a>{%- endif -%}
+              <div class="footer__company-contact">
+                <p class="footer__company-contact-line">
+                  <span class="footer__contact-label">Customer support</span>
+                  <a href="tel:+447863771703">+44 7863 771703</a>
                 </p>
-              {%- endif -%}
+                {%- if settings.contact_email != blank -%}
+                  <p class="footer__company-contact-line">
+                    <a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a>
+                  </p>
+                {%- endif -%}
+                {%- if settings.contact_phone != blank -%}
+                  <p class="footer__company-contact-line">
+                    <span class="footer__contact-label">Trade &amp; supplier</span>
+                    <a href="tel:{{ settings.contact_phone | replace: ' ', '' }}">{{ settings.contact_phone }}</a>
+                  </p>
+                {%- endif -%}
+              </div>
             </div>
           </div>
         {%- endif -%}
@@ -203,7 +214,7 @@
     { "type": "text", "id": "company_number", "label": "Company number", "default": "Company Number: 16970017" },
     { "type": "text", "id": "company_dpa", "label": "Data protection registration", "default": "Data Protection Registration: ZC114360" },
     { "type": "text", "id": "company_address", "label": "Registered office", "info": "The only address ever shown.", "default": "3rd Floor, 86–90 Paul Street, London EC2A 4NE" },
-    { "type": "paragraph", "content": "Phone and email come from Theme settings → Contact." },
+    { "type": "paragraph", "content": "Customer support (AI advisor) number is fixed at +44 7863 771703. Trade & supplier phone and email come from Theme settings → Contact." },
     { "type": "header", "content": "Quick links" },
     { "type": "text", "id": "quick_links_heading", "label": "Heading", "default": "Quick links" },
     { "type": "link_list", "id": "quick_links_menu", "label": "Quick links menu", "info": "Defaults to the 'Footer Quick Links' menu." },
