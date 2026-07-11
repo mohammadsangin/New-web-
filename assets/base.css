@@ -1334,10 +1334,10 @@ p:last-child { margin-bottom: 0; }
    smaller strip) before the bag's items are ever touched. */
 .cart-recs {
   display: flex; flex-direction: column;
-  flex: 0 100 auto; min-height: 110px; max-height: 150px;
+  flex: 0 100 auto; min-height: 100px; max-height: 150px;
   background: var(--surface);
   order: 2;
-  margin-top: 12px;
+  margin-top: 20px;
   border-top: 1px solid var(--hairline);
 }
 .cart-recs__title {
@@ -1349,14 +1349,23 @@ p:last-child { margin-bottom: 0; }
      floor; desktop restores the roomier padding in the >=800px block. */
   padding-top: 12px; padding-bottom: 8px; padding-inline: var(--gutter);
 }
-/* Mobile-first: a vertical list of compact line-item rows that scrolls within
-   whatever height .cart-recs is given (rows are short, so nothing crops). */
+/* Mobile-first: a horizontally-scrollable strip of small fixed-width cards
+   (swipe left-right). Cards are compact (small thumbnail + 1-line name + price)
+   so they stay short and never crop when .cart-recs is compressed. */
 .cart-recs__list {
   flex: 1 1 auto; min-height: 0;
-  overflow-x: hidden; overflow-y: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: 12px;
   -webkit-overflow-scrolling: touch;
-  padding: 0 var(--gutter) 10px;
+  scroll-snap-type: x proximity;
+  padding: 2px var(--gutter) 10px;
+  scrollbar-width: none;
 }
+.cart-recs__list::-webkit-scrollbar { display: none; }
 .cart-foot { order: 3; }
 
 /* Desktop: the ONLY override — restores the two-column sidebar layout with
@@ -1398,19 +1407,21 @@ p:last-child { margin-bottom: 0; }
 .cart-progress__bar { height: 4px; background: var(--panel); border-radius: 999px; overflow: hidden; }
 .cart-progress__fill { height: 100%; background: var(--brass); border-radius: 999px; transition: width 400ms var(--ease); }
 
-.cart-items { list-style: none; padding: 6px var(--gutter); margin: 0; }
-.cart-item { display: grid; grid-template-columns: 72px 1fr; gap: 14px; padding: 18px 0; border-bottom: 1px solid var(--hairline); }
-.cart-item__media { border-radius: var(--radius); overflow: hidden; aspect-ratio: 4/5; background: var(--panel); }
+/* Compact bag line-items (drawer only — the /cart page uses .cart-row, which is
+   untouched): 48px thumbnail | truncated title + remove, with qty + price below. */
+.cart-items { list-style: none; padding: 4px var(--gutter); margin: 0; }
+.cart-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--hairline); }
+.cart-item__media { width: 48px; height: 48px; flex: none; border-radius: var(--radius); overflow: hidden; aspect-ratio: auto; background: var(--panel); }
 .cart-item__media img { width: 100%; height: 100%; object-fit: cover; }
-.cart-item__top { display: flex; justify-content: space-between; gap: 12px; }
-.cart-item__title { font-family: var(--font-display); font-size: 18px; line-height: 1.15; }
-.cart-item__variant { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
-.cart-item__remove { background: none; border: 0; color: var(--muted); padding: 2px; height: fit-content; }
+.cart-item__info { flex: 1; min-width: 0; }
+.cart-item__top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.cart-item__top > div { flex: 1; min-width: 0; }
+.cart-item__title { font-family: var(--font-display); font-size: 14.5px; line-height: 1.3; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cart-item__variant { font-size: 12px; line-height: 1.35; color: var(--muted); margin: 1px 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cart-item__remove { background: none; border: 0; color: var(--muted); padding: 2px; height: fit-content; flex: none; }
 .cart-item__remove:hover { color: var(--brass-deep); }
 .cart-item__remove svg { width: 16px; height: 16px; }
-.cart-item__bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
-.cart-item .qty button { min-height: 38px; width: 36px; font-size: 16px; }
-.cart-item .qty input { width: 34px; }
+.cart-item__bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
 .cart-item__price { font-size: 14px; font-weight: 600; }
 
 .cart-empty { text-align: center; padding: clamp(40px, 8vh, 72px) var(--gutter); flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
@@ -1428,49 +1439,44 @@ p:last-child { margin-bottom: 0; }
 .cart-empty__text { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 30ch; margin-bottom: 26px; }
 .cart-empty .btn { min-width: 200px; }
 
-/* "More to love" — image-forward cards, centred text */
+/* "More to love" — compact cards */
 .cart-recs__list { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
   .cart-recs__list { scroll-behavior: auto; }
 }
-.cart-recs__list::-webkit-scrollbar { width: 4px; }
-.cart-recs__list::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 999px; }
-.cart-recs__list::-webkit-scrollbar-track { background: transparent; }
-/* Mobile-first: rows stack vertically inside .cart-recs__list. */
-.cart-cross__scroll {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-top: 0;
-  width: 100%;
-}
-/* Mobile-first default: a compact horizontal line-item row — small square
-   thumbnail on the left, name + price stacked to its right, small Add on the
-   right. ~56px tall, so it never crops even when .cart-recs is compressed. */
+/* Flatten the wrapper so each .cross-card is a direct flex child of the
+   horizontal .cart-recs__list (mobile-first). */
+.cart-cross__scroll { display: contents; }
+/* Mobile-first default: a small fixed-width horizontal card — tiny thumbnail on
+   the left, 1-line name + price to its right. Short (~48px) so it never crops
+   when .cart-recs is compressed. Add button is dropped on this compact width;
+   the whole card links to the product. */
 .cross-card {
   position: relative; /* stretched-link anchor */
+  flex: 0 0 auto;
+  width: 148px;
+  max-width: 148px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 12px;
-  width: 100%;
-  max-width: none;
+  gap: 8px;
   text-align: left;
+  scroll-snap-align: start;
 }
 .cross-card__media {
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   flex: none;
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--surface);
 }
 .cross-card__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.cross-card__info { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.cross-card__info { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
 .cross-card__link {
   font-family: var(--font-body);
-  font-size: 11.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
-  line-height: 1.35; color: var(--ink);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  line-height: 1.3; color: var(--ink);
   text-align: left;
   display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
   max-width: 100%;
@@ -1479,16 +1485,13 @@ p:last-child { margin-bottom: 0; }
 .cross-card__link::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius); }
 .cross-card__link:focus-visible { outline: none; }
 .cross-card:has(.cross-card__link:focus-visible) { outline: 2px solid var(--brass-deep); outline-offset: 4px; border-radius: var(--radius); }
-/* Descriptor line is hidden in the compact row to keep it to one clean line;
-   restored on desktop's roomier vertical card. */
 .cross-card__type { display: none; font-size: 12px; color: var(--muted); letter-spacing: 0.01em; }
-.cross-card__price, .cross-card__price .price { font-size: 12.5px; color: var(--muted); }
+.cross-card__price, .cross-card__price .price { font-size: 12px; color: var(--muted); }
 .cross-card__add {
+  display: none; /* dropped on the compact mobile card; shown on the desktop sidebar */
   position: relative;
-  z-index: 1; /* above the stretched link */
+  z-index: 1;
   flex: none;
-  margin-top: 0;
-  display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 6px 12px;
@@ -1500,16 +1503,17 @@ p:last-child { margin-bottom: 0; }
 .cross-card__add:hover { border-color: var(--ink); background: var(--ink); color: var(--surface); }
 
 /* Desktop: restore the larger, vertically-stacked, centred card presentation
-   inside the narrow sidebar column (its list is already a vertical block via
-   the structural min-width:800px override above). */
+   inside the narrow sidebar column (its list is a vertical block via the
+   structural min-width:800px override above). */
 @media (min-width: 800px) {
-  .cart-cross__scroll { flex-direction: column; align-items: center; gap: 26px; padding-top: 2px; }
-  .cross-card { flex-direction: column; align-items: center; text-align: center; width: 100%; max-width: 150px; gap: 12px; }
+  .cart-cross__scroll { display: flex; flex-direction: column; align-items: center; gap: 26px; padding-top: 2px; }
+  .cross-card { flex-direction: column; align-items: center; text-align: center; width: 100%; max-width: 150px; gap: 12px; scroll-snap-align: none; }
   .cross-card__media { width: 116px; height: auto; aspect-ratio: 1 / 1; }
   .cross-card__info { align-items: center; gap: 5px; }
-  .cross-card__link { -webkit-line-clamp: 2; text-align: center; }
+  .cross-card__link { font-size: 11.5px; letter-spacing: 0.1em; -webkit-line-clamp: 2; text-align: center; }
   .cross-card__type { display: block; }
-  .cross-card__add { margin-top: 4px; }
+  .cross-card__price, .cross-card__price .price { font-size: 12.5px; }
+  .cross-card__add { display: inline-flex; margin-top: 4px; }
   .cart-recs__title { padding-top: 22px; padding-bottom: 12px; }
 }
 

@@ -114,7 +114,7 @@
                     </button>
                   </div>
                   <div class="cart-item__bottom">
-                    <div class="qty">
+                    <div class="qty qty--sm">
                       <button type="button" data-cart-step="-1" data-cart-key="{{ item.key }}" aria-label="{{ 'cart.general.decrease' | t }}">{% render 'icon', name: 'minus' %}</button>
                       <input type="number" value="{{ item.quantity }}" min="0" inputmode="numeric" data-cart-qty data-cart-key="{{ item.key }}" aria-label="{{ 'cart.general.quantity' | t }}">
                       <button type="button" data-cart-step="1" data-cart-key="{{ item.key }}" aria-label="{{ 'cart.general.increase' | t }}">{% render 'icon', name: 'plus' %}</button>
