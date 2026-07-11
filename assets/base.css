@@ -1314,7 +1314,7 @@ p:last-child { margin-bottom: 0; }
    ========================================================================== */
 .cart-drawer .drawer__body { display: flex; flex-direction: column; padding: 0; }
 
-/* ---- Cart layout — MOBILE-FIRST ----------------------------------------
+/* ---- Cart layout — MOBILE-FIRST (round 37: re-trigger theme sync) --------
    The DEFAULT (no media query) is the single-column phone layout: the bag on
    top taking all leftover height, and "You may also like" as a fixed, compact
    HORIZONTAL strip below it. This is deliberate: because it's the base — not a
