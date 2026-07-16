@@ -1,20 +1,45 @@
 {%- comment -%}
   Reviews — branded intro + Judge.me all-reviews, rendered server-side from
-  Judge.me's synced metafields so they display even when the JS widget can't
-  fetch on its own. This is Judge.me's custom all-reviews-page pattern: the
-  all_reviews_header + all_reviews_N string metafields (~23 reviews per batch)
-  are output INSIDE the jdgm-all-reviews-widget container, and the app-embed
-  script styles/enhances them in place (formats dates, wires sort + "write a
-  review"). Batches 0–4 cover ~115 reviews; add more all_reviews_N lines beyond.
+  Judge.me's synced metafields (so they show without relying on the JS fetch).
+  Colour + two-column layout applied via CSS below. Judge.me exposes its palette
+  as CSS custom properties (--jdgm-*), remapped here to Kymra brass/ink/ivory.
+  Review cards are wrapped in .reviews__grid so they lay out in two masonry
+  columns on desktop, one on mobile; the summary header sits full-width above.
+  Batches 0–4 cover ~115 reviews; add more all_reviews_N lines beyond that.
 {%- endcomment -%}
 {%- style -%}
   #reviews-page .reviews__intro { max-width: 60ch; margin-inline: auto; color: var(--muted, #6A6459); font-size: 17px; line-height: 1.7; text-align: center; }
-  #reviews-page .reviews__widget { max-width: 940px; margin-inline: auto; margin-top: clamp(40px, 6vw, 72px); }
-  /* Light brand restyle — colour and spacing only; Judge.me keeps its structure. */
-  #reviews-page .jdgm-all-reviews__summary-text { color: var(--muted, #6A6459); }
-  #reviews-page .jdgm-rev__author, #reviews-page .jdgm-rev__title { color: var(--ink, #1F1D18); }
-  #reviews-page .jdgm-rev__body, #reviews-page .jdgm-rev__timestamp, #reviews-page .jdgm-rev__location { color: var(--muted, #6A6459); }
-  #reviews-page .jdgm-rev { border-color: var(--hairline, #DED7C7); }
+  #reviews-page .reviews__widget { max-width: 1080px; margin-inline: auto; margin-top: clamp(40px, 6vw, 72px); }
+
+  /* Judge.me → Kymra palette (Judge.me reads these custom properties) */
+  #reviews-page .jdgm-all-reviews-widget {
+    --jdgm-star-color: #A8894F !important;
+    --jdgm-primary-color: #A8894F !important;
+    --jdgm-secondary-color: #8A6E37 !important;
+    --jdgm-paginate-color: #A8894F !important;
+    --jdgm-reviewer-name-color: #1F1D18 !important;
+    --jdgm-write-review-bg-color: #1F1D18 !important;
+    --jdgm-write-review-text-color: #F5F1E9 !important;
+    --jdgm-border-radius: 4px !important;
+  }
+  /* Direct overrides in case a rule bypasses the variables */
+  #reviews-page .jdgm-star.jdgm--on { color: #A8894F !important; }
+  #reviews-page .jdgm-star.jdgm--off, #reviews-page .jdgm-star.jdgm--half { color: #DED7C7 !important; }
+  #reviews-page .jdgm-write-rev-link,
+  #reviews-page .jdgm-all-reviews__write-review-btn { background-color: #1F1D18 !important; color: #F5F1E9 !important; border-color: #1F1D18 !important; }
+  #reviews-page .jdgm-rev__author, #reviews-page .jdgm-rev__title { color: #1F1D18 !important; }
+  #reviews-page .jdgm-rev__body, #reviews-page .jdgm-rev__timestamp,
+  #reviews-page .jdgm-rev__location, #reviews-page .jdgm-all-reviews__summary-text { color: #6A6459 !important; }
+  #reviews-page .jdgm-rev__prod-link { color: #8A6E37 !important; }
+  #reviews-page .jdgm-rev { border-color: #DED7C7 !important; }
+  #reviews-page .jdgm-all-reviews__header { text-align: center; margin-bottom: clamp(28px, 4vw, 48px); }
+
+  /* Two-column editorial grid on desktop; single column on mobile */
+  #reviews-page .reviews__grid { margin-top: 8px; }
+  @media (min-width: 800px) {
+    #reviews-page .reviews__grid { column-count: 2; column-gap: clamp(28px, 3vw, 44px); }
+    #reviews-page .reviews__grid .jdgm-rev { -webkit-column-break-inside: avoid; break-inside: avoid; }
+  }
 {%- endstyle -%}
 
 <div id="reviews-page">
@@ -31,11 +56,13 @@
 
     <div class="reviews__widget jdgm-all-reviews-widget">
       {{ shop.metafields.judgeme.all_reviews_header }}
-      {{ shop.metafields.judgeme.all_reviews_0 }}
-      {{ shop.metafields.judgeme.all_reviews_1 }}
-      {{ shop.metafields.judgeme.all_reviews_2 }}
-      {{ shop.metafields.judgeme.all_reviews_3 }}
-      {{ shop.metafields.judgeme.all_reviews_4 }}
+      <div class="reviews__grid">
+        {{ shop.metafields.judgeme.all_reviews_0 }}
+        {{ shop.metafields.judgeme.all_reviews_1 }}
+        {{ shop.metafields.judgeme.all_reviews_2 }}
+        {{ shop.metafields.judgeme.all_reviews_3 }}
+        {{ shop.metafields.judgeme.all_reviews_4 }}
+      </div>
     </div>
   </div>
 </div>
