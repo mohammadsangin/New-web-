@@ -1,10 +1,11 @@
 {%- comment -%}
   Reviews — branded intro + Judge.me all-reviews, rendered server-side from
   Judge.me's synced metafields (so they show without relying on the JS fetch).
-  Colour + two-column layout applied via CSS below. Judge.me exposes its palette
-  as CSS custom properties (--jdgm-*), remapped here to Kymra brass/ink/ivory.
-  Review cards are wrapped in .reviews__grid so they lay out in two masonry
-  columns on desktop, one on mobile; the summary header sits full-width above.
+  Colour + two-column layout via CSS; Judge.me's palette is remapped through its
+  --jdgm-* custom properties to Kymra brass/ink/ivory. Review cards wrap in
+  .reviews__grid (two masonry columns on desktop, one on mobile). A small script
+  reformats the JS-rendered "5.00 out of 5" to trim needless decimals and hides
+  Judge.me's hanging load spinner (all reviews are already on the page).
   Batches 0–4 cover ~115 reviews; add more all_reviews_N lines beyond that.
 {%- endcomment -%}
 {%- style -%}
@@ -33,6 +34,10 @@
   #reviews-page .jdgm-rev__prod-link { color: #8A6E37 !important; }
   #reviews-page .jdgm-rev { border-color: #DED7C7 !important; }
   #reviews-page .jdgm-all-reviews__header { text-align: center; margin-bottom: clamp(28px, 4vw, 48px); }
+
+  /* All reviews are server-rendered — hide Judge.me's failing load spinner + pagination */
+  #reviews-page .jdgm-all-reviews-widget .jdgm-spinner:not(.jdgm-rev__timestamp),
+  #reviews-page .jdgm-paginate { display: none !important; }
 
   /* Two-column editorial grid on desktop; single column on mobile */
   #reviews-page .reviews__grid { margin-top: 8px; }
@@ -66,3 +71,41 @@
     </div>
   </div>
 </div>
+
+<script>
+  (function () {
+    var root = document.getElementById('reviews-page');
+    if (!root) return;
+    var widget = root.querySelector('.jdgm-all-reviews-widget');
+    if (!widget) return;
+
+    function pretty(numStr) {
+      var num = parseFloat(numStr);
+      if (isNaN(num)) return numStr;
+      return (num % 1 === 0) ? String(Math.round(num)) : String(parseFloat(num.toFixed(2)));
+    }
+    function tidy() {
+      // "5.00 out of 5" -> "5 out of 5" in the summary area only (never inside review cards)
+      widget.querySelectorAll('*').forEach(function (el) {
+        if (el.closest && el.closest('.reviews__grid')) return;
+        if (el.children && el.children.length) return;
+        var t = el.textContent || '';
+        if (/\d+\.\d+\s*(?:out of|\/)\s*5/i.test(t)) {
+          el.textContent = t.replace(/(\d+\.\d+)(\s*(?:out of|\/)\s*5)/i, function (_, n, tail) { return pretty(n) + tail; });
+        } else if (/^\s*\d+\.\d+\s*$/.test(t)) {
+          el.textContent = t.replace(/\d+\.\d+/, pretty(t.trim()));
+        }
+      });
+      // Hide Judge.me's hanging loader + pagination (all reviews already on the page)
+      widget.querySelectorAll('.jdgm-spinner:not(.jdgm-rev__timestamp)').forEach(function (el) { el.style.display = 'none'; });
+      root.querySelectorAll('.jdgm-paginate').forEach(function (el) { el.style.display = 'none'; });
+    }
+    tidy();
+    window.addEventListener('load', tidy);
+    if (window.MutationObserver) {
+      var mo = new MutationObserver(tidy);
+      mo.observe(widget, { childList: true, subtree: true, characterData: true });
+      setTimeout(function () { mo.disconnect(); tidy(); }, 20000);
+    }
+  })();
+</script>
