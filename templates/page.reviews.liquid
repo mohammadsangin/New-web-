@@ -1,23 +1,20 @@
 {%- comment -%}
-  Reviews — branded intro + Judge.me's all-reviews widget. The empty
-  <div class="jdgm-all-reviews-widget"> is Judge.me's documented hook; their
-  core script (loaded by the Judge.me theme app-embed) fills it with every
-  published store review. It stays empty until ALL of these are true:
-    1. the Judge.me app-embed is enabled (Online Store → Themes → Customize →
-       App embeds → Judge.me toggled on),
-    2. the "All Reviews Page" widget is switched on in the Judge.me dashboard, and
-    3. at least one review is published.
+  Reviews — branded intro + Judge.me all-reviews, rendered server-side from
+  Judge.me's synced metafields so they display even when the JS widget can't
+  fetch on its own. This is Judge.me's custom all-reviews-page pattern: the
+  all_reviews_header + all_reviews_N string metafields (~23 reviews per batch)
+  are output INSIDE the jdgm-all-reviews-widget container, and the app-embed
+  script styles/enhances them in place (formats dates, wires sort + "write a
+  review"). Batches 0–4 cover ~115 reviews; add more all_reviews_N lines beyond.
 {%- endcomment -%}
 {%- style -%}
   #reviews-page .reviews__intro { max-width: 60ch; margin-inline: auto; color: var(--muted, #6A6459); font-size: 17px; line-height: 1.7; text-align: center; }
-  #reviews-page .reviews__widget { max-width: 940px; margin-inline: auto; margin-top: clamp(40px, 6vw, 72px); min-height: 120px; }
-  /* Light brand restyle — font, colour and spacing only; Judge.me keeps its own
-     structural classes and behaviour untouched. */
-  #reviews-page .jdgm-all-reviews-widget { font-family: var(--font-body, inherit); color: var(--ink, #1F1D18); }
+  #reviews-page .reviews__widget { max-width: 940px; margin-inline: auto; margin-top: clamp(40px, 6vw, 72px); }
+  /* Light brand restyle — colour and spacing only; Judge.me keeps its structure. */
+  #reviews-page .jdgm-all-reviews__summary-text { color: var(--muted, #6A6459); }
   #reviews-page .jdgm-rev__author, #reviews-page .jdgm-rev__title { color: var(--ink, #1F1D18); }
   #reviews-page .jdgm-rev__body, #reviews-page .jdgm-rev__timestamp, #reviews-page .jdgm-rev__location { color: var(--muted, #6A6459); }
   #reviews-page .jdgm-rev { border-color: var(--hairline, #DED7C7); }
-  #reviews-page .jdgm-star { color: var(--brass, #A8894F) !important; }
 {%- endstyle -%}
 
 <div id="reviews-page">
@@ -32,9 +29,13 @@
       <div class="rte" style="max-width:760px;margin-inline:auto;margin-bottom:clamp(32px,5vw,56px);">{{ page.content }}</div>
     {%- endif -%}
 
-    <div class="reviews__widget">
-      {%- comment -%} Judge.me — All reviews widget (hydrated by the app-embed script). {%- endcomment -%}
-      <div class='jdgm-all-reviews-widget'></div>
+    <div class="reviews__widget jdgm-all-reviews-widget">
+      {{ shop.metafields.judgeme.all_reviews_header }}
+      {{ shop.metafields.judgeme.all_reviews_0 }}
+      {{ shop.metafields.judgeme.all_reviews_1 }}
+      {{ shop.metafields.judgeme.all_reviews_2 }}
+      {{ shop.metafields.judgeme.all_reviews_3 }}
+      {{ shop.metafields.judgeme.all_reviews_4 }}
     </div>
   </div>
 </div>
