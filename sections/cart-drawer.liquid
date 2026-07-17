@@ -9,6 +9,14 @@
 {%- liquid
   assign threshold = settings.free_shipping_threshold | default: 0 | times: 100
 -%}
+{%- comment -%} Cart line-item image: compact on mobile (unchanged); larger on desktop only. {%- endcomment -%}
+{%- style -%}
+  @media (min-width: 900px) {
+    #cart-drawer .cart-item { grid-template-columns: 112px 1fr; }
+    #cart-drawer .cart-item__media { width: 112px; flex: 0 0 112px; min-width: 112px; }
+    #cart-drawer .cart-item__media img { width: 112px; height: 140px; object-fit: cover; }
+  }
+{%- endstyle -%}
 <div class="drawer drawer--right cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="{{ 'cart.general.title' | t }}" aria-hidden="true">
   <div class="drawer__wrap">
     {%- if cart.item_count > 0 -%}
@@ -95,7 +103,10 @@
               <li class="cart-item" data-cart-line="{{ forloop.index }}">
                 <a class="cart-item__media" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
                   {%- if item.image -%}
-                    <img src="{{ item.image | image_url: width: 160 }}" alt="{{ item.image.alt | escape }}" width="72" height="90" loading="lazy">
+                    <img src="{{ item.image | image_url: width: 240 }}"
+                         srcset="{{ item.image | image_url: width: 160 }} 160w, {{ item.image | image_url: width: 240 }} 240w, {{ item.image | image_url: width: 320 }} 320w"
+                         sizes="(min-width: 900px) 112px, 72px"
+                         alt="{{ item.image.alt | escape }}" width="72" height="90" loading="lazy">
                   {%- endif -%}
                 </a>
                 <div class="cart-item__info">
