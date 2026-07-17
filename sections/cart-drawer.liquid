@@ -9,16 +9,14 @@
 {%- liquid
   assign threshold = settings.free_shipping_threshold | default: 0 | times: 100
 -%}
-{%- comment -%} Cart line-item image: compact on mobile (unchanged); larger on desktop only. {%- endcomment -%}
-{%- style -%}
-  @media (min-width: 900px) {
-    #cart-drawer .cart-item { grid-template-columns: 112px 1fr; }
-    #cart-drawer .cart-item__media { width: 112px; flex: 0 0 112px; min-width: 112px; }
-    #cart-drawer .cart-item__media img { width: 112px; height: 140px; object-fit: cover; }
-  }
-{%- endstyle -%}
 <div class="drawer drawer--right cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="{{ 'cart.general.title' | t }}" aria-hidden="true">
   <div class="drawer__wrap">
+    {%- comment -%} Cart line-item image: compact on mobile (unchanged); larger on desktop only. Kept INSIDE .drawer__wrap so it re-applies on AJAX cart updates, not only full page loads. The image box is a fixed 48x48 on mobile via base.css; here we grow it to a 96x120 (4:5) box on desktop so the whole fixture shows. {%- endcomment -%}
+    <style>
+      @media (min-width: 900px) {
+        #cart-drawer .cart-item__media { width: 96px; height: 120px; }
+      }
+    </style>
     {%- if cart.item_count > 0 -%}
       {%- comment -%}
         "More to love" — STRICTLY same-category recommendations. For each
@@ -105,7 +103,7 @@
                   {%- if item.image -%}
                     <img src="{{ item.image | image_url: width: 240 }}"
                          srcset="{{ item.image | image_url: width: 160 }} 160w, {{ item.image | image_url: width: 240 }} 240w, {{ item.image | image_url: width: 320 }} 320w"
-                         sizes="(min-width: 900px) 112px, 72px"
+                         sizes="(min-width: 900px) 96px, 48px"
                          alt="{{ item.image.alt | escape }}" width="72" height="90" loading="lazy">
                   {%- endif -%}
                 </a>
