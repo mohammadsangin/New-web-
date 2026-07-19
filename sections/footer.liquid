@@ -1,6 +1,6 @@
 {%- style -%}
   .footer__company-contact-line { margin: 0; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-  .footer__contact-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brass, #A8894F); flex: none; }
+  .footer__contact-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(233, 227, 214, 0.72); flex: none; }
 {%- endstyle -%}
 {%- comment -%}
   Footer — editorial, premium. Structure:
@@ -45,7 +45,7 @@
                 {%- endif -%}
                 {%- if settings.contact_phone != blank -%}
                   <p class="footer__company-contact-line">
-                    <span class="footer__contact-label">Trade &amp; supplier</span>
+                    <span class="footer__contact-label">Trade enquiries</span>
                     <a href="tel:{{ settings.contact_phone | replace: ' ', '' }}">{{ settings.contact_phone }}</a>
                   </p>
                 {%- endif -%}
@@ -103,7 +103,6 @@
               <li><a href="/pages/contact-us">Contact Us</a></li>
               <li><a href="/pages/reviews">Reviews</a></li>
               <li><a href="/pages/returns">Returns &amp; Refunds</a></li>
-              <li><a href="https://kymra-lighting-designer-sage.vercel.app/" target="_blank" rel="noopener">Lighting Designer</a></li>
             {%- endif -%}
           </ul>
         </nav>
@@ -218,7 +217,7 @@
     { "type": "text", "id": "company_number", "label": "Company number", "default": "Company Number: 16970017" },
     { "type": "text", "id": "company_dpa", "label": "Data protection registration", "default": "Data Protection Registration: ZC114360" },
     { "type": "text", "id": "company_address", "label": "Registered office", "info": "The only address ever shown.", "default": "3rd Floor, 86–90 Paul Street, London EC2A 4NE" },
-    { "type": "paragraph", "content": "Customer support (AI advisor) number is fixed at +44 7863 771703. Trade & supplier phone and email come from Theme settings → Contact." },
+    { "type": "paragraph", "content": "Customer support (AI advisor) number is fixed at +44 7863 771703. The Trade enquiries phone and the email come from Theme settings → Contact." },
     { "type": "header", "content": "Quick links" },
     { "type": "text", "id": "quick_links_heading", "label": "Heading", "default": "Quick links" },
     { "type": "link_list", "id": "quick_links_menu", "label": "Quick links menu", "info": "Defaults to the 'Footer Quick Links' menu." },
@@ -279,7 +278,6 @@
       { "type": "link", "settings": { "label": "Contact Us", "url": "/pages/contact-us" } },
       { "type": "link", "settings": { "label": "Reviews", "url": "/pages/reviews" } },
       { "type": "link", "settings": { "label": "Returns & Refunds", "url": "/pages/returns" } },
-      { "type": "link", "settings": { "label": "Lighting Designer", "url": "https://kymra-lighting-designer-sage.vercel.app/" } },
       { "type": "newsletter" }
     ]
   }
